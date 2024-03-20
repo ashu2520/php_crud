@@ -123,7 +123,7 @@ if (isset($_POST["Submitasd"])) {
 								<label>First Name: <span>*</span></label>
 							</div>
 							<div class="input-field">
-								<input id="First_Name_input" type="text" name="First_Name" class="search-box" placeholder="First Name" oninput="validateFirst_Name()" value=<?php echo "$First_Name" ?>>
+								<input id="First_Name_input" type="text" name="First_Name" class="search-box" placeholder="First Name" oninput="validateFirst_Name()" value="<?php echo $First_Name ?>">
 								<span class='text_error' id="First_Name_err"></span>
 							</div>
 						</div>
@@ -134,7 +134,7 @@ if (isset($_POST["Submitasd"])) {
 								<label>Last Name: <span></span></label>
 							</div>
 							<div class="input-field">
-								<input id="Last_Name_input" type="text" name="Last_Name" class="search-box" placeholder="Last Name" oninput="validateLast_Name()" value=<?php echo "$Last_Name" ?>>
+								<input id="Last_Name_input" type="text" name="Last_Name" class="search-box" placeholder="Last Name" oninput="validateLast_Name()" value="<?php echo $Last_Name ?>">
 								<span class='text_error' id="Last_Name_err"></span>
 							</div>
 						</div>
@@ -155,7 +155,7 @@ if (isset($_POST["Submitasd"])) {
 								<label>Age: <span>*</span></label>
 							</div>
 							<div class="input-field">
-								<input id="Age_input" type="text" name="Age" class="search-box" placeholder="Age" oninput="validateAge()" value=<?php echo "$Age" ?>>
+								<input id="Age_input" type="text" name="Age" class="search-box" placeholder="Age" oninput="validateAge()" value="<?php echo $Age ?>">
 								<span class='text_error' id="Age_error"></span>
 							</div>
 							<!-- echo '<p class="error-ms">Please fill this field</p>'; -->
@@ -167,7 +167,7 @@ if (isset($_POST["Submitasd"])) {
 								<label>Email: <span>*</span></label>
 							</div>
 							<div class="input-field">
-								<input id="email_input" type="text" Name="Email" class="search-box" placeholder="Email" disabled value=<?php echo "$Email" ?>>
+								<input id="email_input" type="text" Name="Email" class="search-box" placeholder="Email" disabled value="<?php echo $Email ?>">
 							<span class='text_error' id="email_err"></span>
 							</div>
 						</div>
@@ -178,7 +178,7 @@ if (isset($_POST["Submitasd"])) {
 								<label>User Type: <span>*</span> </label>
 							</div>
 							<div class="input-field">
-								<input id="User_Type_input" type="text" name="User_Type" class="search-box" placeholder="User Type" oninput="validateUser_Type()" value=<?php echo "$User_Type" ?>>
+								<input id="User_Type_input" type="text" name="User_Type" class="search-box" placeholder="User Type" oninput="validateUser_Type()" value="<?php echo $User_Type ?>">
 							<span class='text_error' id="User_Type_err"></span>
 							</div>
 						</div>

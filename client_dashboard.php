@@ -34,19 +34,19 @@ if (isset ($_GET["page"])) {
 if (isset ($_GET["column_name"])) {
   $column_name = clean_search_input($_GET["column_name"]);
   if ($column_name !== "Id" && $column_name !== "First_Name" && $column_name !== "Last_Name" && $column_name !== "Gender" && $column_name !== "Age" && $column_name !== "Email" && $column_name !== "User_Type") {
-    $column_name = "Id";
+    $column_name = "Createdat";
   }
 } else {
-  $column_name = "Id";
+  $column_name = "Createdat";
 }
 
 if (isset ($_GET["sort_order"])) {
   $sort_order = clean_search_input($_GET["sort_order"]);
   if ($sort_order !== "ASC" && $sort_order !== "DESC") {
-    $sort_order = "ASC";
+    $sort_order = "DESC";
   }
 } else {
-  $sort_order = "ASC";
+  $sort_order = "DESC";
 }
 
 $curr_page = max(1, $curr_page);
@@ -56,7 +56,7 @@ $search = "";
 if (isset ($_POST["search_box"])) {
   $search = stripslashes($_POST["search_box"]);
   $search = str_replace("'", '"', $search);
-  $search = htmlspecialchars($search);
+  $search = htmlspecialchars($search, ENT_QUOTES, 'UTF-8');
   $sql = "SELECT Id, First_Name, Last_Name, Gender, Age, Email, User_Type, Createdat FROM users_list 
           WHERE Id LIKE '%$search%' 
           OR First_Name LIKE '%$search%' 
@@ -126,7 +126,7 @@ if (isset ($_POST["search_box"])) {
               <!-- Search Box -->
               <form id="myForm" role="form" action="" method="POST">
                 <input id="search_box" type="text" class="search-box search-upper" name="search_box"
-                  placeholder="Search..." value=<?php echo "$search" ?>>
+                  placeholder="Search..." value="<?php echo $search; ?>">
                 <input type="submit" class="submit-btn" value="Search" />
                 <div class="add_more_user_button">
                   <a class="submit-btn add-user" href="client_create.php">Add More Users</a>
@@ -234,7 +234,7 @@ if (isset ($_POST["search_box"])) {
       popup.classList.remove("open-popup");
     }
 
-// For Search box
+    // For Search box
     const input = document.getElementById('search_box');
     const form = document.getElementById('myForm');
     window.onload = function () {
@@ -248,13 +248,13 @@ if (isset ($_POST["search_box"])) {
       timer = setTimeout(() => {
         form.action = "client_dashboard.php?search_box=" + event.target.value;
         form.submit();
-      }, 500);
+      }, 2000);
     });
 
-// For Flash Messages
-setTimeout(function() {
-  document.getElementById("flash-message").style.display = 'none';
-}, 3000);
+    // For Flash Messages
+    setTimeout(function () {
+      document.getElementById("flash-message").style.display = 'none';
+    }, 3000);
   </script>
 
 </body>
