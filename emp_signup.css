@@ -1,0 +1,171 @@
+@font-face {
+    font-family: 'OpenSansRegular';
+    src: url('../fonts/opensans-regular.eot');
+    src: url('../fonts/opensans-regular.eot') format('embedded-opentype'),
+         url('../fonts/opensans-regular.woff') format('woff'),
+         url('../fonts/opensans-regular.ttf') format('truetype'),
+         url('../fonts/opensans-regular.svg#OpenSansRegular') format('svg');
+}
+@font-face {
+    font-family: 'OpenSansSemibold';
+    src: url('../fonts/opensans-semibold.eot');
+    src: url('../fonts/opensans-semibold.eot') format('embedded-opentype'),
+         url('../fonts/opensans-semibold.woff') format('woff'),
+         url('../fonts/opensans-semibold.ttf') format('truetype'),
+         url('../fonts/opensans-semibold.svg#OpenSansSemibold') format('svg');
+}
+@font-face {
+    font-family: 'oswald_regularregular';
+    src: url('../fonts/oswald-regular-webfont.eot');
+    src: url('../fonts/oswald-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/oswald-regular-webfont.woff2') format('woff2'),
+         url('../fonts/oswald-regular-webfont.woff') format('woff'),
+         url('../fonts/oswald-regular-webfont.ttf') format('truetype'),
+         url('../fonts/oswald-regular-webfont.svg#oswald_regularregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+*{
+    margin: 0 auto;
+    padding: 0 auto;
+    box-sizing: border-box; 
+}
+.heading-top {
+    margin: 40px 0 -40px;
+    width: fit-content;
+    /* position: absolute; */
+    /* z-index: -1; */
+    text-align: center;
+    width: 100%;
+  }
+.logo-cebter{
+    /* border: 1px red solid; */
+    width: fit-content;
+    position: relative;
+	/* width:300px; */
+	/* margin:0px auto; */
+
+}
+.signup{
+    border: 1px solid rgba(128, 128, 128, 0.54);
+    border-radius: 15PX;
+    width: 530px;
+    margin-top: 90px;
+}
+.signup .heading{
+    /* width: fit-content; */
+    /* border: 1px solid red; */
+    position: absolute;
+    /* margin-top: 40px; */
+    margin-left: 95px;
+    font-size: 40px;
+
+}
+.signup .heading1{
+    margin-top: 40px;
+    position: relative;
+    margin-left: 235px;
+    /* border: 1px solid red; */
+
+    width: fit-content;
+    /* border-radius: 10px; */
+    font-size: 40px;
+    font-weight:900;
+    color: #ff651b;
+
+}
+.signup .inputs{
+    margin: 0px 30px;
+    margin-top: 20px;
+    padding: 20px;
+}
+.signup .inputs .labels{
+    display: flex;
+    margin-top: 15px;
+    padding: 2.5px 0px;
+    /* justify-content: space-between; */
+}
+.signup .select_option{
+    /* border: 1px solid red; */
+    display: flex;
+    width: fit-content;
+}
+.signup .select_option .form-select{
+    width: 140px ;
+    margin: 10px 40px -5px 20px;
+    padding: 2.5px;
+}
+.signup .rad_opt{
+    /* border: 1px solid red; */
+    /* display: flex; */
+    padding: 2.5px;
+    margin-left: 40px;
+    margin-top: 10px;
+    /* white-space: 10px; */
+    /* align-items: center; */
+    /* justify-content: center; */
+
+}
+.signup .sep{
+    /* For Seprating the two input fields */
+    border: 1px solid transparent;
+    margin-top: 25px;
+}
+.signup .forg_pass{
+    /* border: 1px solid red; */
+    /* CSS Used in login.php */
+    margin-left: 240px;
+    left: 15px;
+}
+.signup .inputs .inp_1{
+    border: 1px solid #C0C0C0;
+    outline: none;
+    border-radius: 5px;
+    padding: 15px;
+    width: 100%;
+}
+.inp_1[type=text]:focus, .inp_1[type=password]:focus{
+    border: #ff651b solid 1.5px;
+}
+
+.signup .press{
+    border: none;
+    width: 428px;
+    padding: 12px;
+    margin: 0px 50px;
+    border-radius: 4PX;
+    color: white;
+    background-color: #5A7C5A   ;
+    font-size: 17px;
+    font-weight: 850;
+
+}
+.signup .press:hover{
+    background-color: #527752;
+
+}
+.signup .login{
+    padding: 10px;
+    display: flex;
+    margin-bottom: 15px;
+}
+.signup .login a{
+    color: #ff651b;
+    text-decoration: none;
+}
+.signup .login a:hover{
+    color: #ff590b;
+    text-decoration: none;
+}
+.text_error{
+    color: red;
+    font-size: 14px;
+    padding-bottom: 12px;
+    margin-top: 2px;
+    /* width: fit-content; */
+}
+.through_link{
+    width: fit-content ;
+    margin-top: 25px;
+}
