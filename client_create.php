@@ -1,9 +1,9 @@
 <?php
 include "connect.php";
 // Starting the session
-if (!isset($_SESSION["user_name"])){
-    header("location:emp_login.php");
-    exit();
+if (!isset ($_SESSION["user_name"])) {
+	header("location:emp_login.php");
+	exit();
 }
 ?>
 <?php
@@ -15,50 +15,73 @@ function clean_input($fields)
 	$fields = str_replace("'", "", $fields);
 	return $fields;
 }
-$User_Name = "";
-$First_Name = "";
-$Last_Name = "";
-$Email = "";
-$Gender ="";
-$Age="";
-$User_Type = "";
-$Password = "";
-$error = false;
+$name = "";
+$email = "";
+$mobile = "";
+$gender = "";
+// $country = "";
+// $state = "";
+$position = "";
+$role = "";
+$password = "";
+$confirm_pass = "";
+$terms_cond = "";
+// $error = false;
+$nameerr = false;
 $emailerr = false;
+$mobilerr = false;
+$gender_error = false;
+$passworderr = false;
+$confirm_pass_err = false;
 
-if (isset($_POST["First_Name"]) && isset($_POST["Last_Name"]) && isset($_POST["Gender"]) && isset($_POST["Age"]) && isset($_POST["Email"]) && isset($_POST["User_Type"]) && isset($_POST["Password"])) {
+if (isset ($_POST["name"]) && isset ($_POST["email"]) && isset ($_POST["mobile"]) && isset ($_POST["password"]) && isset ($_POST["confirm_pass"]) && isset ($_POST["gender"]) && isset ($_POST["country"]) && isset ($_POST["state"]) && isset ($_POST['User_type'])) {
 	#Getting data from request
-	// $User_Name = clean_input($_POST["User_Name"]);
-	$First_Name = clean_input($_POST["First_Name"]);
-	$Last_Name = clean_input($_POST["Last_Name"]);
-	$Gender = $_POST["Gender"];
-	$Age = clean_input($_POST["Age"]);
-	$Email = clean_input($_POST['Email']);
-	$User_Type = clean_input($_POST['User_Type']);
-	$Password = clean_input($_POST["Password"]);
+	// print_r($_POST);
 
-	// 
-
-	if (!isset($Gender) || (isset($First_Name) && $First_Name == "") || (isset($Email) && $Email == "") || (isset($Password) && $Password == "") || (isset($User_Type) && $User_Type == "")) {
-		$error = true;
+	$name = clean_input($_POST['name']);
+	$email = clean_input($_POST['email']);
+	$mobile = clean_input($_POST['mobile']);
+	$password = clean_input($_POST["password"]);
+	$confirm_pass = clean_input($_POST["confirm_pass"]);
+	$gender = $_POST["gender"];
+	// $country = $_POST["country"];
+	// $state = $_POST["state"];
+	$position = $_POST["User_type"];
+	$role = $_POST["role_type"];
+	print_r($_POST);
+	// die();
+	if (isset ($_POST['terms_cond'])) {
+		$terms_cond = "yes";
 	}
-	if (!preg_match("/^[a-zA-Z\s'-]+$/", $First_Name) || !preg_match("/^[a-zA-Z\s'-]*$/", $Last_Name) || !preg_match("/^[1-9][0-9]*$/", $Age) || !filter_var($Email, FILTER_VALIDATE_EMAIL) || !preg_match("/^[a-zA-Z\s'-]+$/", $User_Type) || !preg_match("#^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^\da-zA-Z\s]).{8,}$#", $Password)) {
-		$error = true;
-
+	if (!preg_match("/^[a-zA-Z\s'-]+$/", $name) || !(isset ($name)) || $name == "") {
+		$nameerr = true;
 	}
-	$sql_em = "SELECT * FROM `users_list` WHERE Email = '$Email'";
+	if (!preg_match("/^[0-9]{10}$/", $mobile) || !(isset ($mobile)) || $mobile == "") {
+		$mobilerr = true;
+	}
+
+	# Email check
+	$sql_em = "SELECT * FROM `login_credentials` WHERE Email = '$email'";
 	$result_em = mysqli_query($conn, $sql_em);
-	if (mysqli_num_rows($result_em) > 0) {
+	if (!filter_var($email, FILTER_VALIDATE_EMAIL) || !(isset ($email)) || $email == "" || mysqli_num_rows($result_em) > 0) {
 		$emailerr = true;
 	}
-	if (!$error && !$emailerr) {
-		$sql = "INSERT INTO `users_list` (First_Name, Last_Name, Gender, Age,  Email, User_Type, Password, Createdat, Updatedat) VALUES ('$First_Name', '$Last_Name', '$Gender','$Age', '$Email', '$User_Type', '$Password', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)";
+	if ($password == "" || !preg_match("#^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^\da-zA-Z\s]).{8,}$#", $password)) {
+		$passworderr = true;
+	}
+	if (strcmp($password, $confirm_pass) !== 0 || $confirm_pass == "") {
+		$confirm_pass_err = true;
+	}
+	$hashed_password = password_hash($password, PASSWORD_DEFAULT);
+	if (!$nameerr && !$emailerr && !$mobilerr && !$passworderr && !$confirm_pass_err) {
+		$sql = "INSERT INTO `login_credentials` (Name, Mobile, Email, Gender,  User_type, User_role_id, Password, Terms_cond, Createdat, Updatedat) VALUES ('$name', '$mobile', '$email', '$gender', '$position', '$role', '$hashed_password', '$terms_cond', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)";
 		$result = mysqli_query($conn, $sql);
+		// echo "here";
 		if ($result) {
-			$_SESSION['flash_message'] = " User Added Sucessfully ";
 			header("location:client_dashboard.php");
+			exit();
 		} else {
-			die(mysqli_error($conn));
+			die (mysqli_error($conn));
 		}
 	}
 }
@@ -77,104 +100,133 @@ if (isset($_POST["First_Name"]) && isset($_POST["Last_Name"]) && isset($_POST["G
 </head>
 
 <body>
-<?php include "header.php";?>
+	<?php include "header.php"; ?>
 
-  <div class="clear"></div>
-  <div class="clear"></div>
-  <div class="content">
-    <div class="wrapper">
-      <div class="bedcram">
-      </div>
-      <?php include "left_sidebar.php";?>
+	<div class="clear"></div>
+	<div class="clear"></div>
+	<div class="content">
+		<div class="wrapper">
+			<div class="bedcram">
+			</div>
+			<?php include "left_sidebar.php"; ?>
 			<div class="right_side_content">
-				<h1>Edit Users</h1>
+				<h1>Add Users</h1>
 				<div class="list-contet">
 					<?php
-					if ($error) {
-						echo '<div class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>UnSucess!</strong> Your Message has not been Send </div>';
+					if ($nameerr) {
+						echo '<div class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>UnSucess!</strong> Name Error</div>';
+					} else if ($mobilerr) {
+						echo '<div class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>UnSucess!</strong> Mobile Error</div>';
 					} else if ($emailerr) {
 						echo '<div class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>UnSucess!</strong> Email Already Exist</div>';
+					} else if ($passworderr || $confirm_pass_err) {
+						echo '<div class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>UnSucess!</strong> Invalid Password Type</div>';
 					}
 					?>
-					<form id="main" class="form-edit" onsubmit="validateForm(); return false;" action="client_create.php" method="POST">
+					<form id="main" class="form-edit" onsubmit="validateForm(); return false;"
+						action="client_create.php" method="POST">
 						<!-- First Name -->
 						<div class="form-row">
 							<div class="form-label">
-								<label>First Name: <span>*</span></label>
+								<label>Name: <span>*</span></label>
 							</div>
 							<div class="input-field">
-								<input id="First_Name_input" type="text" name="First_Name" class="search-box" placeholder="First Name" oninput="validateFirst_Name()"/>
-								<span class='text_error' id="First_Name_err"></span>
+								<input id="name_input" type="text" name="name" class="search-box" placeholder="Name"
+									oninput="validateName()" />
+								<span class='text_error' id="name_err"></span>
 							</div>
 						</div>
 
-						<!-- Last Name -->
+						<!-- Mobile -->
 						<div class="form-row">
 							<div class="form-label">
-								<label>Last Name: <span></span></label>
+								<label>Mobile Number: <span></span></label>
 							</div>
 							<div class="input-field">
-								<input id="Last_Name_input" type="text" name="Last_Name" class="search-box" placeholder="Last Name" oninput="validateLast_Name()"/>
-								<span class='text_error' id="Last_Name_err"></span>
+								<input id="mobile_input" type="text" name="mobile" class="search-box"
+									placeholder="Mobile Number" oninput="validateMobileNumber()" />
+								<span class='text_error' id="mobile_error"></span>
 							</div>
 						</div>
-						<div class="form-row radio-row">
-							<div class="form-label">
-								<label>Gender: <span>*</span> </label>
-							</div>
-							<div class="input-field">
-								<label><input id="gender_male" type="radio" name="Gender" value="Male" checked onblur="vaildategender()"> <span>Male</span></label><label>
-									<input id="gender_female" type="radio" name="Gender" value="Female" onblur="vaildategender()"> <span>Female</span> </label>
-									<span class='text_error' id="gender_error"></span>
-							</div>
-						</div>
-						<!-- Age -->
-						<div class="form-row">
-							<div class="form-label">
-								<label>Age: <span>*</span></label>
-							</div>
-							<div class="input-field">
-								<input id="Age_input" type="text" name="Age" class="search-box" placeholder="Age" oninput="validateAge()">
-								<span class='text_error' id="Age_error"></span>
-							</div>
-							<!-- echo '<p class="error-ms">Please fill this field</p>'; -->
 
-						</div>
 						<!-- Email -->
 						<div class="form-row">
 							<div class="form-label">
 								<label>Email: <span>*</span></label>
 							</div>
 							<div class="input-field">
-								<input id="email_input" type="text" Name="Email" class="search-box" placeholder="Email" oninput="validateEmail()">
-							<span class='text_error' id="email_err"></span>
+								<input id="email_input" type="text" Name="email" class="search-box" placeholder="Email"
+									oninput="validateEmail()">
+								<span class='text_error' id="email_err"></span>
 							</div>
 						</div>
+
+						<!-- Gender -->
+						<div class="form-row radio-row">
+							<div class="form-label">
+								<label>Gender: <span>*</span> </label>
+							</div>
+							<div class="input-field">
+								<label><input id="gender_male" type="radio" name="gender" value="Male" checked
+										onblur="vaildategender()"> <span>Male</span></label><label>
+									<input id="gender_female" type="radio" name="gender" value="Female"
+										onblur="vaildategender()"> <span>Female</span> </label>
+								<span class='text_error' id="gender_error"></span>
+							</div>
+						</div>
+
+						<!-- Location -->
 						<!-- <div class="form-row">
-				<div class="form-label">
-					<label>Security Email: <span>*</span></label> 
-				</div>
-				<div class="input-field">
-					<input type="text" class="search-box" placeholder="TestBruck3"/>
-				</div>
-			</div> -->
-						<!-- <div class="form-row">
-				<div class="form-label">
-					<label>Time Lag: <span>*</span></label> 
-				</div>
-				<div class="input-field">
-					<input type="text" class="search-box" placeholder="9"/>
-				</div>
-			</div> -->
+							<div class="form-label">
+								<label>Country And State: <span>*</span></label>
+							</div>
+							<div class="input-field">
+								<select style="width: 120px; height: 20px" id="country_select"
+									class="form-select country" aria-label="Default select example" name="country"
+									onchange="loadStates()">
+									<option>Select Country</option>
+								</select>
+								<select style="width: 120px; height: 20px" id="state_select" class="form-select state"
+									aria-label="Default select example" name="state" onblur="validatelocation()">
+									<option>Select State</option>
+								</select>
+								<br><span class='text_error' id="location_error"></span>
+							</div>
+						</div> -->
 
 						<!-- User Type -->
 						<div class="form-row">
 							<div class="form-label">
-								<label>User Type: <span>*</span> </label>
+								<label>Position: <span>*</span></label>
 							</div>
 							<div class="input-field">
-								<input id="User_Type_input" type="text" name="User_Type" class="search-box" placeholder="User Type" oninput="validateUser_Type()"/>
-							<span class='text_error' id="User_Type_err"></span>
+								<select id="User_type_input" class="form-select" name="User_type" autocomplete="off"
+									onblur="validateposition()">
+									<option>AIML</option>
+									<option>Backend</option>
+									<option>Cyber Security</option>
+									<option>Data Scientist</option>
+									<option>Devops</option>
+									<option>Frontend</option>
+									<option>Full Stack</option>
+								</select>
+							</div>
+						</div>
+
+
+						<!-- Role Type -->
+						<div class="form-row">
+							<div class="form-label">
+								<label>Role: <span>*</span> </label>
+							</div>
+							<div class="input-field">
+							<select id="role_input" class="form-select" name="role_type" autocomplete="off"
+									onblur="validaterole()">
+									<option value="5">Employee</option>
+									<option value="2">Admin</option>
+									<option value="3">Manager</option>
+									<option value="4">Team Lead</option>
+								</select>
 							</div>
 						</div>
 
@@ -184,36 +236,25 @@ if (isset($_POST["First_Name"]) && isset($_POST["Last_Name"]) && isset($_POST["G
 								<label>Password: <span>*</span> </label>
 							</div>
 							<div class="input-field">
-								<input id ="password_input" type="Password" name="Password" class="search-box" placeholder="Password" oninput="validatePassword()"/>
-							<span class='text_error' id="passworderr"></span>
+								<input id="password_input" type="Password" name="password" class="search-box"
+									placeholder="Password" oninput="validatePassword()" />
+								<span class='text_error' id="passworderr"></span>
 
 							</div>
 						</div>
 
-					<!-- Confirm Password -->
+						<!-- Confirm Password -->
 						<div class="form-row">
 							<div class="form-label">
 								<label>Confirm Password: <span>*</span> </label>
 							</div>
 							<div class="input-field">
-								<input id ="confirm_password_input" type="Password" name="Password" class="search-box" placeholder="Password" oninput="validateConfirmPassword()"/>
-							<span class='text_error' id="confirm_password_err"></span>
+								<input id="confirm_password_input" type="Password" name="confirm_pass"
+									class="search-box" placeholder="Password" oninput="validateConfirmPassword()" />
+								<span class='text_error' id="confirm_password_err"></span>
 							</div>
 						</div>
-						<!-- <div class="form-row">
-				<div class="form-label">
-					<label>Country: <span></span> </label> 
-				</div>
-				<div class="input-field">
-					<div class="select">
-					<select>
-						<option>India</option>
-						<option>Uk</option>
-						<option>Us</option>
-					</select>
-					</div>
-				</div>
-			</div> -->
+					
 						<div class="form-row">
 							<div class="form-label">
 								<label><span></span> </label>
@@ -222,14 +263,14 @@ if (isset($_POST["First_Name"]) && isset($_POST["Last_Name"]) && isset($_POST["G
 								<input type="submit" class="submit-btn" name="Submitasd" value="Save">
 							</div>
 						</div>
+
 					</form>
 				</div>
 			</div>
 
 		</div>
 	</div>
-	
-<script src="js/client_create.js"></script>
+	<script src="js/emp_signup.js"></script>
 </body>
 
 </html>

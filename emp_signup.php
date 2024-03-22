@@ -17,61 +17,61 @@ $name = "";
 $email = "";
 $mobile = "";
 $gender = "";
-$country = "";
-$state = "";
+// $country = "";
+// $state = "";
+$position = "";
 $password = "";
 $confirm_pass = "";
 $terms_cond = "";
+$error = false;
 $nameerr = false;
 $emailerr = false;
 $mobilerr = false;
 $gender_error = false;
-$country_error = false;
-$state_error = false;
 $passworderr = false;
 $confirm_pass_err = false;
-
 // print_r($_POST);
-// die();
-if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) && isset($_POST["password"]) && isset($_POST["confirm_pass"]) && isset($_POST["gender"]) && isset($_POST["country"]) && isset($_POST["state"])) {
-    #Getting data from request
-    $name = cleansignup_input($_POST['name']);
-    $email = cleansignup_input($_POST['email']);
-    $mobile = cleansignup_input($_POST['mobile']);
-    $password = cleansignup_input($_POST["password"]);
-    $confirm_pass = cleansignup_input($_POST["confirm_pass"]);
-    $gender = $_POST["gender"];
-    $country = $_POST["country"];
-    $state = $_POST["state"];
-    if (isset($_POST['terms_cond'])) {
-        $terms_cond = "yes";
-    }
 
-    
-    if (!preg_match("/^[a-zA-Z\s'-]+$/", $name) || !(isset($name)) || $name == "" ) {
-        $nameerr = true;
-    }
-    if (!preg_match("/^[0-9]{10}$/", $mobile) || !(isset($mobile)) || $mobile == "") {
-        $mobilerr = true;
-    }
-    
-    # Email check
-    $sql_em = "SELECT * FROM `login_credentials` WHERE Email = '$email'";
-    $result_em = mysqli_query($conn, $sql_em);
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL) || !(isset($email)) || $email == "" || mysqli_num_rows($result_em) > 0) {
-        $emailerr = true;
-    }
-    if ($password == "" || !preg_match("#^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^\da-zA-Z\s]).{8,}$#", $password)) {
-        $passworderr = true;
-    } 
-    
-   
-    if (strcmp($password, $confirm_pass) !== 0  || $confirm_pass == "") {
-        $confirm_pass_err = true;
-    }
-    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-    if (!$nameerr  && !$emailerr  && !$mobilerr  && !$passworderr && !$confirm_pass_err && !$gender_error && !$country_error && !$state_error) {
-        $sql = "INSERT INTO `login_credentials` (Name, Mobile, Email, Gender, Country, State, Password, Terms_cond) VALUES ('$name', '$mobile', '$email', '$gender', '$country', '$state', '$hashed_password', '$terms_cond')";
+if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) && isset($_POST["password"]) && isset($_POST["confirm_pass"]) && isset($_POST["gender"]) && isset($_POST['User_type'])) {
+  #Getting data from request
+  // print_r($_POST);
+
+  $name = cleansignup_input($_POST['name']);
+  $email = cleansignup_input($_POST['email']);
+  $mobile = cleansignup_input($_POST['mobile']);
+  $password = cleansignup_input($_POST["password"]);
+  $confirm_pass = cleansignup_input($_POST["confirm_pass"]);
+  $gender = $_POST["gender"];
+  // $country = $_POST["country"];
+  // $state = $_POST["state"];
+  $position = $_POST["User_type"];
+  if (isset($_POST['terms_cond'])) {
+    $terms_cond = "yes";
+  }
+  
+  
+  if (!preg_match("/^[a-zA-Z\s'-]+$/", $name) || $name == "" ) {
+    $nameerr = true;
+  }
+  if (!preg_match("/^[0-9]{10}$/", $mobile) || $mobile == "") {
+    $mobilerr = true;
+  }
+  
+  # Email check
+  $sql_em = "SELECT * FROM `login_credentials` WHERE Email = '$email'";
+  $result_em = mysqli_query($conn, $sql_em);
+  if (!filter_var($email, FILTER_VALIDATE_EMAIL) || !(isset($email)) || $email == "" || mysqli_num_rows($result_em) > 0) {
+    $emailerr = true;
+  }
+  if ($password == "" || !preg_match("#^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^\da-zA-Z\s]).{8,}$#", $password)) {
+    $passworderr = true;
+  } 
+  if (strcmp($password, $confirm_pass) !== 0  || $confirm_pass == "") {
+    $confirm_pass_err = true;
+  }
+  $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+  if (!$nameerr  && !$emailerr  && !$mobilerr  && !$passworderr && !$confirm_pass_err ) {
+    $sql = "INSERT INTO `login_credentials` (Name, Mobile, Email, Gender, User_type, Password, Terms_cond, Createdat, Updatedat) VALUES ('$name', '$mobile', '$email', '$gender', '$position', '$hashed_password', '$terms_cond', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)";
         $result = mysqli_query($conn, $sql);
         // echo "here";
         if ($result) {
@@ -80,9 +80,8 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
         } else {
             die(mysqli_error($conn));
         }
-    }
-}
-
+    } 
+} 
 ?>
 
 <html lang="en">
@@ -105,8 +104,19 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
       <div class="outer_div">
 
         <h2>Admin <span>Registration</span></h2>
-        <!-- <div class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>Invalid!</strong> username
-            or password </div> -->
+        <?php
+					if ($error) {
+						echo '<div class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>UnSucess!</strong> Your Message has not been Send </div>';
+					} else if ($nameerr) {
+						echo '<div class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>UnSucess!</strong> Name Error</div>';
+					}else if ($mobilerr) {
+						echo '<div class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>UnSucess!</strong> Mobile Error</div>';
+					}else if ($emailerr) {
+						echo '<div class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>UnSucess!</strong> Email Already Exist</div>';
+					}else if ($passworderr || $confirm_pass_err) {
+						echo '<div class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>UnSucess!</strong> Invalid Password Type</div>';
+					}
+					?>
         <form id="main" class="margin_bottom" role="form" onsubmit="validateForm(); return false;" action="emp_signup.php" method="POST">
           <div class="form-group">
             <label for="Name" class="labels">Name</label>
@@ -128,15 +138,19 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
               placeholder="Email" onblur="validateEmail()" />
             <span class='text_error' id="email_err"></span>
           </div>
+
           <div class="form-group">
             <label class="labels">Select Gender</label>
-            <input id="gender_male" class="rad_opt" type="radio" name="gender" oninput="vaildategender()" value="Male">
+            <input id="gender_male" class="rad_opt" checked type="radio" name="gender" oninput="vaildategender()" value="Male">
             <span class="rad_text"> Male</span>
             <input id="gender_female" class="rad_opt" type="radio" name="gender" oninput="vaildategender()"
               value="female">
             <span class="rad_text"> Female</span>
             <span class='text_error' id="gender_error"></span>
           </div>
+
+          
+<!-- 
           <div class="form-group">
             <div class="select_option">
 
@@ -153,7 +167,25 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
               <span class='text_error' id="location_error" ></span>
 
             </div>
+          </div> -->
+
+
+
+          <div class="form-group">
+            <label for="Position">Position</label>
+            <select id="User_type_input" class="form-select" name="User_type" autocomplete="off" onblur="validateposition()">
+              <option>AIML</option>
+              <option>Backend</option>
+              <option>Cyber Security</option>
+              <option>Data Scientist</option>
+              <option>Devops</option>
+              <option>Frontend</option>
+              <option>Full Stack</option>
+            </select>
+            <span class='text_error' id="User_type_error"></span>
           </div>
+
+
           <div class="form-group">
           <label for="password" class="labels">Password</label>
                 <input type="password" id="password_input" class="form-control" name="password" placeholder="Password" autocomplete="off" oninput="validatePassword()" >

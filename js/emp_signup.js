@@ -3,11 +3,12 @@ async function validateForm() {
     console.log('validateMobileNumber:', validateMobileNumber());
     console.log('validateEmail', await validateEmail());
     console.log('validateGender:', vaildategender());
-    console.log('validatelocation:', validatelocation());
+    // console.log('validatelocation:', validatelocation());
+    // console.log('validatePosition:', validateposition());
     console.log('validatePassword:', validatePassword());
     console.log('validateConfirmPassword:', validateConfirmPassword());
     
-    if (!validateName() || !validateMobileNumber() || !(await validateEmail()) || !vaildategender() || !validatelocation() || !validatePassword() || !validateConfirmPassword()) {
+    if (!validateName() || !validateMobileNumber() || !(await validateEmail()) || !vaildategender()  || !validatePassword() || !validateConfirmPassword()) {
         // console.log("here I am")
         return false;
     }
@@ -135,24 +136,41 @@ function vaildategender() {
     }
 }
 
-function validatelocation() {
-    // console.log("Inside validatelocation function");
+// function validatelocation() {
+//     // console.log("Inside validatelocation function");
 
-    var country = document.getElementById('country_select').value;
-    var state = document.getElementById('state_select').value;
-    // console.log("Element:", country);
-    // console.log("Element:", state);
+//     // var country = document.getElementById('country_select').value;
+//     var state = document.getElementById('state_select').value;
+//     // console.log("Element:", country);
+//     // console.log("Element:", state);
 
-    if (country && state) {
-        document.getElementById("location_error").innerHTML = "";
-        return true;
-    }
-    else {
+//     if (state) {
+//         document.getElementById("location_error").innerHTML = "";
+//         return true;
+//     }
+//     else {
 
-        document.getElementById("location_error").innerHTML = "Value cannot be empty.";
-        return false;
-    }
-}
+//         document.getElementById("location_error").innerHTML = "Value cannot be empty.";
+//         return false;
+//     }
+// }
+
+// Koi fayda nhi check lagane ki... kyunki Kisi bhi user ke pass ye option hi nhi hai ki wo isko select na kare...
+// Kyunki by default AIML selected hai...
+// function validateposition() {
+//     var position = document.getElementById('User_type_input').value;
+
+//     if (position) {
+//         document.getElementById("User_type_error").innerHTML = "";
+//         return true;
+//     }
+//     else {
+
+//         document.getElementById("User_type_error").innerHTML = "Value cannot be empty.";
+//         return false;
+//     }
+// }
+
 function validatePassword() {
     var password = document.getElementById('password_input').value;
     var passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^\da-zA-Z\s]).{8,}$/;

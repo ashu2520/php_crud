@@ -79,7 +79,7 @@ div,li,ul,a{
   background: none repeat scroll 0 0 #ffffff;
   border-radius: 5px;
   box-shadow: 0 0 7px rgba(0, 0, 0, 0.06);
-  height: 92%;
+  height: 100%;
   margin: 0 auto;
   position: relative;
   width: 385px;
@@ -641,10 +641,6 @@ tr:last-child td{
   padding: 2px 8px;
    font-family: 'OpenSansSemibold';
 }
-.pagination-div a.visited {
-  background-color: #ff651b;
-  color: #f9f9f9;
-}
 .paginaton-div a:hover,.paginaton-div .active{
 	background:#FF651B;
 	color:#fff;
@@ -1111,3 +1107,4 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f6f6f6', end
   border-radius: 5px;
   /* border: #000000 1px solid; */
 }
+/* ********************************************* active Page CSS ********************************************* */

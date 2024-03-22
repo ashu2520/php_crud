@@ -34,7 +34,7 @@ if (isset ($_GET["column_name"])) {
   $column_name = clean_search_input($_GET["column_name"]);
   if ($column_name !== "Id" && $column_name !== "Name" && $column_name !== "Email" && $column_name !== "Mobile" && $column_name !== "Subject") {
     $column_name = "Id";
-}
+  }
 } else {
   $column_name = "Id";
 }
@@ -74,25 +74,25 @@ if (isset ($_POST["search_box"])) {
 <html lang="en">
 
 <head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Request Data</title>
-	<!-- Bootstrap -->
-    <link href="css/client_dashboard.css" rel="stylesheet">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Request Data</title>
+  <!-- Bootstrap -->
+  <link href="css/client_dashboard.css" rel="stylesheet">
 </head>
 
 <body>
-<?php include "header.php";?>
+  <?php include "header.php"; ?>
 
-<div class="clear"></div>
-<div class="clear"></div>
-<div class="content">
-<div class="wrapper">
-    <div class="bedcram">
-    </div>
-    <?php include "left_sidebar.php";?>
-    <div class="right_side_content">
+  <div class="clear"></div>
+  <div class="clear"></div>
+  <div class="content">
+    <div class="wrapper">
+      <div class="bedcram">
+      </div>
+      <?php include "left_sidebar.php"; ?>
+      <div class="right_side_content">
         <h1>List Users</h1>
         <div class="list-contet">
           <div class="form-left">
@@ -104,11 +104,11 @@ if (isset ($_POST["search_box"])) {
                     <h2 style="position: relative; margin-top: 12px; margin-left: 120px; color: white;">Message</h2>
                 </div>
                 <p style="position: absolute; margin:0 8px 0 0; top: 80px;" id="message-display">  -->
-                <!-- // Ab humko yaha pr Message print karwana hai... -->
-                <!-- </p>
+              <!-- // Ab humko yaha pr Message print karwana hai... -->
+              <!-- </p>
                 <div class='btn'> -->
-                  <!-- <a class="del_btn" id='delete_a' href='#" . $id . "'>Delete</a> -->
-                  <!-- <a style ="margin-left: 110px; margin-bottom: 0px;" class="del_btn2" onclick='closepopup()'>Close</a>
+              <!-- <a class="del_btn" id='delete_a' href='#" . $id . "'>Delete</a> -->
+              <!-- <a style ="margin-left: 110px; margin-bottom: 0px;" class="del_btn2" onclick='closepopup()'>Close</a>
                 </div>
               </div> -->
 
@@ -154,7 +154,7 @@ if (isset ($_POST["search_box"])) {
                   $Subject = $row['Subject'];
 
                   $Message = $row['Message'];   // Isko humko show karwana hai popup ke jariye...
-                
+              
                   echo " 
                   <tr>
                          <td>" . $id . "</td>
@@ -163,7 +163,7 @@ if (isset ($_POST["search_box"])) {
                          <td>" . $Mobile . "</td>
                          <td>" . $Subject . "</td>
                          <td> 
-                         <a id='message-popup' href='message_display.php?Id=".$id."'><img style = 'margin-left: 20px;' src='images/message-solid.png' width='30' height='25'></a>
+                         <a id='message-popup' href='message_display.php?Id=" . $id . "'><img style = 'margin-left: 20px;' src='images/message-solid.png' width='30' height='25'></a>
                          </td>
                          </tr>";
                 }
@@ -179,19 +179,25 @@ if (isset ($_POST["search_box"])) {
           <div class="paginaton-div">
             <?php
             if ($curr_page - 1 > 0) {
-              echo "<a class='act_btn' href='request.php?column_name=".$column_name."&sort_order=" . ($sort_order == "DESC" ? "DESC" : "ASC") . "&page=" . ($curr_page - 1) . "'>Prev</a>";
+              echo "<a class='act_btn' href='request.php?column_name=" . $column_name . "&sort_order=" . ($sort_order == "DESC" ? "DESC" : "ASC") . "&page=" . ($curr_page - 1) . "'>Prev</a>";
 
             } else {
               echo "<a style='background-color: #b4b4b4; color: white; text-decoration: none; cursor: not-allowed;'>Prev</a>";
             }
-            $start_page = max($curr_page, $total_pages - 2);
-            for ($i = $start_page; $i <= $total_pages && $i <= $start_page + 2; $i++) {
-              $class = ($curr_page == $i) ? 'visited' : '';
-              echo "<a  class = '$class' href = 'request.php?column_name=".$column_name."&sort_order=" . ($sort_order == "DESC" ? "DESC" : "ASC") . "&page=" . $i . "'>" . $i . "</a>";
-              // ? --> query parameters, multiple page sakte hai...
+            $start_page = max(1, min($curr_page, $total_pages - 2));
+            $end_page = min($total_pages, $start_page + 2);
+
+            // Display page numbers
+            for ($i = $start_page; $i <= $end_page; $i++) {
+              if($curr_page == $i) {
+                echo "<a  style='background-color: #ff651b; color: #fff; cursor: not-allowed; text-decoration: none;'>" . $i . "</a>";
+                }else{
+                  echo "<a class='$class' href='request.php?column_name=" . $column_name . "&sort_order=" . ($sort_order == "DESC" ? "DESC" : "ASC") . "&page=" . $i . "'>" . $i . "</a>";
+                }
             }
+
             if ($curr_page + 1 <= $total_pages) {
-              echo "<a class='act_btn' href = 'request.php?column_name=".$column_name."&sort_order=" . ($sort_order == "DESC" ? "DESC" : "ASC") . "&page=" . ($curr_page + 1) . "'>Next</a>";
+              echo "<a class='act_btn' href = 'request.php?column_name=" . $column_name . "&sort_order=" . ($sort_order == "DESC" ? "DESC" : "ASC") . "&page=" . ($curr_page + 1) . "'>Next</a>";
             } else {
               echo "<a style='background-color: #b4b4b4; color: white; text-decoration: none; cursor: not-allowed;'>Next</a>";
             }
@@ -200,8 +206,8 @@ if (isset ($_POST["search_box"])) {
         </div>
       </div>
     </div>
-</div>
-<script>
+  </div>
+  <script>
     const input = document.getElementById('search_box');
     const form = document.getElementById('myForm');
     window.onload = function () {
@@ -218,7 +224,7 @@ if (isset ($_POST["search_box"])) {
       }, 500);
     });
   </script>
-<!-- <script src="js/client_update.js"></script> -->
+  <!-- <script src="js/client_update.js"></script> -->
 </body>
 
 </html>
