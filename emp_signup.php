@@ -1,17 +1,17 @@
 <?php
 include "connect.php";
-if (isset($_SESSION["user_name"])){
-    header("location:client_dashboard.php");
-    exit();
+if (isset($_SESSION["user_name"])) {
+  header("location:client_dashboard.php");
+  exit();
 }
 
 function cleansignup_input($fields)
 {
-    $fields = trim($fields);
-    $fields = stripslashes($fields);
-    $fields = htmlspecialchars($fields);
-    $fields = str_replace("'", "", $fields);
-    return $fields;
+  $fields = trim($fields);
+  $fields = stripslashes($fields);
+  $fields = htmlspecialchars($fields);
+  $fields = str_replace("'", "", $fields);
+  return $fields;
 }
 $name = "";
 $email = "";
@@ -48,15 +48,15 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
   if (isset($_POST['terms_cond'])) {
     $terms_cond = "yes";
   }
-  
-  
-  if (!preg_match("/^[a-zA-Z\s'-]+$/", $name) || $name == "" ) {
+
+
+  if (!preg_match("/^[a-zA-Z\s'-]+$/", $name) || $name == "") {
     $nameerr = true;
   }
   if (!preg_match("/^[0-9]{10}$/", $mobile) || $mobile == "") {
     $mobilerr = true;
   }
-  
+
   # Email check
   $sql_em = "SELECT * FROM `login_credentials` WHERE Email = '$email'";
   $result_em = mysqli_query($conn, $sql_em);
@@ -65,26 +65,41 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
   }
   if ($password == "" || !preg_match("#^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^\da-zA-Z\s]).{8,}$#", $password)) {
     $passworderr = true;
-  } 
-  if (strcmp($password, $confirm_pass) !== 0  || $confirm_pass == "") {
+  }
+  if (strcmp($password, $confirm_pass) !== 0 || $confirm_pass == "") {
     $confirm_pass_err = true;
   }
   $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-  if (!$nameerr  && !$emailerr  && !$mobilerr  && !$passworderr && !$confirm_pass_err ) {
+  if (!$nameerr && !$emailerr && !$mobilerr && !$passworderr && !$confirm_pass_err) {
     $sql = "INSERT INTO `login_credentials` (Name, Mobile, Email, Gender, User_type, Password, Terms_cond, Createdat, Updatedat) VALUES ('$name', '$mobile', '$email', '$gender', '$position', '$hashed_password', '$terms_cond', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)";
-        $result = mysqli_query($conn, $sql);
-        // echo "here";
-        if ($result) {
-            header("location:emp_login.php");
-            exit();
-        } else {
-            die(mysqli_error($conn));
-        }
-    } 
-} 
+    $result = mysqli_query($conn, $sql);
+    // echo "here";
+    if ($result) {
+      $sql_email = "SELECT temp_subject, temp_content FROM email_templates WHERE temp_slug = 'sign_up'";
+      $result_email = mysqli_query($conn, $sql_email);
+      $row = mysqli_fetch_array($result_email);
+
+      $subject = $row["temp_subject"];
+      $body = $row["temp_content"];
+
+      // $to = $email;
+
+      // $headers = "From: ashuoff2520@gmail.com"; // Replace with your email address or sender name
+
+      // // Send email with HTML content
+      // $headers .= "\r\nContent-Type: text/html; charset=UTF-8";
+      // mail($to, $subject, $body, $headers);
+      header("location:emp_login.php");
+      exit();
+    } else {
+      die(mysqli_error($conn));
+    }
+  }
+}
 ?>
 
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -105,26 +120,27 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
 
         <h2>Admin <span>Registration</span></h2>
         <?php
-					if ($error) {
-						echo '<div class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>UnSucess!</strong> Your Message has not been Send </div>';
-					} else if ($nameerr) {
-						echo '<div class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>UnSucess!</strong> Name Error</div>';
-					}else if ($mobilerr) {
-						echo '<div class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>UnSucess!</strong> Mobile Error</div>';
-					}else if ($emailerr) {
-						echo '<div class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>UnSucess!</strong> Email Already Exist</div>';
-					}else if ($passworderr || $confirm_pass_err) {
-						echo '<div class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>UnSucess!</strong> Invalid Password Type</div>';
-					}
-					?>
-        <form id="main" class="margin_bottom" role="form" onsubmit="validateForm(); return false;" action="emp_signup.php" method="POST">
+        if ($error) {
+          echo '<div class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>UnSucess!</strong> Your Message has not been Send </div>';
+        } else if ($nameerr) {
+          echo '<div class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>UnSucess!</strong> Name Error</div>';
+        } else if ($mobilerr) {
+          echo '<div class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>UnSucess!</strong> Mobile Error</div>';
+        } else if ($emailerr) {
+          echo '<div class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>UnSucess!</strong> Email Already Exist</div>';
+        } else if ($passworderr || $confirm_pass_err) {
+          echo '<div class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>UnSucess!</strong> Invalid Password Type</div>';
+        }
+        ?>
+        <form id="main" class="margin_bottom" role="form" onsubmit="validateForm(); return false;"
+          action="emp_signup.php" method="POST">
           <div class="form-group">
             <label for="Name" class="labels">Name</label>
             <input id="name_input" type="text" class="form-control" name="name" placeholder="Name" autocomplete="off"
               oninput="validateName()">
             <span class='text_error' id="name_err"></span>
-
           </div>
+
           <div class="form-group">
             <label for="Mobile" class="labels">Mobile Number</label>
             <input id="mobile_input" type="number" class="form-control" name="mobile" placeholder="Mobile Number"
@@ -141,7 +157,8 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
 
           <div class="form-group">
             <label class="labels">Select Gender</label>
-            <input id="gender_male" class="rad_opt" checked type="radio" name="gender" oninput="vaildategender()" value="Male">
+            <input id="gender_male" class="rad_opt" checked type="radio" name="gender" oninput="vaildategender()"
+              value="Male">
             <span class="rad_text"> Male</span>
             <input id="gender_female" class="rad_opt" type="radio" name="gender" oninput="vaildategender()"
               value="female">
@@ -149,8 +166,7 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
             <span class='text_error' id="gender_error"></span>
           </div>
 
-          
-<!-- 
+          <!-- 
           <div class="form-group">
             <div class="select_option">
 
@@ -169,11 +185,10 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
             </div>
           </div> -->
 
-
-
           <div class="form-group">
             <label for="Position">Position</label>
-            <select id="User_type_input" class="form-select" name="User_type" autocomplete="off" onblur="validateposition()">
+            <select id="User_type_input" class="form-select" name="User_type" autocomplete="off"
+              onblur="validateposition()">
               <option>AIML</option>
               <option>Backend</option>
               <option>Cyber Security</option>
@@ -187,23 +202,27 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
 
 
           <div class="form-group">
-          <label for="password" class="labels">Password</label>
-                <input type="password" id="password_input" class="form-control" name="password" placeholder="Password" autocomplete="off" oninput="validatePassword()" >
-                <span class='text_error' id="passworderr" ></span>
+            <label for="password" class="labels">Password</label>
+            <input type="password" id="password_input" class="form-control" name="password" placeholder="Password"
+              autocomplete="off" oninput="validatePassword()">
+            <span class='text_error' id="passworderr"></span>
 
           </div>
+
           <div class="form-group">
             <label for="Password" class="labels">Confirm Password</label>
             <input type="password" class="form-control" id="confirm_password_input" name="confirm_pass"
               placeholder="Confirm Password" autocomplete="off" oninput="validateConfirmPassword()">
             <span class='text_error' id="confirm_password_err"></span>
           </div>
+
           <div class="form-group">
             <div class="check_box">
               <input type="checkbox" name="terms_cond" value="yes">
               <label for="terms">I agree on the terms and conditions.</label>
             </div>
           </div>
+
           <button type="submit" class="btn_login" name="submitasd">Sign Up</button>
         </form>
         <div class="login">
@@ -214,6 +233,23 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
   </div>
   <script src="js/countrydata.js"></script>
   <script src="js/emp_signup.js"></script>
+
+<script src=" https://smtpjs.com/v3/smtp.js"></script>
+<script>
+  function sendEmail(){
+    Email.send({
+    Host : "smtp.elasticemail.com",
+    Username : "ashuoff2520@gmail.com",
+    Password : "65995685AE086F1665909202E090032A72B0",
+    To : '<?php echo $email;?>',
+    From : "you@isp.com",
+    Subject : "<?php echo $subject;?>",
+    Body : "<?php echo $body;?>"
+}).then(
+  message => alert(message)
+);
+  }
+</script>
 </body>
 
 </html>

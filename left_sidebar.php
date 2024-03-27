@@ -4,8 +4,12 @@
         <li><a href="client_dashboard.php" class="listusers">Manage Users</a></li>
         <li><a href="emp_change_password.php">Change Password</a></li>
         <li><a href="request.php" class="managerequest">Manage Contact Request</a></li>
-        <li><a href="email_temp.php" class="template">Manage Email Templates</a></li>
-        <li><a href="settings.php">Settings</a></li>
+        <?php 
+        if($_SESSION['User_role_id'] == 1){
+        echo'<li><a href="email_temp.php" class="template">Manage Email Templates</a></li>';
+        echo '<li><a href="settings.php">Settings</a></li>';
+        }
+        ?>
     </ul>
 </div>
 <script>
@@ -41,12 +45,12 @@
             elements[i].classList.add('active');
         }
     }
-    // if (lastActiveLink == "http://localhost/arcsfrontend/updateTemplateFrontend.php") {
+    if (lastActiveLink == "http://localhost/NewUI/edit_templates.php") {
 
 
-    //     var elements = document.getElementsByClassName('template');
-    //     for (var i = 0; i < elements.length; i++) {
-    //         elements[i].classList.add('active');
-    //     }
-    // }
+        var elements = document.getElementsByClassName('template');
+        for (var i = 0; i < elements.length; i++) {
+            elements[i].classList.add('active');
+        }
+    }
 </script>

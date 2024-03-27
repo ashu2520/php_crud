@@ -5,6 +5,10 @@ if (!isset ($_SESSION["user_name"])) {
 	header("location:emp_login.php");
 	exit();
 }
+if($_SESSION["User_role_id"] != 1 && $_SESSION["User_role_id"] != 2){
+    header("location:emp_login.php");
+    exit();
+}
 ?>
 <?php
 function clean_input($fields)
@@ -15,6 +19,7 @@ function clean_input($fields)
 	$fields = str_replace("'", "", $fields);
 	return $fields;
 }
+
 $id = "";
 $name = "";
 $email = "";

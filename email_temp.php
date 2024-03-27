@@ -4,6 +4,10 @@ include "connect.php";
 if (!isset($_SESSION["user_name"])) {
   header("location:emp_login.php");
 }
+if($_SESSION["User_role_id"] != 1){
+    header("location:emp_login.php");
+    exit();
+}
 ?>
 <html lang="en">
 
@@ -15,6 +19,17 @@ if (!isset($_SESSION["user_name"])) {
 
 	<!-- Bootstrap -->
 	<link href="css/client_dashboard.css" rel="stylesheet">
+    <style>
+        table{
+            width: 100%;
+        }
+        tr, th, td{
+            height: 40px;
+        }
+        th {
+            font-size: 14px;
+        }
+    </style>
 </head>
 
 <body>
@@ -31,6 +46,36 @@ if (!isset($_SESSION["user_name"])) {
             <h1>Email Template</h1>
             <div class="list-contet">
                
+               <table>
+               <tr>
+                <th>Template Name</th>
+                <th>Created At</th>
+                <th>Updated At</th>
+                <th>Actions</th>
+               </tr>
+               <?php 
+                $sql = "Select * from `email_templates`";
+                $result = mysqli_query($conn, $sql);
+                if ($result) {
+                    while ($row = mysqli_fetch_array($result)) {
+                        $template_name = $row['temp_title'];
+                        $created_date = $row['temp_created_at'];
+                        $updated_date = $row['temp_updated_at'];
+                        $temp_slug = $row['temp_slug'];
+                        echo " <tr>
+                        <td>" . $template_name . "</td>
+                        <td>" . $created_date . "</td>
+                        <td>" . $updated_date . "</td>
+                        <td> 
+                        <a href='edit_templates.php?temp_slug=".$temp_slug."' id='update' style='margin-right:10px'><img src='images/edit-icon.png'></a> 
+                        <a href='#'><img src='images/cross.png'></a>
+                        </td> 
+                        </tr>";
+                    }
+                }
+                ?>
+                         
+               </table>
             </div>
         </div>
     </div>

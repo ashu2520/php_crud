@@ -5,6 +5,7 @@ include "connect.php";
 if (!isset ($_SESSION["user_name"])) {
   header("location:emp_login.php");
 }
+$user_role_id = $_SESSION["User_role_id"];
 ?>
 <?php
 function clean_search_input($fields)
@@ -54,10 +55,10 @@ $curr_page = max(1, $curr_page);
 $start_from = ($curr_page - 1) * $num_per_page;
 // $start_form --> ye batata hai ki next page kaha se start hoga...  
 $search = "";
-if (isset($_POST["search_box"]) && $_POST["search_box"] !== "") {
+if (isset ($_POST["search_box"]) && $_POST["search_box"] !== "") {
   $search = stripslashes($_POST["search_box"]);
-  $search = trim($search);
-  $search = str_replace("'", '"', $search);
+  // $search = trim($search);
+  $search = str_replace("'", '', $search);
   $search = htmlspecialchars($search, ENT_QUOTES, 'UTF-8');
   // echo $search;
   $sql = "SELECT * FROM login_credentials 
@@ -71,11 +72,7 @@ if (isset($_POST["search_box"]) && $_POST["search_box"] !== "") {
           LIMIT $start_from, $num_per_page";
   $result = mysqli_query($conn, $sql);
   $total_records = mysqli_num_rows($result);
-  // print_r($_POST);
-  // unset($_POST["search_box"]);
-  // print_r($_POST);
-$total_pages = ceil($total_records / $num_per_page);
-// echo $total_records;
+  $total_pages = ceil($total_records / $num_per_page);
 } else {
   $sql = "SELECT * FROM `login_credentials` 
   ORDER BY $column_name $sort_order 
@@ -95,10 +92,9 @@ $total_pages = ceil($total_records / $num_per_page);
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <link href="css/client_dashboard.css" rel="stylesheet" />
   <style>
-    .active-page{
-  text-decoration: none; 
-  
-}
+    .active-page {
+      text-decoration: none;
+    }
   </style>
 </head>
 
@@ -139,11 +135,14 @@ $total_pages = ceil($total_records / $num_per_page);
 
               <!-- Search Box -->
               <form id="myForm" role="form" action="" method="POST">
-                <input id="search_box" type="text" class="search-box search-upper" name="search_box" placeholder="Search..." value="<?php echo $search; ?>">
+                <input id="search_box" type="text" class="search-box search-upper" name="search_box"
+                  placeholder="Search..." value="<?php echo $search; ?>">
                 <input type="submit" class="submit-btn" value="Search" />
-                <div class="add_more_user_button">
-                  <a class="submit-btn add-user" href="client_create.php">Add More Users</a>
-                </div>
+                <?php if ($user_role_id == 1 || $user_role_id == 2) { ?>
+                  <div class="add_more_user_button">
+                    <a class="submit-btn add-user" href="client_create.php">Add More Users</a>
+                  </div>
+                <?php } ?>
               </form>
             </div>
           </div>
@@ -158,18 +157,18 @@ $total_pages = ceil($total_records / $num_per_page);
               <tr>
                 <?php
 
-              // Id
+                // Id
                 echo '<th width="10px"><a href="client_dashboard.php?column_name=Id&sort_order=' . ($sort_order == "DESC" ? "ASC" : "DESC") . '&page=' . $curr_page . '">S.no';
                 if ($column_name == "Id") {
-                    if ($sort_order == 'DESC') {
-                        echo '<i style="position: absolute; margin-top:3px; margin-left:2px;" class="fa fa-arrow-down" aria-hidden="true"></i>';
-                    } else {
-                        echo '<i style="position: absolute; margin-top:3px; margin-left:2px;" class="fa fa-arrow-up" aria-hidden="true"></i>';
-                    }
+                  if ($sort_order == 'DESC') {
+                    echo '<i style="position: absolute; margin-top:3px; margin-left:2px;" class="fa fa-arrow-down" aria-hidden="true"></i>';
+                  } else {
+                    echo '<i style="position: absolute; margin-top:3px; margin-left:2px;" class="fa fa-arrow-up" aria-hidden="true"></i>';
+                  }
                 }
                 echo '</a></th>';
 
-              // Name
+                // Name
                 echo '<th width="98px"><a href="client_dashboard.php?column_name=Name&sort_order=' . ($sort_order == "DESC" ? "ASC" : "DESC") . '&page=' . $curr_page . '">Name ';
                 if ($column_name == 'Name') {
                   if ($sort_order == 'DESC')
@@ -178,8 +177,8 @@ $total_pages = ceil($total_records / $num_per_page);
                     echo '<i style="position: absolute; margin-top:3px; margin-left:2px;" class="fa fa-arrow-up" aria-hidden="true"></i>';
                 }
                 echo '</a></th>';
-                
-              // Email
+
+                // Email
                 echo '<th width="113px"><a href="client_dashboard.php?column_name=Email&sort_order=' . ($sort_order == "DESC" ? "ASC" : "DESC") . '&page=' . $curr_page . '">Email ';
                 if ($column_name == 'Email') {
                   if ($sort_order == 'DESC')
@@ -188,8 +187,8 @@ $total_pages = ceil($total_records / $num_per_page);
                     echo '<i class="fa fa-arrow-up" aria-hidden="true"></i>';
                 }
                 echo '</a></th>';
-                
-              // Mobile
+
+                // Mobile
                 echo '<th width="113px"><a href="client_dashboard.php?column_name=Mobile&sort_order=' . ($sort_order == "DESC" ? "ASC" : "DESC") . '&page=' . $curr_page . '">Mobile ';
                 if ($column_name == 'Mobile') {
                   if ($sort_order == 'DESC')
@@ -199,7 +198,7 @@ $total_pages = ceil($total_records / $num_per_page);
                 }
                 echo '</a></th>';
 
-              // Gender
+                // Gender
                 echo '<th width="100px"><a href="client_dashboard.php?column_name=Gender&sort_order=' . ($sort_order == "DESC" ? "ASC" : "DESC") . '&page=' . $curr_page . '">Gender ';
                 if ($column_name == 'Gender') {
                   if ($sort_order == 'DESC')
@@ -209,7 +208,7 @@ $total_pages = ceil($total_records / $num_per_page);
                 }
                 echo '</a></th>';
 
-              // Country
+                // Country
                 // echo '<th width="15px"><a href="client_dashboard.php?column_name=Country&sort_order=' . ($sort_order == "DESC" ? "ASC" : "DESC") . '&page=' . $curr_page . '">Location ';
                 // if ($column_name == 'Country') {
                 //   if ($sort_order == 'DESC')
@@ -219,7 +218,7 @@ $total_pages = ceil($total_records / $num_per_page);
                 // }
                 // echo '</a></th>';
                 
-              // State
+                // State
                 // echo '<th width="15px"><a href="client_dashboard.php?column_name=State&sort_order=' . ($sort_order == "DESC" ? "ASC" : "DESC") . '&page=' . $curr_page . '">State ';
                 // if ($column_name == 'State') {
                 //   if ($sort_order == 'DESC')
@@ -228,8 +227,8 @@ $total_pages = ceil($total_records / $num_per_page);
                 //     echo '<i style="position: absolute; margin-top:3px; margin-left:2px;" class="fa fa-arrow-up" aria-hidden="true"></i>';
                 // }
                 // echo '</a></th>';
-
-              // User_type
+                
+                // User_type
                 echo '<th width="97px"><a href="client_dashboard.php?column_name=User_type&sort_order=' . ($sort_order == "DESC" ? "ASC" : "DESC") . '&page=' . $curr_page . '">User Type ';
                 if ($column_name == 'User_type') {
                   if ($sort_order == 'DESC')
@@ -239,7 +238,7 @@ $total_pages = ceil($total_records / $num_per_page);
                 }
                 echo '</a></th>';
 
-              
+
                 echo '<th width="135px"><a href="client_dashboard.php?column_name=Createdat&sort_order=' . ($sort_order == "DESC" ? "ASC" : "DESC") . '&page=' . $curr_page . '">Created At ';
                 if ($column_name == 'Createdat') {
                   if ($sort_order == 'DESC')
@@ -248,42 +247,46 @@ $total_pages = ceil($total_records / $num_per_page);
                     echo '<i style="position: absolute; margin-top:3px; margin-left:2px;" class="fa fa-arrow-up" aria-hidden="true"></i>';
                 }
                 echo '</a></th>';
-                ?>
 
-                <th width="50px" class="Action" style="color: #ff651b;">Action</th>
+                if ($user_role_id == 1 || $user_role_id == 2) {
+                  echo '<th width="50px" class="Action" style="color: #ff651b;">Action</th>';
+                }
+                  ?>
               </tr>
-
-              <?php
-              if ($result) {
-                while ($row = mysqli_fetch_array($result)) {
-                  // Fetch the first row
-                  $id = $row['Id'];
-                  $Name = $row['Name'];
-                  $Email = $row['Email'];
-                  $Mobile = $row['Mobile'];
-                  $Gender = $row['Gender'];
-                  // $Country = $row['Country'];
-                  // $State = $row['State'];
-                  $User_type = $row['User_type'];
-                  $Created_at = $row['Createdat'];
-                  echo "<tr>
+                <?php
+                if ($result) {
+                  while ($row = mysqli_fetch_array($result)) {
+                    // Fetch the first row
+                    if ($row['User_role_id'] >= 3 || ($row['User_role_id'] == 2 && $row['Id'] == $_SESSION['Id']) || $user_role_id == 1) {
+                      $id = $row['Id'];
+                      $Name = $row['Name'];
+                      $Email = $row['Email'];
+                      $Mobile = $row['Mobile'];
+                      $Gender = $row['Gender'];
+                      $User_type = $row['User_type'];
+                      $Created_at = $row['Createdat'];
+                      echo "<tr>
                          <td>" . $id . "</td>
                          <td>" . $Name . "</td>
                          <td>" . $Email . "</td>
                          <td>" . $Mobile . "</td>
                          <td>" . $Gender . "</td>
                          <td>" . $User_type . "</td>
-                         <td>" . $Created_at . "</td>
-                         <td> 
+                         <td>" . $Created_at . "</td>";
+
+                      if ($user_role_id == 1 || $user_role_id == 2) {
+
+                        echo "<td> 
                          <a href='client_update.php?updateid=" . $id . "&column_name=" . $column_name . "&sort_order=" . $sort_order . "&page=" . $curr_page . "' id='update' style='margin-right:10px'><img src='images/edit-icon.png' onclick='myfunc()'></a>
                          <a id='delete_a' onclick='openpopup($id, \"$column_name\", \"$sort_order\", $curr_page)'><img src='images/cross.png'></a>
-                         </td>
+                         </td> 
                          </tr>";
-                }
-              } else {
-                echo "No rows found.";
-              }
-              ?>
+                      }
+                    }
+                  }
+                } else 
+                  echo "No rows found.";
+                ?>
           </table>
 
           <!-- Pagination -->
@@ -303,9 +306,9 @@ $total_pages = ceil($total_records / $num_per_page);
 
             // Display page numbers
             for ($i = $start_page; $i <= $end_page; $i++) {
-              if($curr_page == $i) {
-              echo "<a  style='background-color: #ff651b; color: #fff; cursor: not-allowed; text-decoration: none;'>" . $i . "</a>";
-              } else{
+              if ($curr_page == $i) {
+                echo "<a  style='background-color: #ff651b; color: #fff; cursor: not-allowed; text-decoration: none;'>" . $i . "</a>";
+              } else {
                 echo "<a href = 'client_dashboard.php?column_name=" . $column_name . "&sort_order=" . ($sort_order == "DESC" ? "DESC" : "ASC") . "&page=" . $i . "'>" . $i . "</a>";
               }
               // ? --> query parameters, multiple page sakte hai...
@@ -361,5 +364,4 @@ $total_pages = ceil($total_records / $num_per_page);
   </script>
 
 </body>
-
 </html>

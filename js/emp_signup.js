@@ -9,17 +9,12 @@ async function validateForm() {
     console.log('validateConfirmPassword:', validateConfirmPassword());
     
     if (!validateName() || !validateMobileNumber() || !(await validateEmail()) || !vaildategender()  || !validatePassword() || !validateConfirmPassword()) {
-        // console.log("here I am")
         return false;
     }
     
-    // alert("asdfghjk");
     document.getElementById("main").submit();
 }
-// let debounceTimerName;
 function validateName() {
-    // clearTimeout(debounceTimerName);
-    // debounceTimerName = setTimeout(() => {
     var name = document.getElementById("name_input").value.trim();
     var nameRegex = /^[a-zA-Z\s'-]+$/;
 
@@ -38,13 +33,9 @@ function validateName() {
         name_input.style.borderColor = "green";
         return true;
     }
-// }, 300);
 }
-// let debounceTimerMobile;
 
 function validateMobileNumber() {
-    // clearTimeout(debounceTimerMobile);
-    // debounceTimerMobile = setTimeout(() => {
     var mobileNumber = document.getElementById("mobile_input").value;
     var mobileRegex = /^[0-9]{10}$/;
 
@@ -62,7 +53,6 @@ function validateMobileNumber() {
         mobile_input.style.borderColor = "green";
         return true;
     }
-// }, 300);
 }
 
 URL = "email_validation.php"
@@ -136,41 +126,6 @@ function vaildategender() {
     }
 }
 
-// function validatelocation() {
-//     // console.log("Inside validatelocation function");
-
-//     // var country = document.getElementById('country_select').value;
-//     var state = document.getElementById('state_select').value;
-//     // console.log("Element:", country);
-//     // console.log("Element:", state);
-
-//     if (state) {
-//         document.getElementById("location_error").innerHTML = "";
-//         return true;
-//     }
-//     else {
-
-//         document.getElementById("location_error").innerHTML = "Value cannot be empty.";
-//         return false;
-//     }
-// }
-
-// Koi fayda nhi check lagane ki... kyunki Kisi bhi user ke pass ye option hi nhi hai ki wo isko select na kare...
-// Kyunki by default AIML selected hai...
-// function validateposition() {
-//     var position = document.getElementById('User_type_input').value;
-
-//     if (position) {
-//         document.getElementById("User_type_error").innerHTML = "";
-//         return true;
-//     }
-//     else {
-
-//         document.getElementById("User_type_error").innerHTML = "Value cannot be empty.";
-//         return false;
-//     }
-// }
-
 function validatePassword() {
     var password = document.getElementById('password_input').value;
     var passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^\da-zA-Z\s]).{8,}$/;
@@ -198,19 +153,3 @@ function validateConfirmPassword() {
         return true;
     }
 }
-
-// const debounce = (func, delay) => {
-//     let timeout;
-//     clearTimeout(timeout);
-//     timeout = setTimeout(() => {
-//         return func.apply(null, args);
-//     }, delay);
-// };
-
-// document.getElementById("email_input").addEventListener("input",()=> debounce(validateEmail, 2000));
-// // function validateForm() {
-//     var name = document.getElementById('name_input').value.trim();
-//     var mobile = document.getElementById('mobile_input').value.trim();
-//     var email = document.getElementById('email_input').value.trim();
-//     var termsCheckbox = document.getElementById('terms_checkbox').checked;
-// }

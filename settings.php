@@ -4,6 +4,10 @@ include "connect.php";
 if (!isset($_SESSION["user_name"])) {
   header("location:emp_login.php");
 }
+if($_SESSION["User_role_id"] != 1){
+    header("location:emp_login.php");
+    exit();
+}
 ?>
 <html lang="en">
 

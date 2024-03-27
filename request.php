@@ -32,7 +32,7 @@ if (isset ($_GET["page"])) {
 
 if (isset ($_GET["column_name"])) {
   $column_name = clean_search_input($_GET["column_name"]);
-  if ($column_name !== "Id" && $column_name !== "Name" && $column_name !== "Email" && $column_name !== "Mobile" && $column_name !== "Subject") {
+  if ($column_name !== "Id" && $column_name !== "Name" && $column_name !== "Email" && $column_name !== "Number" && $column_name !== "Subject") {
     $column_name = "Id";
   }
 } else {
@@ -137,7 +137,7 @@ if (isset ($_POST["search_box"])) {
                   <th width="10px"><a href="request.php?column_name=Id&sort_order=' . ($sort_order == "DESC" ? "ASC" : "DESC") . '&page=' . $curr_page . '">Id</a></th>
                   <th width="10px"><a href="request.php?column_name=Name&sort_order=' . ($sort_order == "DESC" ? "ASC" : "DESC") . '&page=' . $curr_page . '">Name</a></th>
                   <th width="10px"><a href="request.php?column_name=Email&sort_order=' . ($sort_order == "DESC" ? "ASC" : "DESC") . '&page=' . $curr_page . '">Email</a></th>
-                  <th width="10px"><a href="request.php?column_name=Mobile&sort_order=' . ($sort_order == "DESC" ? "ASC" : "DESC") . '&page=' . $curr_page . '">Mobile</a></th>
+                  <th width="10px"><a href="request.php?column_name=Number&sort_order=' . ($sort_order == "DESC" ? "ASC" : "DESC") . '&page=' . $curr_page . '">Mobile</a></th>
                   <th width="10px"><a href="request.php?column_name=Subject&sort_order=' . ($sort_order == "DESC" ? "ASC" : "DESC") . '&page=' . $curr_page . '">Subject</a></th> ';
                 ?>
                 <th width="50px" class="Message" style="color: #ff651b;">Message</th>

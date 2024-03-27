@@ -1,13 +1,13 @@
 
 <?php
 $department = array();
-$sql = "SELECT User_Type, count(*) AS num, (COUNT(*) * 100 /(SELECT COUNT(*) FROM `users_list`)) AS num_percent FROM `users_list` GROUP BY User_Type ";
+$sql = "SELECT User_type, count(*) AS num, (COUNT(*) * 100 /(SELECT COUNT(*) FROM `login_credentials`)) AS num_percent FROM `login_credentials` GROUP BY User_type ";
 $result = mysqli_query($conn, $sql);
 if ($result) {
     while ($row = mysqli_fetch_assoc($result)) {
         // Stored in key-value pair
         // Aara yaha pr sirf num bhi provide karte ho tab bhi %age calculate ho jayega(automatically)...
-        $department[(string) $row['User_Type']] = floatval($row['num_percent']);
+        $department[(string) $row['User_type']] = floatval($row['num']);
     }
 }
 ?>

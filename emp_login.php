@@ -15,18 +15,15 @@ function cleanlogin_input($fields)
   $fields = htmlspecialchars($fields);
   return $fields;
 }
-// $sno = "";
+// $Id = "";
 $email = "";
 $password = "";
 $invalid = false;
-// $emailerr = false;
-// $passworderr = false;
+
 if (isset($_POST["submit"])) {
-  // print_r($_POST);
-  // print_r($_POST);
-  // echo "I am here";
+
   $email = cleanlogin_input($_POST['email']);
-  $password = $_POST["password"];
+  $password = cleanlogin_input($_POST["password"]);
 
   // Fetch the hashed password from the database based on the provided email
   $sql = "SELECT * FROM `login_credentials` WHERE Email = '$email'";
@@ -34,9 +31,10 @@ if (isset($_POST["submit"])) {
 
   if (mysqli_num_rows($result) > 0) {
     $row = mysqli_fetch_assoc($result);
-    // $sno = $row["sno"];
+    // $Id = $row["Id"];
     $hashed_password = $row['Password'];
-    $_SESSION['sno'] = $row["sno"];
+    $_SESSION['Id'] = $row["Id"];
+    $_SESSION['User_role_id'] = $row["User_role_id"];
     if (password_verify($password, $hashed_password)) {
       $_SESSION['user_name'] = $email;    // session create kar lo...
       header("location:client_dashboard.php");
@@ -72,6 +70,12 @@ if (isset($_POST["submit"])) {
       <div class="outer_div">
 
         <h2>Admin <span>Login</span></h2>
+        <?php
+            if ($invalid) {
+              echo '<div class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>Invalid!</strong> Username
+              or Password </div>';
+            }
+            ?>
         <!-- <div class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>Invalid!</strong> username
             or password </div> -->
         <form class="margin_bottom" role="form" action="emp_login.php" method="POST">
@@ -86,11 +90,7 @@ if (isset($_POST["submit"])) {
                 Password?</a></label>
             <input id="password_input" type="password" class="form-control" name="password" autocomplete="off" />
             <!-- <p class='text_error'>Invalid Username and Password. </p>  -->
-            <?php
-            if ($invalid) {
-              echo "<p class='text_error'>Invalid Username and Password.</p>";
-            }
-            ?>
+           
           </div>
           <button type="submit" class="btn_login" name="submit">Login</button>
         </form>

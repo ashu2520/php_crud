@@ -7,5 +7,6 @@ if (!$conn) {
     die(mysqli_error($conn));
 } 
 session_start();
+// $user_role_id = "";
 ?>
 

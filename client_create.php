@@ -34,9 +34,8 @@ $gender_error = false;
 $passworderr = false;
 $confirm_pass_err = false;
 
-if (isset ($_POST["name"]) && isset ($_POST["email"]) && isset ($_POST["mobile"]) && isset ($_POST["password"]) && isset ($_POST["confirm_pass"]) && isset ($_POST["gender"]) && isset ($_POST["country"]) && isset ($_POST["state"]) && isset ($_POST['User_type'])) {
+if (isset ($_POST["name"]) && isset ($_POST["email"]) && isset ($_POST["mobile"]) && isset ($_POST["password"]) && isset ($_POST["confirm_pass"]) && isset ($_POST["gender"]) && isset ($_POST['User_type'])) {
 	#Getting data from request
-	// print_r($_POST);
 
 	$name = clean_input($_POST['name']);
 	$email = clean_input($_POST['email']);
@@ -220,16 +219,18 @@ if (isset ($_POST["name"]) && isset ($_POST["email"]) && isset ($_POST["mobile"]
 								<label>Role: <span>*</span> </label>
 							</div>
 							<div class="input-field">
-							<select id="role_input" class="form-select" name="role_type" autocomplete="off"
+								<select id="role_input" class="form-select" name="role_type" autocomplete="off"
 									onblur="validaterole()">
+									<?php if ($_SESSION["User_role_id"] == 1) { ?>
+										<option value="2">Admin</option>
+									<?php } ?>
 									<option value="5">Employee</option>
-									<option value="2">Admin</option>
 									<option value="3">Manager</option>
 									<option value="4">Team Lead</option>
 								</select>
 							</div>
 						</div>
-
+						
 						<!-- Password -->
 						<div class="form-row">
 							<div class="form-label">
@@ -254,7 +255,7 @@ if (isset ($_POST["name"]) && isset ($_POST["email"]) && isset ($_POST["mobile"]
 								<span class='text_error' id="confirm_password_err"></span>
 							</div>
 						</div>
-					
+
 						<div class="form-row">
 							<div class="form-label">
 								<label><span></span> </label>

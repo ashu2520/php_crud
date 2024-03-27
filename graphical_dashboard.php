@@ -12,7 +12,7 @@ $female = 0;
 $sql = "SELECT  count(*) AS num,
 SUM(CASE WHEN Gender = 'Male' THEN 1 ELSE 0 END) AS male,
 SUM(CASE WHEN Gender = 'Female' THEN 1 ELSE 0 END) AS female
-FROM `users_list`";
+FROM `login_credentials`";
 $result = mysqli_query($conn, $sql);
 if ($result) {
     $row = mysqli_fetch_assoc($result);
@@ -20,7 +20,7 @@ if ($result) {
     $male = $row['male'];
     $female = $row['female'];
 }
-$sql = "SELECT * FROM users_list
+$sql = "SELECT * FROM login_credentials
 WHERE DATE(Createdat) = CURDATE()";
 $result = mysqli_query($conn, $sql);
 $cur_num = mysqli_num_rows($result);

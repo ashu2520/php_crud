@@ -6,7 +6,7 @@ if (!isset($_SESSION["user_name"])) {
 }
 ?>
 <?php
-$sno ="";
+$Id ="";
 $old_password ="";
 $new_password = "";
 $confirm_password ="";
@@ -30,10 +30,10 @@ if(isset($_POST["Submitasd"]))
         $error = true;
     } 
 
-	$sno = $_SESSION["sno"];
+	$Id = $_SESSION["Id"];
 
 // Fetching Password from database
-	$sql_em = "SELECT * FROM `login_credentials` WHERE sno = '$sno'";
+	$sql_em = "SELECT * FROM `login_credentials` WHERE Id = '$Id'";
     $result_em = mysqli_query($conn, $sql_em);
 	$row = mysqli_fetch_assoc($result_em);
 
@@ -45,7 +45,7 @@ if(isset($_POST["Submitasd"]))
 	}
 	if (password_verify($old_password, $old_hashed_password) && !$error && !$password_error) {
 			$new_hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
-			$sql= "UPDATE `login_credentials` set  Password = '$new_hashed_password' where sno = $sno";
+			$sql= "UPDATE `login_credentials` set  Password = '$new_hashed_password' where Id = $Id";
 			$result = mysqli_query($conn, $sql);
 			if ($result) {
 				// echo"Ha bhai...";
@@ -99,7 +99,7 @@ if(isset($_POST["Submitasd"]))
 							</div>
 							<div class="input-field">
 								<input type="Password" name="old_pass" class="search-box" placeholder="Old Password" autocomplete="off">
-								<span class='text_error' id="First_Name_err"></span>
+								<span class='text_error' id=""></span>
 							</div>
 						</div>
 

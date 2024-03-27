@@ -5,6 +5,10 @@ if (!isset($_SESSION["user_name"])){
     header("location:emp_login.php");
     exit();
 }
+if($_SESSION["User_role_id"] != 1 && $_SESSION["User_role_id"] != 2){
+    header("location:emp_login.php");
+    exit();
+}
 ?>
 <?php
 function cleandelete_input($fields)
@@ -15,16 +19,20 @@ function cleandelete_input($fields)
     $fields = htmlspecialchars($fields);
     return $fields;
 }
-$id ="";
 $id_check = false;
+$id ="";
+// die("asdfgh");
 if (isset($_GET['deleteid'])) {
     $id = cleandelete_input($_GET['deleteid']);
+    // echo "ashm,nm,nn<br>" .$id;
+    
     $column_name = cleandelete_input($_GET['column_name']);
 	$sort_order = cleandelete_input($_GET['sort_order']);
 	$curr_page = (int)cleandelete_input($_GET['page']);
-    $id_check = isset($id) && $id != "" && is_numeric($id);
+    $id_check = ($id !== "") ? true : false;
+
     if($id_check){
-        $sql = "delete from users_list where Id = $id";
+        $sql = "delete from `login_credentials` where Id = $id";
         $result = mysqli_query($conn, $sql);
         header("location:client_dashboard.php?column_name=$column_name&sort_order=$sort_order&page=$curr_page");
         exit();
