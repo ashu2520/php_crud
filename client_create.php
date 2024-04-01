@@ -5,6 +5,10 @@ if (!isset ($_SESSION["user_name"])) {
 	header("location:emp_login.php");
 	exit();
 }
+if ($_SESSION["User_role_id"] != 1 && $_SESSION["User_role_id"] != 2) {
+    header("location:emp_login.php");
+    exit();
+}
 ?>
 <?php
 function clean_input($fields)
@@ -77,7 +81,21 @@ if (isset ($_POST["name"]) && isset ($_POST["email"]) && isset ($_POST["mobile"]
 		$result = mysqli_query($conn, $sql);
 		// echo "here";
 		if ($result) {
-			header("location:client_dashboard.php");
+
+			$sql_content = "SELECT temp_subject, temp_content FROM email_templates WHERE temp_slug = 'user_added'";
+				$result_content = mysqli_query($conn, $sql_content);
+				$row = mysqli_fetch_array($result_content);
+				
+				$subject = $row["temp_subject"];
+				$body = $row["temp_content"];
+
+				// Calling the function for mailing...
+				mailer($email, $subject, $body, $name);  // present in connect.php
+				
+			// header("location:client_dashboard.php");
+			$_SESSION['flash_message'] = "Sucessfully Added";
+			echo '<meta http-equiv="refresh" content="0;url=client_dashboard.php">';
+
 			exit();
 		} else {
 			die (mysqli_error($conn));
@@ -142,7 +160,7 @@ if (isset ($_POST["name"]) && isset ($_POST["email"]) && isset ($_POST["mobile"]
 								<label>Mobile Number: <span></span></label>
 							</div>
 							<div class="input-field">
-								<input id="mobile_input" type="text" name="mobile" class="search-box"
+								<input id="mobile_input" type="number" name="mobile" class="search-box"
 									placeholder="Mobile Number" oninput="validateMobileNumber()" />
 								<span class='text_error' id="mobile_error"></span>
 							</div>
@@ -199,8 +217,9 @@ if (isset ($_POST["name"]) && isset ($_POST["email"]) && isset ($_POST["mobile"]
 								<label>Position: <span>*</span></label>
 							</div>
 							<div class="input-field">
-								<select id="User_type_input" class="form-select" name="User_type" autocomplete="off"
-									onblur="validateposition()">
+								<select style="margin-top: 7px;" id="User_type_input" class="form-select" name="User_type" autocomplete="off"
+									onblur="validatePosition()">
+									<option>Select Position</option>
 									<option>AIML</option>
 									<option>Backend</option>
 									<option>Cyber Security</option>
@@ -209,6 +228,7 @@ if (isset ($_POST["name"]) && isset ($_POST["email"]) && isset ($_POST["mobile"]
 									<option>Frontend</option>
 									<option>Full Stack</option>
 								</select>
+								<span class='text_error' id="position_err"></span>
 							</div>
 						</div>
 
@@ -219,8 +239,9 @@ if (isset ($_POST["name"]) && isset ($_POST["email"]) && isset ($_POST["mobile"]
 								<label>Role: <span>*</span> </label>
 							</div>
 							<div class="input-field">
-								<select id="role_input" class="form-select" name="role_type" autocomplete="off"
-									onblur="validaterole()">
+								<select style="margin-top: 7px;" id="role_input" class="form-select" name="role_type" autocomplete="off"
+									onblur="validateRole()">
+									<option>Select Role</option>
 									<?php if ($_SESSION["User_role_id"] == 1) { ?>
 										<option value="2">Admin</option>
 									<?php } ?>
@@ -228,6 +249,7 @@ if (isset ($_POST["name"]) && isset ($_POST["email"]) && isset ($_POST["mobile"]
 									<option value="3">Manager</option>
 									<option value="4">Team Lead</option>
 								</select>
+								<span class='text_error' id="role_error"></span>
 							</div>
 						</div>
 						
@@ -271,7 +293,7 @@ if (isset ($_POST["name"]) && isset ($_POST["email"]) && isset ($_POST["mobile"]
 
 		</div>
 	</div>
-	<script src="js/emp_signup.js"></script>
+	<script src="js/client_create.js"></script>
 </body>
 
 </html>

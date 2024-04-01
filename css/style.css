@@ -126,7 +126,9 @@
     float: right;
     height: 40px;
     width: 260px;
-    font-size: 18px ;
+    font-size: 16px ;
+    /* color: grey; */
+    padding: 5px;
     font-weight: lighter;
     /* left: -10px; */
 }
@@ -155,8 +157,10 @@
     margin-right: 130px;
     height: 40px;
     width: 260px;
-    font-size: 18px ;
+    font-size: 16px ;
     font-weight: lighter;
+    padding: 5px;
+
 }
 
 /* ********************************************* Contact Us Form CSS ********************************************* */

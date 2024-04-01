@@ -15,3 +15,8 @@ function validateEmail() {
     return true; 
     }, 300);
 }
+
+// For Flash Messages
+setTimeout(function () {
+    document.getElementById("flash-message").style.display = 'none';
+  }, 10000);

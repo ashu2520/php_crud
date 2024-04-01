@@ -39,18 +39,38 @@ if(isset($_POST["Submitasd"]))
 
     $old_hashed_password = $row['Password'];
 	// Old password and new password same nhi hona chasiye...
-	if(password_verify($new_password, $old_hashed_password))
-	{
-		$password_error = true;
+	if(password_verify($old_password, $old_hashed_password)){
+		if(password_verify($new_password, $old_hashed_password)){
+			$password_error = true;
+		}
 	}
-	if (password_verify($old_password, $old_hashed_password) && !$error && !$password_error) {
+	else{
+		$error = true;
+	}
+	if (!$error && !$password_error) {
 			$new_hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
 			$sql= "UPDATE `login_credentials` set  Password = '$new_hashed_password' where Id = $Id";
 			$result = mysqli_query($conn, $sql);
 			if ($result) {
 				// echo"Ha bhai...";
+				$sql_content = "SELECT temp_subject, temp_content FROM email_templates WHERE temp_slug = 'change_password'";
+				$result_content = mysqli_query($conn, $sql_content);
+				$row = mysqli_fetch_array($result_content);
+				
+				$subject = $row["temp_subject"];
+				$body = $row["temp_content"];
+
+				$sql_email = "SELECT Email FROM `login_credentials` WHERE Id = $Id";
+				$result_email = mysqli_query($conn, $sql_email);
+				$row = mysqli_fetch_array($result_email);
+
+				$email = $row['Email'];
+
+				// Calling the function for mailing...
+				mailer($email, $subject, $body);  // present in connect.php
 				$_SESSION['flash_message'] = " Password Changed Sucessfully ";
-				header("location:emp_logout.php");
+				// header("location:emp_logout.php");
+				echo '<meta http-equiv="refresh" content="0;url=emp_logout.php">';
 				exit();
 			} else {
 				die(mysqli_error($conn));
@@ -115,7 +135,7 @@ if(isset($_POST["Submitasd"]))
 						</div>
 						
 
-						<!-- Age -->
+						<!-- Confirm Password-->
 						<div class="form-row">
 							<div class="form-label">
 								<label>Confirm Password: <span></span></label>

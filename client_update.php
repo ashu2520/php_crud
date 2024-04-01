@@ -138,7 +138,7 @@ if (isset ($_POST["Submitasd"])) {
 								<label>Mobile: <span>*</span></label>
 							</div>
 							<div class="input-field">
-								<input id="mobile_input" type="text" name="mobile" class="search-box" placeholder="Mobile Number" oninput="validateMobileNumber()" value="<?php echo $mobile ?>">
+								<input id="mobile_input" type="number" name="mobile" class="search-box" placeholder="Mobile Number" oninput="validateMobileNumber()" value="<?php echo $mobile ?>">
 								<span class='text_error' id="mobile_error"></span>
 							</div>
 							<!-- echo '<p class="error-ms">Please fill this field</p>'; -->
@@ -183,7 +183,7 @@ if (isset ($_POST["Submitasd"])) {
 							</div>
 							<div class="input-field">
 								<div class="input-field">
-									<select id="User_type_input" class="form-select" name="User_type" autocomplete="off"
+									<select style="margin-top: 8px;" id="User_type_input" class="form-select" name="User_type" autocomplete="off"
 										onblur="validateposition()">
 										<?php
 										$options = array("AIML", "Backend", "Cyber Security", "Data Scientist", "Devops", "Frontend", "Full Stack");
@@ -204,7 +204,7 @@ if (isset ($_POST["Submitasd"])) {
 									<label>Role: <span>*</span> </label>
 								</div>
 								<div class="input-field">
-									<select id="role_input" class="form-select" name="role_type" autocomplete="off"
+									<select style="margin-top: 7px;" id="role_input" class="form-select" name="role_type" autocomplete="off"
 										onblur="validaterole()">
 										<?php
 										$options = array(

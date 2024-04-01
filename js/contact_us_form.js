@@ -38,7 +38,7 @@ function validateEmail() {
     // clearTimeout(debounceTimer);
     // debounceTimer = setTimeout(() => {
     var email = document.getElementById("email_input").value.trim();
-    var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    var emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     
     if (email === "" || !email || email == null || email == " ") {
         document.getElementById("email_err").innerHTML = "Please enter an email address.";

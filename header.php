@@ -4,7 +4,7 @@
         <div class="right_side">
             <!-- <p style="margin-bottom: 10px;">Time: <?php echo time(); ?></p> -->
             <ul>
-                <li>Welcome Admin</strong></li>
+                <li>Welcome <strong> <?php echo $_SESSION['role_name']; ?></strong></li>
                 <li><a href="emp_logout.php">Log Out</a></li>
             </ul>
         </div>

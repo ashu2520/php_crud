@@ -5,10 +5,11 @@ async function validateForm() {
     console.log('validateGender:', vaildategender());
     // console.log('validatelocation:', validatelocation());
     // console.log('validatePosition:', validateposition());
+    console.log('validatePosition:', validatePosition());
     console.log('validatePassword:', validatePassword());
     console.log('validateConfirmPassword:', validateConfirmPassword());
     
-    if (!validateName() || !validateMobileNumber() || !(await validateEmail()) || !vaildategender()  || !validatePassword() || !validateConfirmPassword()) {
+    if (!validateName() || !validateMobileNumber() || !(await validateEmail()) || !vaildategender()  || !validatePosition()|| !validatePassword() || !validateConfirmPassword()) {
         return false;
     }
     
@@ -82,7 +83,7 @@ function validateEmail() {
 
         debounceTimer = setTimeout(async () => {
             var email = document.getElementById("email_input").value.trim();
-            var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            var emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
             if (email == "" || !email || email == null || email == " ") {
                 document.getElementById("email_err").innerHTML = "Please enter an email address.";
@@ -122,6 +123,21 @@ function vaildategender() {
     }
     else {
         document.getElementById("gender_error").innerHTML = "";
+        return true;
+    }
+}
+
+function validatePosition() {
+    var positionInput = document.getElementById("User_type_input");
+    var position = positionInput.value.trim();
+
+    if (position === "Select Position") {
+        document.getElementById("position_err").innerHTML = "Please select a position.";
+        positionInput.style.borderColor = "black";
+        return false;
+    } else {
+        document.getElementById("position_err").innerHTML = "";
+        positionInput.style.borderColor = "green";
         return true;
     }
 }

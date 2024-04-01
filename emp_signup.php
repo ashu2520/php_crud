@@ -4,7 +4,8 @@ if (isset($_SESSION["user_name"])) {
   header("location:client_dashboard.php");
   exit();
 }
-
+?>
+<?php
 function cleansignup_input($fields)
 {
   $fields = trim($fields);
@@ -49,7 +50,6 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
     $terms_cond = "yes";
   }
 
-
   if (!preg_match("/^[a-zA-Z\s'-]+$/", $name) || $name == "") {
     $nameerr = true;
   }
@@ -81,16 +81,13 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
 
       $subject = $row["temp_subject"];
       $body = $row["temp_content"];
-
-      // $to = $email;
-
-      // $headers = "From: ashuoff2520@gmail.com"; // Replace with your email address or sender name
-
-      // // Send email with HTML content
-      // $headers .= "\r\nContent-Type: text/html; charset=UTF-8";
-      // mail($to, $subject, $body, $headers);
-      header("location:emp_login.php");
-      exit();
+      // Calling the function for mailing...
+      mailer($email, $subject, $body, $name);  // present in connect.php
+      // if($mail_send){
+        // header("location:emp_login.php");
+        echo '<meta http-equiv="refresh" content="0;url=emp_login.php">';
+        exit();
+      // }
     } else {
       die(mysqli_error($conn));
     }
@@ -189,6 +186,7 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
             <label for="Position">Position</label>
             <select id="User_type_input" class="form-select" name="User_type" autocomplete="off"
               onblur="validateposition()">
+              <option>Select Position</option>              
               <option>AIML</option>
               <option>Backend</option>
               <option>Cyber Security</option>
@@ -234,22 +232,6 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
   <script src="js/countrydata.js"></script>
   <script src="js/emp_signup.js"></script>
 
-<script src=" https://smtpjs.com/v3/smtp.js"></script>
-<script>
-  function sendEmail(){
-    Email.send({
-    Host : "smtp.elasticemail.com",
-    Username : "ashuoff2520@gmail.com",
-    Password : "65995685AE086F1665909202E090032A72B0",
-    To : '<?php echo $email;?>',
-    From : "you@isp.com",
-    Subject : "<?php echo $subject;?>",
-    Body : "<?php echo $body;?>"
-}).then(
-  message => alert(message)
-);
-  }
-</script>
 </body>
 
 </html>

@@ -80,6 +80,28 @@
     </div>
 </body>
 </html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Team</title>
+</head>
+<body>
+    <div style="max-width: 600px; margin: 20px auto; padding: 20px; border: 1px solid #ccc; border-radius: 10px; background-color: #f9f9f9;">
+        <h1 style="text-align: center; color: #333;">Welcome to Our Team!</h1>
+        <p style="color: #555; line-height: 1.6;">Hello [User Name],</p>
+        <p style="color: #555; line-height: 1.6;">We are excited to inform you that you have been successfully added to our database.</p>
+        <p style="color: #555; line-height: 1.6;">As a registered user, you now have access to exclusive features and updates.</p>
+        <p style="color: #555; line-height: 1.6;">Thank you for joining us!</p>
+        <p style="color: #555; line-height: 1.6;">If you have any questions or concerns, feel free to contact us.</p>
+        <p style="color: #555; line-height: 1.6;"><strong>Best regards,</strong><br> [Your Name or Company]</p>
+    </div>
+</body>
+</html>
+
+
 User name: ashuoff2520@gmail.com
 Password: 65995685AE086F1665909202E090032A72B0
 port: 2525

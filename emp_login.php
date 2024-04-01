@@ -1,5 +1,5 @@
 ﻿<?php
-include("connect.php");
+include ("connect.php");
 // Session creation
 if (isset($_SESSION["user_name"])) {
   header("location:client_dashboard.php");
@@ -33,10 +33,30 @@ if (isset($_POST["submit"])) {
     $row = mysqli_fetch_assoc($result);
     // $Id = $row["Id"];
     $hashed_password = $row['Password'];
-    $_SESSION['Id'] = $row["Id"];
-    $_SESSION['User_role_id'] = $row["User_role_id"];
+   
+
+
     if (password_verify($password, $hashed_password)) {
       $_SESSION['user_name'] = $email;    // session create kar lo...
+      $_SESSION['Id'] = $row["Id"];
+      $User_role_id = $row["User_role_id"];
+      $_SESSION['User_role_id'] =  $User_role_id;
+
+      // Fetching the Role Name
+      $sql_role = "SELECT role_name FROM `roles` WHERE role_id = '$User_role_id'";
+      $result_role = mysqli_query($conn, $sql_role);
+      $row = mysqli_fetch_array($result_role);
+      $_SESSION['role_name'] = $row['role_name'];
+
+      // Fetching the Settings
+      $sql_setting = "SELECT * FROM `settings` WHERE setting_id = '1'";
+      $result_setting = mysqli_query($conn, $sql_setting);
+      if ($result_setting) {
+        $row = mysqli_fetch_array($result_setting);
+        $_SESSION['num_per_page'] = $row['setting_row_per_page'];
+        $_SESSION['link_exp_time'] = $row['setting_token_expiry_time'];
+        $_SESSION["date_format"] = $row['setting_date_format'];
+      }
       header("location:client_dashboard.php");
       exit();
     } else {
@@ -71,11 +91,11 @@ if (isset($_POST["submit"])) {
 
         <h2>Admin <span>Login</span></h2>
         <?php
-            if ($invalid) {
-              echo '<div class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>Invalid!</strong> Username
+        if ($invalid) {
+          echo '<div class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>Invalid!</strong> Username
               or Password </div>';
-            }
-            ?>
+        }
+        ?>
         <!-- <div class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>Invalid!</strong> username
             or password </div> -->
         <form class="margin_bottom" role="form" action="emp_login.php" method="POST">
@@ -90,12 +110,19 @@ if (isset($_POST["submit"])) {
                 Password?</a></label>
             <input id="password_input" type="password" class="form-control" name="password" autocomplete="off" />
             <!-- <p class='text_error'>Invalid Username and Password. </p>  -->
-           
+
           </div>
           <button type="submit" class="btn_login" name="submit">Login</button>
         </form>
         <div class="login">
           <p>Doesn't have an account yet? <a href="emp_signup.php"> Sign Up</a></p>
+          <?php
+          if (isset($_SESSION['flash_message'])) {
+            $message = $_SESSION['flash_message'];
+            unset($_SESSION['flash_message']);
+            echo "<span id='flash-message' class='login-flash-message'> $message</span>";
+          }
+          ?>
         </div>
       </div>
     </div>

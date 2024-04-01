@@ -1,82 +1,63 @@
 async function validateForm() {
-    console.log('validateName:', validateFirst_Name());
-    console.log('validateAge:', validateAge());
+    console.log('validateName:', validateName());
+    console.log('validateMobileNumber:', validateMobileNumber());
     console.log('validateEmail', await validateEmail());
     console.log('validateGender:', vaildategender());
-    console.log('validate_user_Type:', validateUser_Type());
+    // console.log('validatelocation:', validatelocation());
+    console.log('validatePosition:', validatePosition());
+    console.log('validateRole:', validateRole());
+
     console.log('validatePassword:', validatePassword());
+    console.log('validateConfirmPassword:', validateConfirmPassword());
     
-    if (!validateFirst_Name() || !vaildategender() || !validateAge() || !(await validateEmail())  || !validateUser_Type() || !validatePassword() ) {
-        // console.log("here I am")
-        alert("I am here");
+    if (!validateName() || !validateMobileNumber() || !(await validateEmail()) || !vaildategender() || !validatePosition() || !validateRole() || !validatePassword() || !validateConfirmPassword()) {
         return false;
     }
     
-    // alert("asdfghjk");
     document.getElementById("main").submit();
 }
-function validateInput(inputId, errorId) {
-    var inputValue = document.getElementById(inputId).value.trim();
-    var regex = /^[a-zA-Z\s'-]+$/;
+function validateName() {
+    var name = document.getElementById("name_input").value.trim();
+    var nameRegex = /^[a-zA-Z\s'-]+$/;
 
-    if (inputValue === "") {
-        document.getElementById(errorId).innerHTML = "Please Enter a Value.";
-        document.getElementById(inputId).style.borderColor = "black";
+    if (name === "") {
+        document.getElementById("name_err").innerHTML = "Please Enter Your Name.";
+        name_input.style.borderColor = "black";
         return false;
-    } else if (!regex.test(inputValue)) {
-        document.getElementById(errorId).innerHTML = "Please enter a valid input(letters and spaces only).";
-        document.getElementById(inputId).style.borderColor = "black";
-        return false;
-    } else {
-        document.getElementById(errorId).innerHTML = "";
-        document.getElementById(inputId).style.borderColor = "green";
-        return true;
-    }
-}
+    } else if (!nameRegex.test(name)) {
+        document.getElementById("name_err").innerHTML =
+            "Please enter a valid name(letters and spaces only).";
+        name_input.style.borderColor = "black";
 
-function validateFirst_Name() {
-    return validateInput("First_Name_input", "First_Name_err");
-}
-
-function validateLast_Name() {
-    return validateInput("Last_Name_input", "Last_Name_err",);
-}
-
-function vaildategender() {
-    var genderMale = document.getElementById('gender_male').checked;
-    var genderFemale = document.getElementById('gender_female').checked;
-    // The .checked is used to check whether a checkbox or radio button is checked or not. 
-    if (!genderMale && !genderFemale) {
-        document.getElementById("gender_error").innerHTML = "Value cannot be empty.";
-        // email_input.style.borderColor = "black";
-        return false;
-    }
-    else {
-        document.getElementById("gender_error").innerHTML = "";
-        return true;
-    }
-} 
-
-function validateAge() {
-    var age = document.getElementById('Age_input').value.trim();
-    var regex = /^[1-9][0-9]*$/;
-
-    if (age === "") {
-        document.getElementById("Age_error").innerHTML = "Please Enter a Value.";
-        document.getElementById("Age_input").style.borderColor = "black";
-        return false;
-    } else if (!regex.test(age)) {
-        document.getElementById("Age_error").innerHTML = "Please enter a valid input.";
-        document.getElementById("Age_input").style.borderColor = "black";
         return false;
     } else {
-        document.getElementById("Age_error").innerHTML = "";
-        document.getElementById("Age_input").style.borderColor = "green";
+        document.getElementById("name_err").innerHTML = "";
+        name_input.style.borderColor = "green";
         return true;
     }
 }
 
-URL = "client_email_validation.php"
+function validateMobileNumber() {
+    var mobileNumber = document.getElementById("mobile_input").value;
+    var mobileRegex = /^[0-9]{10}$/;
+
+    if (mobileNumber === "") {
+        document.getElementById("mobile_error").innerHTML = "Please Enter Mobile Number.";
+        mobile_input.style.borderColor = "black";
+        return false;
+    }
+    else if (!mobileRegex.test(mobileNumber) || isNaN(mobileNumber)) {
+        document.getElementById("mobile_error").innerHTML = "Please enter a valid mobile number of length 10.";
+        mobile_input.style.borderColor = "black";
+        return false;
+    } else {
+        document.getElementById("mobile_error").innerHTML = "";
+        mobile_input.style.borderColor = "green";
+        return true;
+    }
+}
+
+URL = "email_validation.php"
 async function isDuplicateEmail(email = '') {
     try {
         const response = await fetch(URL, {
@@ -103,7 +84,7 @@ function validateEmail() {
 
         debounceTimer = setTimeout(async () => {
             var email = document.getElementById("email_input").value.trim();
-            var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            var emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
             if (email == "" || !email || email == null || email == " ") {
                 document.getElementById("email_err").innerHTML = "Please enter an email address.";
@@ -129,8 +110,50 @@ function validateEmail() {
         }, 300);
     });
 }
-function validateUser_Type() {
-    return validateInput("User_Type_input", "User_Type_err");
+
+function vaildategender() {
+    var genderMale = document.getElementById('gender_male').checked;
+    var genderFemale = document.getElementById('gender_female').checked;
+    // The .checked is used to check whether a checkbox or radio button is checked or not. 
+    if (!genderMale && !genderFemale) {
+        document.getElementById("gender_error").innerHTML = "Value cannot be empty.";
+        // email_input.style.borderColor = "black";
+        return false;
+    }
+    else {
+        document.getElementById("gender_error").innerHTML = "";
+        return true;
+    }
+}
+
+function validatePosition() {
+    var positionInput = document.getElementById("User_type_input");
+    var position = positionInput.value.trim();
+
+    if (position === "Select Position") {
+        document.getElementById("position_err").innerHTML = "Please select a position.";
+        positionInput.style.borderColor = "black";
+        return false;
+    } else {
+        document.getElementById("position_err").innerHTML = "";
+        positionInput.style.borderColor = "green";
+        return true;
+    }
+}
+
+function validateRole() {
+    var roleInput = document.getElementById("role_input");
+    var role = roleInput.value.trim();
+
+    if (role === "Select Role") {
+        document.getElementById("role_error").textContent = "Please select a role.";
+        roleInput.style.borderColor = "black";
+        return false;
+    } else {
+        document.getElementById("role_error").textContent = "";
+        roleInput.style.borderColor = "green";
+        return true;
+    }
 }
 
 function validatePassword() {
@@ -151,7 +174,7 @@ function validateConfirmPassword() {
     var password = document.getElementById('password_input').value;
     var confirm_password = document.getElementById('confirm_password_input').value;
 
-    if (password !== confirm_password) {
+    if (confirm_password === "" || password !== confirm_password) {
         document.getElementById("confirm_password_err").innerHTML = "Password Missmatched.";
         confirm_password_input.style.borderColor = "black";
         return false;

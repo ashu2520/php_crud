@@ -558,6 +558,7 @@ span.right {
 table {
   border: 1px solid #cccccc;
   border-radius:5px 5px 0 0;
+  /* height: 1500px; */
 }
 th {
   background:#ddd;
@@ -568,16 +569,18 @@ th {
   text-align: center;
   font-family: 'OpenSansSemibold';
   text-align:left;
+  /* height: 30px; */
 }
 tr{
 	border-bottom:1px solid #ccc;
+  /* height: 30px; */
 }
 tr:last-child{
 	border-bottom:none;
 }
 td {
-    
-    padding: 5px 0;
+  padding: 5px 0;
+  
 }
 tr:nth-child(2n+1) {
     background: none repeat scroll 0 0 #fffcf5;
@@ -587,6 +590,8 @@ td {
   font-size: 13px;
   padding: 5px 10px;
   text-align:left;
+  height: 30px;
+
 }
 .tab.list-contet img {
   margin: 0 2px;
@@ -1098,13 +1103,36 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f6f6f6', end
 /* ********************************************* Flash Message CSS ********************************************* */
 .flash-message{
   position: absolute;
-  margin-left: 550px;
+  /* margin-left: 550px; */
   margin-top: 2px;
+  text-align: center;
+  background-color: #ff651b;
+  color: #fff;
+  width: 100%;
+  height: 50px;
+  padding: 4px;
+  padding-top: 20px;
+  border-radius: 5px;
+  /* border: #000000 1px solid; */
+}
+/* ********************************************* Login Flash Message CSS ********************************************* */
+.login-flash-message{
+  position: absolute;
   background-color: #ff651b;
   color: #fff;
   width: fit-content;
   padding: 4px;
   border-radius: 5px;
-  /* border: #000000 1px solid; */
+  margin-top: 35px;
 }
-/* ********************************************* active Page CSS ********************************************* */
+/* ********************************************* Template Flash Message CSS ********************************************* */
+.template-flash-message{
+  position: absolute;
+  background-color: #ff651b;
+  color: #fff;
+  width: 170px;
+  height: 70px;
+  padding: 4px;
+  border-radius: 5px;
+  margin-top: 35px;
+}
