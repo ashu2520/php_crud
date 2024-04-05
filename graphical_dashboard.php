@@ -20,10 +20,17 @@ if ($result) {
     $male = $row['male'];
     $female = $row['female'];
 }
-$sql = "SELECT * FROM login_credentials
+$sql = "SELECT COUNT(*) AS cnt FROM `login_credentials`
 WHERE DATE(Createdat) = CURDATE()";
 $result = mysqli_query($conn, $sql);
-$cur_num = mysqli_num_rows($result);
+// echo $result;
+// print($result);
+// print_r($result);
+// die();
+$row = mysqli_fetch_assoc($result);
+// print_r($row);
+// die();
+$cur_num = (int)$row['cnt'];
 ?>
 <html lang="en">
 

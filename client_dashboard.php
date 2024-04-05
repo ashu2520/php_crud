@@ -1,6 +1,5 @@
 ﻿<?php
 include "connect.php";
-
 // Starting the session
 if (!isset($_SESSION["user_name"])) {
   header("location:emp_login.php");
@@ -28,11 +27,15 @@ if ($format_date == "YYYY-MM-DD") {
 
 // print_r($_SESSION);
 // die();
-$sql_2 = "Select *, DATE_FORMAT(Createdat,'" . $format_date . "') AS Createdat from `login_credentials`";
+
+// $sql_2 = "Select * from `login_credentials`";
+$sql_2 = "Select COUNT(Id) as cnt from `login_credentials`";
 $result_2 = mysqli_query($conn, $sql_2);
-$total_records = mysqli_num_rows($result_2);
+$row = mysqli_fetch_array($result_2);
+
+// $total_records = mysqli_num_rows($result_2);
+$total_records = (int)$row['cnt'];
 $total_pages = ceil($total_records / $num_per_page);
-// echo $total_records;
 
 if (isset($_GET["page"])) {
   $curr_page = clean_search_input($_GET["page"]);
@@ -71,6 +74,7 @@ if (isset($_POST["search_box"]) && $_POST["search_box"] !== "") {
   $search = str_replace("'", '', $search);
   $search = htmlspecialchars($search, ENT_QUOTES, 'UTF-8');
   // echo $search;
+
   $sql = "SELECT *,  DATE_FORMAT(Createdat, '" . $format_date . "') AS Createdat  FROM login_credentials 
           WHERE Id LIKE '%$search%' 
           OR Name LIKE '%$search%' 
@@ -101,11 +105,13 @@ if (isset($_POST["search_box"]) && $_POST["search_box"] !== "") {
   <title>Client Data</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <link href="css/client_dashboard.css" rel="stylesheet" />
+
   <style>
     .active-page {
       text-decoration: none;
     }
   </style>
+
 </head>
 
 <body>
@@ -157,13 +163,12 @@ if (isset($_POST["search_box"]) && $_POST["search_box"] !== "") {
             </div>
           </div>
 
-
           <!-- TABLE -->
           <!-- TABLE -->
           <!-- TABLE -->
 
           <table cellspacing="0">
-            <tbody>
+            
               <tr>
                 <?php
 
@@ -288,7 +293,6 @@ if (isset($_POST["search_box"]) && $_POST["search_box"] !== "") {
           <!-- Pagination -->
           <!-- Pagination -->
 
-          
           <div class="paginaton-div">
             <?php
             // echo $total_records;
@@ -313,7 +317,7 @@ if (isset($_POST["search_box"]) && $_POST["search_box"] !== "") {
               } else {
                 echo "<a href = 'client_dashboard.php?column_name=" . $column_name . "&sort_order=" . ($sort_order == "DESC" ? "DESC" : "ASC") . "&page=" . $i . "'>" . $i . "</a>";
               }
-              // ? --> query parameters, multiple page sakte hai...
+              // ? --> query parameters, multiple page bhej sakte hai...
             }
             if ($curr_page + 1 <= $total_pages) {
               echo "<a class='act_btn' href = 'client_dashboard.php?column_name=" . $column_name . "&sort_order=" . ($sort_order == "DESC" ? "DESC" : "ASC") . "&page=" . ($curr_page + 1) . "'>Next</a>";
@@ -351,17 +355,27 @@ if (isset($_POST["search_box"]) && $_POST["search_box"] !== "") {
     const input = document.getElementById('search_box');
     const form = document.getElementById('myForm');
     window.onload = function () {
+      // window.onload = function() --> jaise hi window(page) load hoga waise hi ye function call hoga... 
       input.focus();
+      // jaise hi page load hoga cursor(focus) input id wale element main chala jayega...
       input.setSelectionRange(input.value.length, input.value.length);
+      // setSelectionRange(start, end) --> ye kya karta hai ye basically select kar ke rakhta hai...
+      // input.value.lenght --> last element ke baad isko set kar dega. Taki humara cursor humesha end main hi aye...
     };
 
     input.addEventListener('input', function (event) {
+    // input(search_box) ke ander koi bhi input denge to input event trigger ho jayega... 
+    
       let timer;
       clearTimeout(timer);
       timer = setTimeout(() => {
+        // Hum HTML ke kisi bhi element pr event uske id ke through hi laga sakte hai...
         form.action = "client_dashboard.php?search_box=" + event.target.value;
+        // form.action --> form id wale element ka bhi jo action attribute hai usmain value set karne ke liye...
         form.submit();
+        // form.submit --> form ko submit karwane ke liye...
       }, 1000);
+      // jaise hi event ayega uske harek 1-second ke baad ye function chalega...
     });
 
     // For Flash Messages

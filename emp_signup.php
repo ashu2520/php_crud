@@ -60,10 +60,11 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
   # Email check
   $sql_em = "SELECT * FROM `login_credentials` WHERE Email = '$email'";
   $result_em = mysqli_query($conn, $sql_em);
-  if (!filter_var($email, FILTER_VALIDATE_EMAIL) || !(isset($email)) || $email == "" || mysqli_num_rows($result_em) > 0) {
+  if (!filter_var($email, FILTER_VALIDATE_EMAIL) || !(isset($email)) || $email == "" || mysqli_num_rows($result_em) > 0 || !preg_match("#^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$#", $email)) {
     $emailerr = true;
   }
   if ($password == "" || !preg_match("#^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^\da-zA-Z\s]).{8,}$#", $password)) {
+
     $passworderr = true;
   }
   if (strcmp($password, $confirm_pass) !== 0 || $confirm_pass == "") {
@@ -185,7 +186,7 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
           <div class="form-group">
             <label for="Position">Position</label>
             <select id="User_type_input" class="form-select" name="User_type" autocomplete="off"
-              onblur="validateposition()">
+              onblur="validatePosition()">
               <option>Select Position</option>              
               <option>AIML</option>
               <option>Backend</option>
@@ -195,7 +196,7 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
               <option>Frontend</option>
               <option>Full Stack</option>
             </select>
-            <span class='text_error' id="User_type_error"></span>
+            <span class='text_error' id="position_err"></span>
           </div>
 
 

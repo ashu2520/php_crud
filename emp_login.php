@@ -5,6 +5,14 @@ if (isset($_SESSION["user_name"])) {
   header("location:client_dashboard.php");
 }
 ?>
+<script>
+      const bc = new BroadcastChannel("test_channel");
+      bc.addEventListener("message", (event) => {
+        if (event.data == "LOGIN"){
+          window.location.reload();
+        }
+      })
+</script>
 
 <?php
 function cleanlogin_input($fields)
@@ -24,7 +32,7 @@ if (isset($_POST["submit"])) {
 
   $email = cleanlogin_input($_POST['email']);
   $password = cleanlogin_input($_POST["password"]);
-
+  $email = filter_var($email, FILTER_SANITIZE_EMAIL);
   // Fetch the hashed password from the database based on the provided email
   $sql = "SELECT * FROM `login_credentials` WHERE Email = '$email'";
   $result = mysqli_query($conn, $sql);
@@ -34,8 +42,6 @@ if (isset($_POST["submit"])) {
     // $Id = $row["Id"];
     $hashed_password = $row['Password'];
    
-
-
     if (password_verify($password, $hashed_password)) {
       $_SESSION['user_name'] = $email;    // session create kar lo...
       $_SESSION['Id'] = $row["Id"];
@@ -57,7 +63,8 @@ if (isset($_POST["submit"])) {
         $_SESSION['link_exp_time'] = $row['setting_token_expiry_time'];
         $_SESSION["date_format"] = $row['setting_date_format'];
       }
-      header("location:client_dashboard.php");
+      // header("location:client_dashboard.php");
+      echo "<script>bc.postMessage('LOGIN'); window.location.href ='client_dashboard.php'; </script>";
       exit();
     } else {
       $invalid = true;
@@ -128,6 +135,19 @@ if (isset($_POST["submit"])) {
     </div>
   </div>
   <script src="js/emp_login.js"></script>
+  <!-- <script>
+      const li =document.getElementById("li");
+      const bc = new BroadcastChannel("test_channel");
+      bc.addEventListener("message", (event) => {
+          if (event.data == "LOGOUT"){
+              window.location.reload();
+          }
+      })
+      function logoutBC(){
+          bc.postMessage("LOGOUT")
+          window.location.href ="emp_logout.php"
+      }
+    </script> -->
 </body>
 
 </html>

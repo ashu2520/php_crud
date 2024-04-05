@@ -38,7 +38,7 @@ if(isset($_POST["Submitasd"]))
 	$row = mysqli_fetch_assoc($result_em);
 
     $old_hashed_password = $row['Password'];
-	// Old password and new password same nhi hona chasiye...
+	// Old password and new password same nhi hona chasiye... agar hua to else case chala do...
 	if(password_verify($old_password, $old_hashed_password)){
 		if(password_verify($new_password, $old_hashed_password)){
 			$password_error = true;

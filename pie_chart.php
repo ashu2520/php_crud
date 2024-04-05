@@ -7,7 +7,7 @@ if ($result) {
     while ($row = mysqli_fetch_assoc($result)) {
         // Stored in key-value pair
         // Aara yaha pr sirf num bhi provide karte ho tab bhi %age calculate ho jayega(automatically)...
-        $department[(string) $row['User_type']] = floatval($row['num']);
+        $department[(string) $row['User_type']] = floatval($row['num_percent']);
     }
 }
 ?>

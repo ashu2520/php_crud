@@ -74,8 +74,8 @@ async function isDuplicateEmail(email = '') {
         console.log('Error checking email:', error);
         return false; // Handle error scenario
     }
-
 }
+
 let debounceTimer;
 function validateEmail() {
     return new Promise(resolve => {
@@ -109,8 +109,6 @@ function validateEmail() {
         }, 300);
     });
 }
-
-
 
 function vaildategender() {
     var genderMale = document.getElementById('gender_male').checked;
@@ -155,6 +153,7 @@ function validatePassword() {
         return true;
     }
 }
+
 function validateConfirmPassword() {
     var password = document.getElementById('password_input').value;
     var confirm_password = document.getElementById('confirm_password_input').value;
