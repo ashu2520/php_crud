@@ -64,7 +64,7 @@ if (isset ($_POST["name"]) && isset ($_POST["email"]) && isset ($_POST["mobile"]
 	}
 
 	# Email check
-	$sql_em = "SELECT * FROM `login_credentials` WHERE Email = '$email'";
+	$sql_em = "SELECT * FROM `users` WHERE user_email = '$email'";
 	$result_em = mysqli_query($conn, $sql_em);
 	if (!filter_var($email, FILTER_VALIDATE_EMAIL) || !(isset ($email)) || $email == "" || mysqli_num_rows($result_em) > 0) {
 		$emailerr = true;
@@ -77,7 +77,7 @@ if (isset ($_POST["name"]) && isset ($_POST["email"]) && isset ($_POST["mobile"]
 	}
 	$hashed_password = password_hash($password, PASSWORD_DEFAULT);
 	if (!$nameerr && !$emailerr && !$mobilerr && !$passworderr && !$confirm_pass_err) {
-		$sql = "INSERT INTO `login_credentials` (Name, Mobile, Email, Gender,  User_type, User_role_id, Password, Terms_cond, Createdat, Updatedat) VALUES ('$name', '$mobile', '$email', '$gender', '$position', '$role', '$hashed_password', '$terms_cond', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)";
+		$sql = "INSERT INTO `users` (user_name, user_mobile, user_email, user_gender,  user_type, user_role_id, user_password, user_terms_cond, user_created_at, user_updated_at) VALUES ('$name', '$mobile', '$email', '$gender', '$position', '$role', '$hashed_password', '$terms_cond', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)";
 		$result = mysqli_query($conn, $sql);
 		// echo "here";
 		if ($result) {

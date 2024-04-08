@@ -1,8 +1,8 @@
 <?php 
 $join_date= array();
-$sql_1 = "SELECT DATE(Createdat) AS join_date, 
+$sql_1 = "SELECT DATE(user_created_at) AS join_date, 
 COUNT(*) AS employee_count
-FROM login_credentials GROUP BY DATE(Createdat)";
+FROM users GROUP BY DATE(user_created_at)";
 $result_1 = mysqli_query($conn, $sql_1);
 while ($row_1 = mysqli_fetch_assoc($result_1)) {
     $join_date[(string)$row_1['join_date']] = (int)$row_1['employee_count'];

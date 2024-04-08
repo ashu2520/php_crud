@@ -1,13 +1,13 @@
 <?php
 $data = array();
-$sql = "SELECT User_type,
-        SUM(CASE WHEN Gender = 'Male' THEN 1 ELSE 0 END) AS male,
-        SUM(CASE WHEN Gender = 'Female' THEN 1 ELSE 0 END) AS female
-        FROM `login_credentials` GROUP BY User_type";
+$sql = "SELECT user_type,
+        SUM(CASE WHEN user_gender = 'Male' THEN 1 ELSE 0 END) AS male,
+        SUM(CASE WHEN user_gender = 'Female' THEN 1 ELSE 0 END) AS female
+        FROM `users` GROUP BY user_type";
 $result = mysqli_query($conn, $sql);
 if ($result) {
     while ($row = mysqli_fetch_assoc($result)) {
-        $data[] = array((string) $row['User_type'], (int) $row['male'], (int) $row['female']);
+        $data[] = array((string) $row['user_type'], (int) $row['male'], (int) $row['female']);
     }
 }
 ?>

@@ -34,7 +34,7 @@ if (isset($_POST["Name"]) && isset($_POST["Email"])  && isset($_POST["Number"]) 
         
 	}
 	if (!$error) {
-		$sql = "INSERT INTO `contact_us` (Name, Email, Number, Subject, Message) VALUES ('$Name', '$Email' ,'$Mobile', '$Subject', '$Message')";
+		$sql = "INSERT INTO `contact_request` (contact_name, contact_email, contact_number, contact_subject, contact_message) VALUES ('$Name', '$Email' ,'$Mobile', '$Subject', '$Message')";
 		$result = mysqli_query($conn, $sql);
 		if ($result) {
 			// header("location:client_dashboard.php");

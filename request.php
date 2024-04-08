@@ -16,7 +16,7 @@ function clean_search_input($fields)
 }
 $is_delete = false;
 $num_per_page = 9;
-$sql_2 = "Select * from contact_us";
+$sql_2 = "Select * from contact_request";
 $result_2 = mysqli_query($conn, $sql_2);
 $total_records = mysqli_num_rows($result_2);
 $total_pages = ceil($total_records / $num_per_page);
@@ -32,11 +32,11 @@ if (isset ($_GET["page"])) {
 
 if (isset ($_GET["column_name"])) {
   $column_name = clean_search_input($_GET["column_name"]);
-  if ($column_name !== "Id" && $column_name !== "Name" && $column_name !== "Email" && $column_name !== "Number" && $column_name !== "Subject") {
-    $column_name = "Id";
+  if ($column_name !== "contact_id" && $column_name !== "contact_name" && $column_name !== "contact_email" && $column_name !== "contact_number" && $column_name !== "contact_subject") {
+    $column_name = "contact_id";
   }
 } else {
-  $column_name = "Id";
+  $column_name = "contact_id";
 }
 
 if (isset ($_GET["sort_order"])) {
@@ -54,17 +54,17 @@ $start_from = ($curr_page - 1) * $num_per_page;
 $search = "";
 if (isset ($_POST["search_box"])) {
   $search = clean_search_input($_POST["search_box"]);
-  $sql = "SELECT Id, Name, Email, Number, Subject, Message FROM contact_us 
-          WHERE Id LIKE '%$search%' 
-          OR Name LIKE '%$search%' 
-          OR Email LIKE '%$search%' 
-          OR Number LIKE '%$search%' 
-          OR Subject LIKE '%$search%' 
+  $sql = "SELECT contact_id, contact_name, contact_email, contact_number, contact_subject, contact_message FROM contact_request 
+          WHERE contact_id LIKE '%$search%' 
+          OR contact_name LIKE '%$search%' 
+          OR contact_email LIKE '%$search%' 
+          OR contact_number LIKE '%$search%' 
+          OR contact_subject LIKE '%$search%' 
           ORDER BY $column_name $sort_order 
           LIMIT $start_from, $num_per_page";
   $result = mysqli_query($conn, $sql);
 } else {
-  $sql = "SELECT * FROM contact_us 
+  $sql = "SELECT * FROM contact_request 
   ORDER BY $column_name $sort_order 
   LIMIT $start_from, $num_per_page";
   // die(mysqli_error($conn));
@@ -134,11 +134,11 @@ if (isset ($_POST["search_box"])) {
               <tr>
                 <?php
                 echo '
-                  <th width="10px"><a href="request.php?column_name=Id&sort_order=' . ($sort_order == "DESC" ? "ASC" : "DESC") . '&page=' . $curr_page . '">Id</a></th>
-                  <th width="10px"><a href="request.php?column_name=Name&sort_order=' . ($sort_order == "DESC" ? "ASC" : "DESC") . '&page=' . $curr_page . '">Name</a></th>
-                  <th width="10px"><a href="request.php?column_name=Email&sort_order=' . ($sort_order == "DESC" ? "ASC" : "DESC") . '&page=' . $curr_page . '">Email</a></th>
-                  <th width="10px"><a href="request.php?column_name=Number&sort_order=' . ($sort_order == "DESC" ? "ASC" : "DESC") . '&page=' . $curr_page . '">Mobile</a></th>
-                  <th width="10px"><a href="request.php?column_name=Subject&sort_order=' . ($sort_order == "DESC" ? "ASC" : "DESC") . '&page=' . $curr_page . '">Subject</a></th> ';
+                  <th width="10px"><a href="request.php?column_name=contact_id&sort_order=' . ($sort_order == "DESC" ? "ASC" : "DESC") . '&page=' . $curr_page . '">Id</a></th>
+                  <th width="10px"><a href="request.php?column_name=contact_name&sort_order=' . ($sort_order == "DESC" ? "ASC" : "DESC") . '&page=' . $curr_page . '">Name</a></th>
+                  <th width="10px"><a href="request.php?column_name=contact_email&sort_order=' . ($sort_order == "DESC" ? "ASC" : "DESC") . '&page=' . $curr_page . '">Email</a></th>
+                  <th width="10px"><a href="request.php?column_name=contact_number&sort_order=' . ($sort_order == "DESC" ? "ASC" : "DESC") . '&page=' . $curr_page . '">Mobile</a></th>
+                  <th width="10px"><a href="request.php?column_name=contact_subject&sort_order=' . ($sort_order == "DESC" ? "ASC" : "DESC") . '&page=' . $curr_page . '">Subject</a></th> ';
                 ?>
                 <th width="50px" class="Message" style="color: #ff651b;">Message</th>
               </tr>
@@ -147,13 +147,13 @@ if (isset ($_POST["search_box"])) {
               if ($result) {
                 while ($row = mysqli_fetch_array($result)) {
                   // Fetch the first row
-                  $id = $row['Id'];
-                  $Name = $row['Name'];
-                  $Email = $row['Email'];
-                  $Mobile = $row['Number'];
-                  $Subject = $row['Subject'];
+                  $id = $row['contact_id'];
+                  $Name = $row['contact_name'];
+                  $Email = $row['contact_email'];
+                  $Mobile = $row['contact_number'];
+                  $Subject = $row['contact_subject'];
 
-                  $Message = $row['Message'];   // Isko humko show karwana hai popup ke jariye...
+                  $Message = $row['contact_message'];   // Isko humko show karwana hai popup ke jariye...
               
                   echo " 
                   <tr>

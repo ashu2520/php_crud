@@ -33,11 +33,11 @@ if(isset($_POST["Submitasd"]))
 	$Id = $_SESSION["Id"];
 
 // Fetching Password from database
-	$sql_em = "SELECT * FROM `login_credentials` WHERE Id = '$Id'";
+	$sql_em = "SELECT * FROM `users` WHERE user_id = '$Id'";
     $result_em = mysqli_query($conn, $sql_em);
 	$row = mysqli_fetch_assoc($result_em);
 
-    $old_hashed_password = $row['Password'];
+    $old_hashed_password = $row['user_password'];
 	// Old password and new password same nhi hona chasiye... agar hua to else case chala do...
 	if(password_verify($old_password, $old_hashed_password)){
 		if(password_verify($new_password, $old_hashed_password)){
@@ -49,7 +49,7 @@ if(isset($_POST["Submitasd"]))
 	}
 	if (!$error && !$password_error) {
 			$new_hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
-			$sql= "UPDATE `login_credentials` set  Password = '$new_hashed_password' where Id = $Id";
+			$sql= "UPDATE `users` set  Password = '$new_hashed_password' where user_id = $Id";
 			$result = mysqli_query($conn, $sql);
 			if ($result) {
 				// echo"Ha bhai...";
@@ -60,11 +60,11 @@ if(isset($_POST["Submitasd"]))
 				$subject = $row["temp_subject"];
 				$body = $row["temp_content"];
 
-				$sql_email = "SELECT Email FROM `login_credentials` WHERE Id = $Id";
+				$sql_email = "SELECT user_email FROM `users` WHERE user_id = $Id";
 				$result_email = mysqli_query($conn, $sql_email);
 				$row = mysqli_fetch_array($result_email);
 
-				$email = $row['Email'];
+				$email = $row['user_email'];
 
 				// Calling the function for mailing...
 				mailer($email, $subject, $body);  // present in connect.php
@@ -200,6 +200,12 @@ function validateConfirmPassword() {
         return true;
     }
 }
+<?php
+if ($error || $password_error) {
+	echo 'setTimeout(function () { document.getElementsByClassName("error-msg")[0].style.display = \'none\'; }, 3000)';
+} 
+?>
+
 </script>
 </body>
 

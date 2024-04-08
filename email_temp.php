@@ -24,9 +24,7 @@ if ($_SESSION["User_role_id"] != 1) {
             width: 100%;
         }
 
-        tr,
-        th,
-        td {
+        tr,th,td {
             height: 40px;
         }
 

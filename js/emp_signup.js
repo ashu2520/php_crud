@@ -168,3 +168,12 @@ function validateConfirmPassword() {
         return true;
     }
 }
+setTimeout(function () {
+    const errElements = document.getElementsByClassName("error-message-div")
+    if (errElements.length){
+        errElements.forEach(element => {
+            element.style.display = 'none';
+        });
+    }
+  }, 
+3000);

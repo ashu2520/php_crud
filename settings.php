@@ -17,7 +17,7 @@ if (isset($_POST["Submitasd"])) {
     $Gender = $_POST['gender'];
     $id = $_SESSION["Id"];
 
-    $sql_2 = "UPDATE `login_credentials` set Name = '$Name', Email = '$Email', Mobile = '$Mobile', Gender = '$Gender', Updatedat = CURRENT_TIMESTAMP WHERE Id = $id";
+    $sql_2 = "UPDATE `users` set user_name = '$Name', user_email = '$Email', user_mobile = '$Mobile', user_gender = '$Gender', user_updated_at = CURRENT_TIMESTAMP WHERE user_id = $id";
     $result_2 = mysqli_query($conn, $sql_2);
 
     $num_per_page = $_POST["num_per_page"];
@@ -41,14 +41,14 @@ if (isset($_POST["Submitasd"])) {
 ?>
 <?php
 $id = $_SESSION["Id"];
-$sql = "SELECT * FROM `login_credentials` WHERE Id = $id ";
+$sql = "SELECT * FROM `users` WHERE user_id = $id ";
 $result = mysqli_query($conn, $sql);
 if ($result) {
     $row = mysqli_fetch_array($result);
-    $Name = $row['Name'];
-    $Email = $row['Email'];
-    $Mobile = $row['Mobile'];
-    $Gender = $row['Gender'];
+    $Name = $row['user_name'];
+    $Email = $row['user_email'];
+    $Mobile = $row['user_mobile'];
+    $Gender = $row['user_gender'];
 }
 $sql_setting = "SELECT * FROM `settings` WHERE setting_id = 1";
 $result_setting = mysqli_query($conn, $sql_setting);

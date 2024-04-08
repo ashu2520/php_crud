@@ -2,7 +2,7 @@
 ini_set('display_errors', '1');
 ini_set('display_startup_errors', '1');
 error_reporting(E_ALL);
-$conn = new mysqli("localhost", "root", "root", "UI_Crud");
+$conn = new mysqli("localhost", "root", "root", "employee_management");
 if (!$conn) {
     die(mysqli_error($conn));
 } 
@@ -22,7 +22,7 @@ function mailer($email, $subject, $body, $name="")
   $randomHash = $_SESSION['token_value'];
   //Load Composer's autoloader
   // require 'vendor/autoload.php';
-  $body = str_replace("[toke_value]", $randomHash, $body);
+  $body = str_replace("[token_value]", $randomHash, $body);
   
   $body = str_replace("[User Name]", $name, $body);
 

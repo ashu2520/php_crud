@@ -24,18 +24,24 @@ function clean_input($fields)
 }
 if (isset($_POST["submit"])) {
     $subject = clean_input($_POST['subject']);
-    $body = clean_input($_POST['editor']);
+    $body = $_POST['editor'];
     $temp_slug = $_SESSION["temp_slug"];
     unset($_SESSION['temp_slug']);
-    
+
     $subject_error = isset($subject) && $subject == "" ? true : false;
     $body_error = isset($body) && $body == "" ? true : false;
 
     if (!$subject_error && !$body_error) {
-        $sql = "UPDATE `email_templates` set temp_subject = '$subject', temp_content = '$body', temp_updated_at = CURRENT_TIMESTAMP WHERE temp_slug = '$temp_slug'";
-        $result = mysqli_query($conn, $sql);
+        echo $body;
+        // Assuming $conn is your MySQL database connection object
+        $sql = "UPDATE `email_templates` SET temp_subject = ?, temp_content = ?, temp_updated_at = CURRENT_TIMESTAMP WHERE temp_slug = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("sss", $subject, $body, $temp_slug);
+        $stmt->execute();
+        $result = mysqli_stmt_execute($stmt);
+
         if ($result) {
-			$_SESSION['flash_message'] = "Sucessfully Updated";
+            $_SESSION['flash_message'] = "Sucessfully Updated";
             //echo "Updated Successfully";
             header("location:email_temp.php");
         } else {
@@ -46,7 +52,7 @@ if (isset($_POST["submit"])) {
 ?>
 <?php
 // $temp_slug = "";
-if(isset($_GET["temp_slug"])){
+if (isset($_GET["temp_slug"])) {
     $temp_slug = $_GET["temp_slug"];
     $_SESSION['temp_slug'] = $temp_slug;
     $sql = "Select * from `email_templates` WHERE temp_slug = '$temp_slug'";
@@ -172,7 +178,14 @@ if(isset($_GET["temp_slug"])){
         let editorData = '';
 
         ClassicEditor
-            .create(document.querySelector('#editor'))
+            .create(document.querySelector('#editor'), {
+                allowedContent: true,
+                autoParagraph: false, // Disable automatic paragraph creation
+                // enterMode: CKEDITOR.ENTER_BR // Use <br> for line breaks instead of <p>
+                disallowedContent: [], // Disable disallowed content
+                extraAllowedContent: '*', // Allow all elements and attributes
+                fullPage: true // 
+            })
             .then(editor => {
                 editorData = editor;
             })

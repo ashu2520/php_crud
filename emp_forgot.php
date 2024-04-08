@@ -21,12 +21,12 @@ function cleanlogout_input($fields)
 
 if (isset($_POST["submit"])) {
   $email = cleanlogout_input($_POST['email']);
-  $sql = "SELECT * FROM `login_credentials` WHERE Email = '$email'";
+  $sql = "SELECT * FROM `users` WHERE user_email = '$email'";
   $result = mysqli_query($conn, $sql);
 
   if (mysqli_num_rows($result) > 0) {
     $row = mysqli_fetch_array($result);
-    $user_id = $row['Id'];
+    $user_id = $row['user_id'];
 
     // Fetching Email Subject & Content...
     $sql_content = "SELECT temp_subject, temp_content FROM email_templates WHERE temp_slug = 'forgot_password'";
@@ -51,7 +51,7 @@ if (isset($_POST["submit"])) {
     $link_exp_time = $row['setting_token_expiry_time'];
     }
 
-    $sql_token = "INSERT INTO `token` (`token_user_id`, `token_type`, `token_value`, `token_expiry_time`, `token_created_at`, `token_updated_at`) VALUES ('$user_id', 'Reset Password', '$randomHash',  DATE_ADD(CURRENT_TIMESTAMP, INTERVAL $link_exp_time MINUTE), CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)";
+    $sql_token = "INSERT INTO `security_token` (`token_user_id`, `token_type`, `token_value`, `token_expiry_time`, `token_created_at`, `token_updated_at`) VALUES ('$user_id', 'Reset Password', '$randomHash',  DATE_ADD(CURRENT_TIMESTAMP, INTERVAL $link_exp_time MINUTE), CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)";
     $result_token = mysqli_query($conn, $sql_token);
 
 

@@ -12,7 +12,7 @@ $email_exist_err = false;
 if(isset($_POST['email'])){
     // Check if the email exists in the database
     $email =clean_email_input($_POST['email']);
-    $sql_em = "SELECT * FROM `login_credentials` WHERE Email = '$email'";
+    $sql_em = "SELECT * FROM `users` WHERE user_email = '$email'";
     $result_em = mysqli_query($conn, $sql_em);
     $email_exist_err = mysqli_num_rows($result_em) > 0 ? true : false; 
 

@@ -33,19 +33,20 @@ if (isset($_POST["submit"])) {
   $email = cleanlogin_input($_POST['email']);
   $password = cleanlogin_input($_POST["password"]);
   $email = filter_var($email, FILTER_SANITIZE_EMAIL);
+  
   // Fetch the hashed password from the database based on the provided email
-  $sql = "SELECT * FROM `login_credentials` WHERE Email = '$email'";
+  $sql = "SELECT * FROM `users` WHERE user_email = '$email'";
   $result = mysqli_query($conn, $sql);
 
   if (mysqli_num_rows($result) > 0) {
     $row = mysqli_fetch_assoc($result);
     // $Id = $row["Id"];
-    $hashed_password = $row['Password'];
+    $hashed_password = $row['user_password'];
    
     if (password_verify($password, $hashed_password)) {
       $_SESSION['user_name'] = $email;    // session create kar lo...
-      $_SESSION['Id'] = $row["Id"];
-      $User_role_id = $row["User_role_id"];
+      $_SESSION['Id'] = $row["user_id"];
+      $User_role_id = $row["user_role_id"];
       $_SESSION['User_role_id'] =  $User_role_id;
 
       // Fetching the Role Name
@@ -62,6 +63,17 @@ if (isset($_POST["submit"])) {
         $_SESSION['num_per_page'] = $row['setting_row_per_page'];
         $_SESSION['link_exp_time'] = $row['setting_token_expiry_time'];
         $_SESSION["date_format"] = $row['setting_date_format'];
+      }
+      
+      // Set Cookies
+      if(!empty($_POST['remember_me'])){
+        $remember_me = $_POST['remember_me'];
+        //  $sql_login = "INSERT INTO `login_records` (login_email, login_password, login_created_at, login_deleted_at) VALUES ('$email', '$hashed_password', CURRENT_TIMESTAMP, DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 24 HOUR))";
+        //  $result_role = mysqli_query($conn, $sql_login);
+        // set Cookies
+        setcookie('email', $email, time()+3600, '/');
+        setcookie('password', $password, time()+3600);
+        setcookie('remember_me', $remember_me, time()+3600);
       }
       // header("location:client_dashboard.php");
       echo "<script>bc.postMessage('LOGIN'); window.location.href ='client_dashboard.php'; </script>";
@@ -99,7 +111,7 @@ if (isset($_POST["submit"])) {
         <h2>Admin <span>Login</span></h2>
         <?php
         if ($invalid) {
-          echo '<div class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>Invalid!</strong> Username
+          echo '<div id="error-message" class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>Invalid!</strong> Username
               or Password </div>';
         }
         ?>
@@ -109,17 +121,23 @@ if (isset($_POST["submit"])) {
           <div class="form-group">
             <label for="exampleInputEmail1">User Name</label>
             <input id="email_input" type="email" class="form-control" name="email" autocomplete="off"
-              onblur="validateEmail()" />
+              onblur="validateEmail()" value="<?php if(isset($_COOKIE['email'])) {echo $_COOKIE['email'];}?>"/>
             <span class='text_error' id="email_err"></span>
           </div>
           <div class="form-group">
             <label for="exampleInputPassword1">Password<a href="emp_forgot.php" class="forg_pass">Forgot
                 Password?</a></label>
-            <input id="password_input" type="password" class="form-control" name="password" autocomplete="off" />
+            <input id="password_input" type="password" class="form-control" name="password" autocomplete="off" value="<?php if(isset($_COOKIE['password'])) {echo $_COOKIE['password'];}?>" />
             <!-- <p class='text_error'>Invalid Username and Password. </p>  -->
 
+    <!-- CHECKBOX -->
           </div>
-          <button type="submit" class="btn_login" name="submit">Login</button>
+          <div style="display: flex;  margin-top: -5px;" class="form-group">
+          <input type="checkbox" value="remember_me" id="remember_me" name="remember_me" <?php if(isset($_COOKIE['remember_me'])) {echo 'checked';}?>> 
+          <label for="rememberMe">Remember me</label>
+          </div>
+
+          <button style="margin-top: -3px;" type="submit" class="btn_login" name="submit">Login</button>
         </form>
         <div class="login">
           <p>Doesn't have an account yet? <a href="emp_signup.php"> Sign Up</a></p>

@@ -10,9 +10,9 @@ $num = 0;
 $male = 0;
 $female = 0;
 $sql = "SELECT  count(*) AS num,
-SUM(CASE WHEN Gender = 'Male' THEN 1 ELSE 0 END) AS male,
-SUM(CASE WHEN Gender = 'Female' THEN 1 ELSE 0 END) AS female
-FROM `login_credentials`";
+SUM(CASE WHEN user_gender = 'Male' THEN 1 ELSE 0 END) AS male,
+SUM(CASE WHEN user_gender = 'Female' THEN 1 ELSE 0 END) AS female
+FROM `users`";
 $result = mysqli_query($conn, $sql);
 if ($result) {
     $row = mysqli_fetch_assoc($result);
@@ -20,8 +20,8 @@ if ($result) {
     $male = $row['male'];
     $female = $row['female'];
 }
-$sql = "SELECT COUNT(*) AS cnt FROM `login_credentials`
-WHERE DATE(Createdat) = CURDATE()";
+$sql = "SELECT COUNT(*) AS cnt FROM `users`
+WHERE DATE(user_created_at) = CURDATE()";
 $result = mysqli_query($conn, $sql);
 // echo $result;
 // print($result);

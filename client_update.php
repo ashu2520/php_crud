@@ -40,18 +40,18 @@ if (isset ($_GET['updateid'])) {
 	$curr_page = (int) $_GET['page'];
 
 
-	$sql = "Select * from `login_credentials` where Id = $id";
+	$sql = "Select * from `users` where user_id = $id";
 	$result = mysqli_query($conn, $sql);
 	$row = mysqli_fetch_assoc($result);
 
-	$name = $row["Name"];
-	$email = $row["Email"];
-	$mobile = $row["Mobile"];
-	$gender = $row["Gender"];
+	$name = $row["user_name"];
+	$email = $row["user_email"];
+	$mobile = $row["user_mobile"];
+	$gender = $row["user_gender"];
 	// $country = $row['Country'];
 	// $state = $row['State'];
-	$position = $row['User_type'];
-	$role = $row['User_role_id'];
+	$position = $row['user_type'];
+	$role = $row['user_role_id'];
 
 }
 
@@ -71,7 +71,7 @@ if (isset ($_POST["Submitasd"])) {
 		$error = true;
 	}
 	if (!$error) {
-		$sql_1 = "UPDATE `login_credentials` set Id = $id, Name='$name', Mobile='$mobile', Gender= '$gender', User_type ='$position',  User_role_id  =$role, Updatedat=CURRENT_TIMESTAMP where Id = $id";
+		$sql_1 = "UPDATE `users` set user_id = $id, user_name='$name', user_mobile='$mobile', user_gender= '$gender', user_type ='$position',  user_role_id  =$role, user_updated_at=CURRENT_TIMESTAMP where user_id = $id";
 		$result_1 = mysqli_query($conn, $sql_1);
 		if ($result_1) {
 			$_SESSION['flash_message'] = "Sucessfully Updated";

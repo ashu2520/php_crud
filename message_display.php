@@ -13,14 +13,14 @@ if (!isset ($_SESSION["user_name"])) {
 // $Message ="";
 if (isset ($_GET['Id'])) {
     $Id = $_GET['Id'];
-    $sql = "Select * from `contact_us` where Id = $Id";
+    $sql = "Select * from `contact_request` where contact_id = $Id";
     $result = mysqli_query($conn, $sql);
     $row = mysqli_fetch_array($result);
-    $Name = $row['Name'];
-    $Email = $row['Email'];
-    $Mobile = $row['Number'];
-    $Subject = $row['Subject'];
-    $Message = $row['Message'];
+    $Name = $row['contact_name'];
+    $Email = $row['contact_email'];
+    $Mobile = $row['contact_number'];
+    $Subject = $row['contact_subject'];
+    $Message = $row['contact_message'];
 
 }
 ?>

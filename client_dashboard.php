@@ -28,8 +28,8 @@ if ($format_date == "YYYY-MM-DD") {
 // print_r($_SESSION);
 // die();
 
-// $sql_2 = "Select * from `login_credentials`";
-$sql_2 = "Select COUNT(Id) as cnt from `login_credentials`";
+// $sql_2 = "Select * from `users`";
+$sql_2 = "Select COUNT(user_id) as cnt from `users`";
 $result_2 = mysqli_query($conn, $sql_2);
 $row = mysqli_fetch_array($result_2);
 
@@ -48,11 +48,11 @@ if (isset($_GET["page"])) {
 
 if (isset($_GET["column_name"])) {
   $column_name = clean_search_input($_GET["column_name"]);
-  if ($column_name !== "Id" && $column_name !== "Name" && $column_name !== "Gender" && $column_name !== "Mobile" && $column_name !== "Email" && $column_name !== "User_type") {
-    $column_name = "Createdat";
+  if ($column_name !== "user_id" && $column_name !== "user_name" && $column_name !== "user_gender" && $column_name !== "user_mobile" && $column_name !== "user_email" && $column_name !== "user_type") {
+    $column_name = "user_created_at";
   }
 } else {
-  $column_name = "Createdat";
+  $column_name = "user_created_at";
 }
 
 if (isset($_GET["sort_order"])) {
@@ -75,20 +75,20 @@ if (isset($_POST["search_box"]) && $_POST["search_box"] !== "") {
   $search = htmlspecialchars($search, ENT_QUOTES, 'UTF-8');
   // echo $search;
 
-  $sql = "SELECT *,  DATE_FORMAT(Createdat, '" . $format_date . "') AS Createdat  FROM login_credentials 
-          WHERE Id LIKE '%$search%' 
-          OR Name LIKE '%$search%' 
-          OR Mobile LIKE '%$search%' 
-          OR Email LIKE '%$search%' 
-          OR Gender LIKE '%$search%' 
-          OR User_type LIKE '%$search%' 
+  $sql = "SELECT *,  DATE_FORMAT(user_created_at, '" . $format_date . "') AS Createdat  FROM users 
+          WHERE user_id LIKE '%$search%' 
+          OR user_name LIKE '%$search%' 
+          OR user_mobile LIKE '%$search%' 
+          OR user_email LIKE '%$search%' 
+          OR user_gender LIKE '%$search%' 
+          OR user_type LIKE '%$search%' 
           ORDER BY $column_name $sort_order 
           LIMIT $start_from, $num_per_page";
   $result = mysqli_query($conn, $sql);
   $total_records = mysqli_num_rows($result);
   $total_pages = ceil($total_records / $num_per_page);
 } else {
-  $sql = "SELECT *, DATE_FORMAT(Createdat, '" . $format_date . "') AS Createdat FROM `login_credentials` 
+  $sql = "SELECT *, DATE_FORMAT(user_created_at, '" . $format_date . "') AS Createdat FROM `users` 
   ORDER BY $column_name $sort_order 
   LIMIT $start_from, $num_per_page";
   // die(mysqli_error($conn));
@@ -173,8 +173,8 @@ if (isset($_POST["search_box"]) && $_POST["search_box"] !== "") {
                 <?php
 
                 // Id
-                echo '<th width="10px"><a href="client_dashboard.php?column_name=Id&sort_order=' . ($column_name == "Id" && $sort_order == "ASC" ? "DESC" : "ASC") . '&page=' . $curr_page . '">S.no';
-                if ($column_name == "Id") {
+                echo '<th width="10px"><a href="client_dashboard.php?column_name=user_id&sort_order=' . ($column_name == "user_id" && $sort_order == "ASC" ? "DESC" : "ASC") . '&page=' . $curr_page . '">S.no';
+                if ($column_name == "user_id") {
                   if ($sort_order == 'DESC') {
                     echo '<i style="position: absolute; margin-top:3px; margin-left:2px;" class="fa fa-arrow-down" aria-hidden="true"></i>';
                   } else {
@@ -184,8 +184,8 @@ if (isset($_POST["search_box"]) && $_POST["search_box"] !== "") {
                 echo '</a></th>';
 
                 // Name
-                echo '<th width="98px"><a href="client_dashboard.php?column_name=Name&sort_order=' . ($column_name == "Name" && $sort_order == "ASC" ? "DESC" : "ASC") . '&page=' . $curr_page . '">Name ';
-                if ($column_name == 'Name') {
+                echo '<th width="98px"><a href="client_dashboard.php?column_name=user_name&sort_order=' . ($column_name == "user_name" && $sort_order == "ASC" ? "DESC" : "ASC") . '&page=' . $curr_page . '">Name ';
+                if ($column_name == 'user_name') {
                   if ($sort_order == 'DESC') {
                     echo '<i style="position: absolute; margin-top:3px; margin-left:2px;" class="fa fa-arrow-down" aria-hidden="true"></i>';
                   } else {
@@ -195,8 +195,8 @@ if (isset($_POST["search_box"]) && $_POST["search_box"] !== "") {
                 echo '</a></th>';
 
                 // Email
-                echo '<th width="113px"><a href="client_dashboard.php?column_name=Email&sort_order=' . ($column_name == "Email" && $sort_order == "ASC" ? "DESC" : "ASC") . '&page=' . $curr_page . '">Email ';
-                if ($column_name == 'Email') {
+                echo '<th width="113px"><a href="client_dashboard.php?column_name=user_email&sort_order=' . ($column_name == "user_email" && $sort_order == "ASC" ? "DESC" : "ASC") . '&page=' . $curr_page . '">Email ';
+                if ($column_name == 'user_email') {
                   if ($sort_order == 'DESC') {
                     echo '<i class="fa fa-arrow-down" aria-hidden="true"></i>';
                   } else {
@@ -206,8 +206,8 @@ if (isset($_POST["search_box"]) && $_POST["search_box"] !== "") {
                 echo '</a></th>';
 
                 // Mobile
-                echo '<th width="70px"><a href="client_dashboard.php?column_name=Mobile&sort_order=' . ($column_name == "Mobile" && $sort_order == "ASC" ? "DESC" : "ASC") . '&page=' . $curr_page . '">Mobile ';
-                if ($column_name == 'Mobile') {
+                echo '<th width="70px"><a href="client_dashboard.php?column_name=user_mobile&sort_order=' . ($column_name == "user_mobile" && $sort_order == "ASC" ? "DESC" : "ASC") . '&page=' . $curr_page . '">Mobile ';
+                if ($column_name == 'user_mobile') {
                   if ($sort_order == 'DESC') {
                     echo '<i class="fa fa-arrow-down" aria-hidden="true"></i>';
                   } else {
@@ -217,8 +217,8 @@ if (isset($_POST["search_box"]) && $_POST["search_box"] !== "") {
                 echo '</a></th>';
 
                 // Gender
-                echo '<th width="100px"><a href="client_dashboard.php?column_name=Gender&sort_order=' . ($column_name == "Gender" && $sort_order == "ASC" ? "DESC" : "ASC") . '&page=' . $curr_page . '">Gender ';
-                if ($column_name == 'Gender') {
+                echo '<th width="100px"><a href="client_dashboard.php?column_name=user_gender&sort_order=' . ($column_name == "user_gender" && $sort_order == "ASC" ? "DESC" : "ASC") . '&page=' . $curr_page . '">Gender ';
+                if ($column_name == 'user_gender') {
                   if ($sort_order == 'DESC') {
                     echo '<i style="position: absolute; margin-top:3px; margin-left:2px;" class="fa fa-arrow-down" aria-hidden="true"></i>';
                   } else {
@@ -228,8 +228,8 @@ if (isset($_POST["search_box"]) && $_POST["search_box"] !== "") {
                 echo '</a></th>';
 
                 // User_type
-                echo '<th width="97px"><a href="client_dashboard.php?column_name=User_type&sort_order=' . ($column_name == "User_type" && $sort_order == "ASC" ? "DESC" : "ASC") . '&page=' . $curr_page . '">User Type ';
-                if ($column_name == 'User_type') {
+                echo '<th width="97px"><a href="client_dashboard.php?column_name=user_type&sort_order=' . ($column_name == "user_type" && $sort_order == "ASC" ? "DESC" : "ASC") . '&page=' . $curr_page . '">User Type ';
+                if ($column_name == 'user_type') {
                   if ($sort_order == 'DESC') {
                     echo '<i style="position: absolute; margin-top:3px; margin-left:2px;" class="fa fa-arrow-down" aria-hidden="true"></i>';
                   } else {
@@ -239,8 +239,8 @@ if (isset($_POST["search_box"]) && $_POST["search_box"] !== "") {
                 echo '</a></th>';
 
                 // Createdat
-                echo '<th width="135px"><a href="client_dashboard.php?column_name=Createdat&sort_order=' . ($column_name == "Createdat" && $sort_order == "ASC" ? "DESC" : "ASC") . '&page=' . $curr_page . '">Created At ';
-                if ($column_name == 'Createdat') {
+                echo '<th width="135px"><a href="client_dashboard.php?column_name=user_created_at&sort_order=' . ($column_name == "user_created_at" && $sort_order == "ASC" ? "DESC" : "ASC") . '&page=' . $curr_page . '">Created At ';
+                if ($column_name == 'user_created_at') {
                   if ($sort_order == 'DESC') {
                     echo '<i style="position: absolute; margin-top:3px; margin-left:2px;" class="fa fa-arrow-down" aria-hidden="true"></i>';
                   } else {
@@ -257,14 +257,14 @@ if (isset($_POST["search_box"]) && $_POST["search_box"] !== "") {
               if ($result) {
                 while ($row = mysqli_fetch_array($result)) {
                   // Fetch the first row
-                  if ($row['User_role_id'] >= 3 || ($row['User_role_id'] == 2 && $row['Id'] == $_SESSION['Id']) || ($user_role_id == 1 && $row['User_role_id'] != 1)) {
-                    $id = $row['Id'];
-                    $Name = $row['Name'];
-                    $Email = $row['Email'];
-                    $Mobile = $row['Mobile'];
-                    $Gender = $row['Gender'];
-                    $User_type = $row['User_type'];
-                    $Created_at = $row['Createdat'];
+                  if ($row['user_role_id'] >= 3 || ($row['user_role_id'] == 2 && $row['user_id'] == $_SESSION['Id']) || ($user_role_id == 1 && $row['user_role_id'] != 1)) {
+                    $id = $row['user_id'];
+                    $Name = $row['user_name'];
+                    $Email = $row['user_email'];
+                    $Mobile = $row['user_mobile'];
+                    $Gender = $row['user_gender'];
+                    $User_type = $row['user_type'];
+                    $Created_at = $row['user_created_at'];
                     echo "<tr>
                          <td>" . $id . "</td>
                          <td>" . $Name . "</td>

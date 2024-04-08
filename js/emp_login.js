@@ -20,3 +20,7 @@ function validateEmail() {
 setTimeout(function () {
     document.getElementById("flash-message").style.display = 'none';
   }, 10000);
+  
+  setTimeout(function () {
+    document.getElementById("error-message").style.display = 'none';
+  }, 3000);
