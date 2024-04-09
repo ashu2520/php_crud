@@ -3,7 +3,7 @@ $data = array();
 $sql = "SELECT user_type,
         SUM(CASE WHEN user_gender = 'Male' THEN 1 ELSE 0 END) AS male,
         SUM(CASE WHEN user_gender = 'Female' THEN 1 ELSE 0 END) AS female
-        FROM `users` GROUP BY user_type";
+        FROM `users` WHERE user_role_id !=1  GROUP BY user_type";
 $result = mysqli_query($conn, $sql);
 if ($result) {
     while ($row = mysqli_fetch_assoc($result)) {

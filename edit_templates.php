@@ -73,6 +73,7 @@ if (isset($_GET["temp_slug"])) {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Edit Email Templates</title>
+    <link rel="icon" type="image/x-icon" href="images/arcs_logo.png">
 
     <!-- Bootstrap -->
     <link href="css/client_dashboard.css" rel="stylesheet">

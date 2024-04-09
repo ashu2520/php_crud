@@ -12,7 +12,7 @@ $female = 0;
 $sql = "SELECT  count(*) AS num,
 SUM(CASE WHEN user_gender = 'Male' THEN 1 ELSE 0 END) AS male,
 SUM(CASE WHEN user_gender = 'Female' THEN 1 ELSE 0 END) AS female
-FROM `users`";
+FROM `users` WHERE user_role_id != 1";
 $result = mysqli_query($conn, $sql);
 if ($result) {
     $row = mysqli_fetch_assoc($result);
@@ -21,7 +21,7 @@ if ($result) {
     $female = $row['female'];
 }
 $sql = "SELECT COUNT(*) AS cnt FROM `users`
-WHERE DATE(user_created_at) = CURDATE()";
+WHERE DATE(user_created_at) = CURDATE() AND user_role_id !=1";
 $result = mysqli_query($conn, $sql);
 // echo $result;
 // print($result);
@@ -39,6 +39,7 @@ $cur_num = (int)$row['cnt'];
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Graphical Dashboard</title>
+    <link rel="icon" type="image/x-icon" href="images/arcs_logo.png">
 
     <!-- Bootstrap -->
     <link href="css/client_dashboard.css" rel="stylesheet">

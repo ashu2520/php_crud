@@ -49,16 +49,16 @@ if(isset($_POST["Submitasd"]))
 	}
 	if (!$error && !$password_error) {
 			$new_hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
-			$sql= "UPDATE `users` set  Password = '$new_hashed_password' where user_id = $Id";
+			$sql= "UPDATE `users` set  user_password = '$new_hashed_password' where user_id = $Id";
 			$result = mysqli_query($conn, $sql);
 			if ($result) {
 				// echo"Ha bhai...";
-				$sql_content = "SELECT temp_subject, temp_content FROM email_templates WHERE temp_slug = 'change_password'";
-				$result_content = mysqli_query($conn, $sql_content);
-				$row = mysqli_fetch_array($result_content);
+				// $sql_content = "SELECT temp_subject, temp_content FROM email_templates WHERE temp_slug = 'change_password'";
+				// $result_content = mysqli_query($conn, $sql_content);
+				// $row = mysqli_fetch_array($result_content);
 				
-				$subject = $row["temp_subject"];
-				$body = $row["temp_content"];
+				// $subject = $row["temp_subject"];
+				// $body = $row["temp_content"];
 
 				$sql_email = "SELECT user_email FROM `users` WHERE user_id = $Id";
 				$result_email = mysqli_query($conn, $sql_email);
@@ -67,7 +67,15 @@ if(isset($_POST["Submitasd"]))
 				$email = $row['user_email'];
 
 				// Calling the function for mailing...
-				mailer($email, $subject, $body);  // present in connect.php
+				// mailer($email, $subject, $body);  // present in connect.php
+				// $command = "php -r 'require_once(\"connect.php\"); mailer(\"$email\", \"$subject\", \"$body\");'> /dev/null 2>&1 &";
+				$temp_slug = 'change_password';
+				$command = "php -r 'require_once(\"connect.php\"); mailer(\"$temp_slug\", \"$email\", \"\" , \"\");'> /dev/null 2>&1 &";
+
+				// Execute the command
+				exec($command);
+				// print_r(exec($command));
+				// die();
 				$_SESSION['flash_message'] = " Password Changed Sucessfully ";
 				// header("location:emp_logout.php");
 				echo '<meta http-equiv="refresh" content="0;url=emp_logout.php">';
@@ -84,6 +92,7 @@ if(isset($_POST["Submitasd"]))
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Admin Update Data</title>
+	<link rel="icon" type="image/x-icon" href="images/arcs_logo.png">
 
 	<!-- Bootstrap -->
 	<link href="css/client_dashboard.css" rel="stylesheet">

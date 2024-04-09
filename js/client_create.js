@@ -21,7 +21,7 @@ function validateName() {
     var nameRegex = /^[a-zA-Z\s'-]+$/;
 
     if (name === "") {
-        document.getElementById("name_err").innerHTML = "Please Enter Your Name.";
+        document.getElementById("name_err").innerHTML = "Please enter your name.";
         name_input.style.borderColor = "black";
         return false;
     } else if (!nameRegex.test(name)) {
@@ -42,7 +42,7 @@ function validateMobileNumber() {
     var mobileRegex = /^[0-9]{10}$/;
 
     if (mobileNumber === "") {
-        document.getElementById("mobile_error").innerHTML = "Please Enter Mobile Number.";
+        document.getElementById("mobile_error").innerHTML = "Please enter mobile number.";
         mobile_input.style.borderColor = "black";
         return false;
     }
@@ -175,7 +175,7 @@ function validateConfirmPassword() {
     var confirm_password = document.getElementById('confirm_password_input').value;
 
     if (confirm_password === "" || password !== confirm_password) {
-        document.getElementById("confirm_password_err").innerHTML = "Password Missmatched.";
+        document.getElementById("confirm_password_err").innerHTML = "Password missmatched.";
         confirm_password_input.style.borderColor = "black";
         return false;
     } else {

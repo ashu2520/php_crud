@@ -17,18 +17,27 @@ use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
 
-function mailer($email, $subject, $body, $name="")
+function mailer($temp_slug, $email, $name="", $randomHash="")
 {
-  $randomHash = $_SESSION['token_value'];
+  echo $temp_slug;
+  print_r($temp_slug, $email);
+  var_dump($temp_slug);
+  $conn = new mysqli("localhost", "root", "root", "employee_management");
+  $sql_email = "SELECT temp_subject, temp_content FROM email_templates WHERE temp_slug = '$temp_slug'";
+  $result_email = mysqli_query($conn, $sql_email);
+  $row = mysqli_fetch_array($result_email);
+  
+  $subject = $row["temp_subject"];
+  $body = $row["temp_content"];
+  
+  print_r($subject, $body);
+  // die();
+  // $randomHash = $_SESSION['token_value'];
   //Load Composer's autoloader
   // require 'vendor/autoload.php';
-  $body = str_replace("[token_value]", $randomHash, $body);
+  $body = str_replace("[token_value]", $randomHash , $body);
   
   $body = str_replace("[User Name]", $name, $body);
-
-  // $body = str_replace("{{email}}", $email, $body);
-  // $body = str_replace("{{password}}", $cpassword, $body);
-  // $body = str_replace("{{designation}}", $designation, $body);
   
   // Humlog Manually Load karenge...
   require __DIR__.'/PHPMailer-master/src/Exception.php';

@@ -16,7 +16,7 @@ function validateName() {
     var nameRegex = /^[a-zA-Z\s'-]+$/;
 
     if (name === "") {
-        document.getElementById("name_err").innerHTML = "Please Enter Your Name.";
+        document.getElementById("name_err").innerHTML = "Please enter your name.";
         name_input.style.borderColor = "black";
         name_input.style.color = "red";
         return false;
@@ -64,7 +64,7 @@ function validateMobileNumber() {
     var mobileRegex = /^[0-9]{10}$/;
 
     if (mobileNumber === "") {
-        document.getElementById("mobile_error").innerHTML = "Please Enter Mobile Number.";
+        document.getElementById("mobile_error").innerHTML = "Please enter mobile number.";
         mobile_input.style.borderColor = "black";
         mobile_input.style.color = "red";
         return false;
@@ -88,11 +88,11 @@ function validateSubject() {
     var subjectRegex = /^(?![_\W])[\w\d].{0,254}$/;
 
     if (subject === "") {
-        document.getElementById("subject_error").innerHTML = "Please Enter Subject";
+        document.getElementById("subject_error").innerHTML = "Please enter subject";
         subject_input.style.borderColor = "black";
         return false;
     } else if (!subjectRegex.test(subject)) {
-        document.getElementById("subject_error").innerHTML = "Please enter a valid Subject.";
+        document.getElementById("subject_error").innerHTML = "Please enter a valid subject.";
             subject_input.style.borderColor = "black";
             subject_input.style.color = "red";
 
@@ -114,7 +114,7 @@ function validateMessage(){
         message_input.style.borderColor = "black";
         return false;
     }else if (!messageRegex.test(message)) {
-            document.getElementById("message_error").innerHTML = "Word Limit Exceeded";
+            document.getElementById("message_error").innerHTML = "Word limit exceeded";
             message_input.style.borderColor = "black";
             message_input.style.color = "red";
 

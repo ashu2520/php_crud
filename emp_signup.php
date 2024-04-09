@@ -76,18 +76,18 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
     $result = mysqli_query($conn, $sql);
     // echo "here";
     if ($result) {
-      $sql_email = "SELECT temp_subject, temp_content FROM email_templates WHERE temp_slug = 'sign_up'";
-      $result_email = mysqli_query($conn, $sql_email);
-      $row = mysqli_fetch_array($result_email);
+     
+			// mailer($email, $subject, $body, $name);  // present in connect.php      
+      
+      $temp_slug = 'sign_up';
 
-      $subject = $row["temp_subject"];
-      $body = $row["temp_content"];
-      // Calling the function for mailing...
-      mailer($email, $subject, $body, $name);  // present in connect.php
-      // if($mail_send){
-        // header("location:emp_login.php");
-        echo '<meta http-equiv="refresh" content="0;url=emp_login.php">';
-        exit();
+      // $command = "php -r 'require_once(\"connect.php\"); mailer(\"$temp_slug\", \"$email\", \"$name\");'> /dev/null 2>&1 &";
+      $command = "php -r 'require_once(\"connect.php\"); mailer(\"$temp_slug\", \"$email\", \"$name\" , \"\");'> /dev/null 2>&1 &";
+
+			exec($command);
+			
+      echo '<meta http-equiv="refresh" content="0;url=emp_login.php">';
+      exit();
       // }
     } else {
       die(mysqli_error($conn));
@@ -188,13 +188,16 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
             <select id="User_type_input" class="form-select" name="User_type" autocomplete="off"
               onblur="validatePosition()">
               <option>Select Position</option>              
-              <option>AIML</option>
-              <option>Backend</option>
-              <option>Cyber Security</option>
-              <option>Data Scientist</option>
-              <option>Devops</option>
-              <option>Frontend</option>
-              <option>Full Stack</option>
+              <option>Select Position</option>
+									<?php
+									$sql_position = "Select * from `position`";
+									$result_position = mysqli_query($conn, $sql_position);
+									while ($row = mysqli_fetch_array($result_position)) {
+										$position_name = $row['position_name'];
+										echo "<option value='$position_name'>" . $position_name . "</option>";
+
+									}
+									?>
             </select>
             <span class='text_error' id="position_err"></span>
           </div>
@@ -215,12 +218,12 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
             <span class='text_error' id="confirm_password_err"></span>
           </div>
 
-          <div class="form-group">
+          <!-- <div class="form-group">
             <div class="check_box">
               <input type="checkbox" name="terms_cond" value="yes">
               <label for="terms">I agree on the terms and conditions.</label>
             </div>
-          </div>
+          </div> -->
 
           <button type="submit" class="btn_login" name="submitasd">Sign Up</button>
         </form>

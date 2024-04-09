@@ -1,7 +1,7 @@
 
 <?php
 $department = array();
-$sql = "SELECT user_type, count(*) AS num, (COUNT(*) * 100 /(SELECT COUNT(*) FROM `users`)) AS num_percent FROM `users` GROUP BY user_type ";
+$sql = "SELECT user_type, count(*) AS num, (COUNT(*) * 100 /(SELECT COUNT(*) FROM `users`)) AS num_percent FROM `users` WHERE user_role_id !=1  GROUP BY user_type ";
 $result = mysqli_query($conn, $sql);
 if ($result) {
     while ($row = mysqli_fetch_assoc($result)) {
@@ -132,7 +132,7 @@ if ($result) {
             colorByPoint: true,
             data: [<?php foreach ($department as $name => $y): ?>{
                     name: '<?PHP echo $name ?>',
-                    y: <?php echo $y; ?>
+                    y: <?php echo round($y,3); ?>
                 }, <?php endforeach; ?>]
         }]
     });

@@ -39,7 +39,7 @@ function validateMobileNumber() {
     var mobileRegex = /^[0-9]{10}$/;
 
     if (mobileNumber === "") {
-        document.getElementById("mobile_error").innerHTML = "Please Enter Mobile Number.";
+        document.getElementById("mobile_error").innerHTML = "Please enter mobile number.";
         mobile_input.style.borderColor = "black";
         return false;
     }

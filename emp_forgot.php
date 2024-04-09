@@ -29,19 +29,19 @@ if (isset($_POST["submit"])) {
     $user_id = $row['user_id'];
 
     // Fetching Email Subject & Content...
-    $sql_content = "SELECT temp_subject, temp_content FROM email_templates WHERE temp_slug = 'forgot_password'";
-    $result_content = mysqli_query($conn, $sql_content);
-    $row = mysqli_fetch_array($result_content);
+    // $sql_content = "SELECT temp_subject, temp_content FROM email_templates WHERE temp_slug = 'forgot_password'";
+    // $result_content = mysqli_query($conn, $sql_content);
+    // $row = mysqli_fetch_array($result_content);
 
-    $subject = $row["temp_subject"];
-    $body = $row["temp_content"];
+    // $subject = $row["temp_subject"];
+    // $body = $row["temp_content"];
 
     $_SESSION['flash_message'] = "Change Password link sent to your mail.";
 
-    // Random String GeneratorS
+    // Random String Generator
     $randomString = uniqid(); // Generate a random string
     $randomHash = md5($randomString); // Generate MD5 hash of the random string
-    $_SESSION['token_value'] = $randomHash;
+    // $randomHash;
 
     // TOKEN Expiry Time...
     $sql_setting = "SELECT * FROM `settings` WHERE setting_id = 1";
@@ -56,7 +56,12 @@ if (isset($_POST["submit"])) {
 
 
     // Calling the function for mailing...
-    mailer($email, $subject, $body);
+    $temp_slug = 'forgot_password';
+    // mailer($temp_slug, $email);
+    $command = "php -r 'require_once(\"connect.php\"); mailer(\"$temp_slug\", \"$email\", \"\" , \"$randomHash\");'> /dev/null 2>&1 &";
+    // var_dump($command);
+    // Execute the command
+    exec($command);
     echo '<meta http-equiv="refresh" content="0;url=emp_login.php">';
 
   } else {
@@ -71,6 +76,8 @@ if (isset($_POST["submit"])) {
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Employee Login</title>
+  <link rel="icon" type="image/x-icon" href="images/arcs_logo.png">
+
   <link href="css/client_dashboard.css" rel="stylesheet">
 </head>
 

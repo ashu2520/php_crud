@@ -32,7 +32,7 @@ if (isset($_GET['deleteid'])) {
     $id_check = ($id !== "") ? true : false;
 
     if($id_check){
-        $sql = "delete from `users` where Id = $id";
+        $sql = "delete from `users` where user_id = $id";
         $result = mysqli_query($conn, $sql);
         header("location:client_dashboard.php?column_name=$column_name&sort_order=$sort_order&page=$curr_page");
         exit();
