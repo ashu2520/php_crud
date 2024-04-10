@@ -54,7 +54,7 @@ if ($_SESSION["User_role_id"] != 1) {
                             <th>Template Name</th>
                             <th>Created At</th>
                             <th>Updated At</th>
-                            <th style="text-align: center;">Actions</th>
+                            <th style="text-align: center;">Action</th>
                         </tr>
                         <?php
                         $format_date = $_SESSION["date_format"];
