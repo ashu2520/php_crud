@@ -1,7 +1,7 @@
 <?php
 include "connect.php";
 // Starting the session
-if (!isset ($_SESSION["user_name"])) {
+if (!isset($_SESSION["user_name"])) {
     header("location:emp_login.php");
 }
 ?>
@@ -11,17 +11,58 @@ if (!isset ($_SESSION["user_name"])) {
 // $Mobile ="";
 // $Subject ="";
 // $Message ="";
-if (isset ($_GET['Id'])) {
-    $Id = $_GET['Id'];
-    $sql = "Select * from `contact_request` where contact_id = $Id";
-    $result = mysqli_query($conn, $sql);
-    $row = mysqli_fetch_array($result);
-    $Name = $row['contact_name'];
-    $Email = $row['contact_email'];
-    $Mobile = $row['contact_number'];
-    $Subject = $row['contact_subject'];
-    $Message = $row['contact_message'];
+function clean_input($fields)
+{
+	$fields = trim($fields);
+	$fields = stripslashes($fields);
+	// $fields = htmlspecialchars($fields);
+	// $fields = str_replace("'", "", $fields);
+	return $fields;
+}
+if (isset($_GET['Id'])) {
+    $Id = clean_input($_GET['Id']);
 
+    // Check if the ID is valid
+    if (!empty($Id) && is_numeric($Id)) {
+        // Proceed with the query
+        $sql = "SELECT * FROM `contact_request` WHERE contact_id = $Id";
+        $result = mysqli_query($conn, $sql);
+
+        if ($result) {
+            $row_count = mysqli_num_rows($result);
+
+            if ($row_count > 0) {
+                $row = mysqli_fetch_array($result);
+                $Name = $row['contact_name'];
+                $Email = $row['contact_email'];
+                $Mobile = $row['contact_number'];
+                $Subject = $row['contact_subject'];
+                $Message = $row['contact_message'];
+            } else {
+                // Handle the case where no data is found
+                $_SESSION['flash_message'] = "No data found";
+                header('location:client_dashboard.php');
+                exit();
+            }
+        } else {
+            // Error in query execution
+            $_SESSION['flash_message'] = "Invalid ID of the client";
+            header('location:client_dashboard.php');
+            exit();
+        }
+    } else {
+        // Invalid ID provided
+        $_SESSION['flash_message'] = "Invalid ID provided";
+        header('location:client_dashboard.php');
+        exit();
+    }
+}
+$is_data = false;
+if(isset($_POST["submit"])){
+    $data = clean_input($_POST["editor"]);
+    if($data !== ""){
+        $is_data = true;
+    }
 }
 ?>
 <html lang="en">
@@ -89,12 +130,20 @@ if (isset ($_GET['Id'])) {
                 </div>
                 <div class="message-reply">
                     <p class="head-reply">REPLY</p>
-                    <form id="main" action="request.php" onsubmit="return validateForm()" method="POST">
+                    <form id="main" action="message_display.php?Id=<?php echo $Id;?>" onsubmit="return validateForm()" method="POST">
                         <textarea name="editor" id="editor"></textarea>
-                        <input type="submit" style="padding: 8px 30px; font-size: 16p0x" class="submit-btn"
-                            value="Send">
+                        <a href="request.php" style="padding: 8px 30px; font-size: 16px" class="submit-btn" value="Send"> Back </a>
+                        <input name="submit" type="submit" style="padding: 8px 30px; font-size: 16px" class="submit-btn" value="Send">
                         <span style="margin: -10px; padding:0px;" class='text_error1' id="message_error"></span>
                     </form>
+
+                    <div class="data">
+                        <?php 
+                            if($is_data){
+                                echo '<br><br>'.$data;
+                            }
+                        ?>
+                    </div>
                 </div>
             </div>
         </div>
@@ -139,7 +188,7 @@ if (isset ($_GET['Id'])) {
 
     <!-- For Validating the message -->
     <script>
-        let editorData = ''; 
+        let editorData = '';
 
         ClassicEditor
             .create(document.querySelector('#editor'))

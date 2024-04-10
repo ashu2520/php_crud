@@ -159,6 +159,7 @@ function validateRole() {
 function validatePassword() {
     var password = document.getElementById('password_input').value;
     var passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^\da-zA-Z\s]).{8,}$/;
+    validateConfirmPassword();
     if (!passwordRegex.test(password)) {
         document.getElementById("passworderr").innerHTML = "Enter the combination of at least 8 numbers, letters, and punctuation marks.";
         password_input.style.borderColor = "black";

@@ -289,7 +289,7 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
 							</div>
 							<div class="input-field">
 								<input id="password_input" type="Password" name="password" class="search-box"
-									placeholder="Password" oninput="validatePassword()" />
+									placeholder="Password" onblur="validatePassword()" />
 								<span class='text_error' id="passworderr"></span>
 
 							</div>

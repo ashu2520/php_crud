@@ -7,7 +7,7 @@ if ($result) {
     while ($row = mysqli_fetch_assoc($result)) {
         // Stored in key-value pair
         // Aara yaha pr sirf num bhi provide karte ho tab bhi %age calculate ho jayega(automatically)...
-        $department[(string) $row['user_type']] = round(floatval($row['num_percent']), 3);
+        $department[(string) $row['user_type']] = floatval($row['num_percent']);
     }
 }
 ?>
@@ -104,7 +104,7 @@ if ($result) {
             // align: 'left'
         },
         tooltip: {
-            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+            pointFormat: '{series.name}: <b>{point.percentage:.2f}%</b>'
         },
         accessibility: {
             point: {
@@ -118,7 +118,7 @@ if ($result) {
                 cursor: 'pointer',
                 dataLabels: {
                     enabled: true,
-                    format: '<b>{point.name}</b><br>{point.percentage}%',
+                    format: '<b>{point.name}</b><br>{point.percentage:.2f}%',
                     distance: 20
                 }
             }
@@ -132,7 +132,7 @@ if ($result) {
             colorByPoint: true,
             data: [<?php foreach ($department as $name => $y): ?>{
                     name: '<?PHP echo $name ?>',
-                    y: <?php echo round($y,3); ?>
+                    y: <?php echo $y; ?>
                 }, <?php endforeach; ?>]
         }]
     });

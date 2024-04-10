@@ -41,6 +41,8 @@ if (isset($_POST["submit"])) {
     // Random String Generator
     $randomString = uniqid(); // Generate a random string
     $randomHash = md5($randomString); // Generate MD5 hash of the random string
+    $_SESSION['token_value'] = $randomHash;
+
     // $randomHash;
 
     // TOKEN Expiry Time...

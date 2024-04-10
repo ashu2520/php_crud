@@ -102,7 +102,9 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Employee Login</title>
+  <title>Employee SignUp</title>
+  <link rel="icon" type="image/x-icon" href="images/arcs_logo.png">
+  
   <link href="css/client_dashboard.css" rel="stylesheet">
 </head>
 
@@ -188,7 +190,6 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
             <select id="User_type_input" class="form-select" name="User_type" autocomplete="off"
               onblur="validatePosition()">
               <option>Select Position</option>              
-              <option>Select Position</option>
 									<?php
 									$sql_position = "Select * from `position`";
 									$result_position = mysqli_query($conn, $sql_position);
@@ -206,7 +207,7 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
           <div class="form-group">
             <label for="password" class="labels">Password</label>
             <input type="password" id="password_input" class="form-control" name="password" placeholder="Password"
-              autocomplete="off" oninput="validatePassword()">
+              autocomplete="off" onblur="validatePassword()">
             <span class='text_error' id="passworderr"></span>
 
           </div>

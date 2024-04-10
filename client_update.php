@@ -1,13 +1,13 @@
 ﻿<?php
 include "connect.php";
 // Starting the session
-if (!isset ($_SESSION["user_name"])) {
+if (!isset($_SESSION["user_name"])) {
 	header("location:emp_login.php");
 	exit();
 }
-if($_SESSION["User_role_id"] != 1 && $_SESSION["User_role_id"] != 2){
-    header("location:emp_login.php");
-    exit();
+if ($_SESSION["User_role_id"] != 1 && $_SESSION["User_role_id"] != 2) {
+	header("location:emp_login.php");
+	exit();
 }
 ?>
 <?php
@@ -32,42 +32,94 @@ $role = "";
 $error = false;
 $emailerr = false;
 
-if (isset ($_GET['updateid'])) {
+if (isset($_GET['updateid'])) {
 	$id = clean_input($_GET['updateid']);
 
-	$column_name = $_GET['column_name'];
-	$sort_order = $_GET['sort_order'];
-	$curr_page = (int) $_GET['page'];
+	// Check if the id is valid
+	if (!empty($id) && is_numeric($id)) {
+		$sql = "SELECT * FROM `users` WHERE user_id = $id";
+		$result = mysqli_query($conn, $sql);
 
+		// Check if the query was successful
+		if ($result) {
+			if (mysqli_num_rows($result) > 0) {
+				$row = mysqli_fetch_assoc($result);
 
-	$sql = "Select * from `users` where user_id = $id";
-	$result = mysqli_query($conn, $sql);
-	$row = mysqli_fetch_assoc($result);
+				$name = $row["user_name"];
+				$email = $row["user_email"];
+				$mobile = $row["user_mobile"];
+				$gender = $row["user_gender"];
+				$position = $row['user_type'];
+				$role = $row['user_role_id'];
 
-	$name = $row["user_name"];
-	$email = $row["user_email"];
-	$mobile = $row["user_mobile"];
-	$gender = $row["user_gender"];
-	// $country = $row['Country'];
-	// $state = $row['State'];
-	$position = $row['user_type'];
-	$role = $row['user_role_id'];
+			} else {
+				// No data found for the provided ID
+				$_SESSION['flash_message'] = "No data found";
+				header('location:client_dashboard.php');
+				exit();
+			}
+		} else {
+			// Error in executing the query
+			$_SESSION['flash_message'] = "No data found";
+			header('location:client_dashboard.php');
+			exit();
+
+		}
+	} else {
+		// Invalid or missing ID
+		$_SESSION['flash_message'] = "Invalid ID provided";
+		header('location:client_dashboard.php');
+		exit();
+
+	}
+
 
 }
 
-if (isset ($_POST["Submitasd"])) {
+// To check curr_page
+if (isset($_GET["page"])) {
+	$curr_page = clean_input($_GET["page"]);
+	if (is_int($curr_page) || $curr_page < 1) {
+		$curr_page = 1;
+	}
+} else {
+	$curr_page = 1;
+}
+
+// To check Column Name
+if (isset($_GET["column_name"])) {
+	$column_name = clean_input($_GET["column_name"]);
+	if ($column_name !== "user_id" && $column_name !== "user_name" && $column_name !== "user_gender" && $column_name !== "user_mobile" && $column_name !== "user_email" && $column_name !== "user_type") {
+		$column_name = "user_created_at";
+	}
+} else {
+	$column_name = "user_created_at";
+}
+
+// To check Sort order
+if (isset($_GET["sort_order"])) {
+	$sort_order = clean_input($_GET["sort_order"]);
+	if ($sort_order !== "ASC" && $sort_order !== "DESC") {
+		$sort_order = "DESC";
+	}
+} else {
+	$sort_order = "DESC";
+}
+
+// When we Update the user.
+if (isset($_POST["Submitasd"])) {
 	#Getting data from request
 	// $User_Name = clean_input($_POST["User_Name"]);
 	$name = clean_input($_POST["name"]);
 	// $email = clean_input($_POST["email"]);
 	$mobile = clean_input($_POST["mobile"]);
-	if (isset ($_POST["gender"])) {
+	if (isset($_POST["gender"])) {
 		$gender = $_POST["gender"];
 	}
 	$position = clean_input($_POST["User_type"]);
 	$role = clean_input($_POST['role_type']);
-	
-	if ((isset($name) && $name == "") || (isset($mobile) && $mobile == "") || (isset($gender) && $gender == "")  || (isset($position) && $position == "")  || (isset($role) && $role == "") || !preg_match("/^[a-zA-Z\s'-]+$/", $name) || !preg_match("/^[0-9]{10}$/", $mobile)) {
+
+	if ((isset($name) && $name == "") || (isset($mobile) && $mobile == "") || (isset($gender) && $gender == "") || (isset($position) && $position == "") || (isset($role) && $role == "") || !preg_match("/^[a-zA-Z\s'-]+$/", $name) || !preg_match("/^[0-9]{10}$/", $mobile)) {
 		$error = true;
 	}
 	if (!$error) {
@@ -78,7 +130,7 @@ if (isset ($_POST["Submitasd"])) {
 			header("location:client_dashboard.php?column_name=$column_name&sort_order=$sort_order&page=$curr_page");
 			exit();
 		} else {
-			die (mysqli_error($conn));
+			die(mysqli_error($conn));
 		}
 	}
 }
@@ -139,7 +191,9 @@ if (isset ($_POST["Submitasd"])) {
 								<label>Mobile: <span>*</span></label>
 							</div>
 							<div class="input-field">
-								<input id="mobile_input" type="number" name="mobile" class="search-box" placeholder="Mobile Number" oninput="validateMobileNumber()" value="<?php echo $mobile ?>">
+								<input id="mobile_input" type="number" name="mobile" class="search-box"
+									placeholder="Mobile Number" oninput="validateMobileNumber()"
+									value="<?php echo $mobile ?>">
 								<span class='text_error' id="mobile_error"></span>
 							</div>
 							<!-- echo '<p class="error-ms">Please fill this field</p>'; -->
@@ -152,7 +206,8 @@ if (isset ($_POST["Submitasd"])) {
 								<label>Email: <span></span></label>
 							</div>
 							<div class="input-field">
-								<input id="email_input" type="text" Name="email" class="search-box" placeholder="Email" disabled oninput="validateEmail()" value="<?php echo $email ?>">
+								<input id="email_input" type="text" Name="email" class="search-box" placeholder="Email"
+									disabled oninput="validateEmail()" value="<?php echo $email ?>">
 								<span class='text_error' id="email_err"></span>
 							</div>
 						</div>
@@ -176,7 +231,7 @@ if (isset ($_POST["Submitasd"])) {
 								<span class='text_error' id="gender_error"></span>
 							</div>
 						</div>
-				
+
 						<!-- User Type -->
 						<div class="form-row">
 							<div class="form-label">
@@ -184,8 +239,8 @@ if (isset ($_POST["Submitasd"])) {
 							</div>
 							<div class="input-field">
 								<div class="input-field">
-									<select style="margin-top: 8px;" id="User_type_input" class="form-select" name="User_type" autocomplete="off"
-										onblur="validateposition()">
+									<select style="margin-top: 8px;" id="User_type_input" class="form-select"
+										name="User_type" autocomplete="off" onblur="validateposition()">
 										<?php
 										$options = array("AIML", "Backend", "Cyber Security", "Data Scientist", "Devops", "Frontend", "Full Stack");
 										foreach ($options as $option) {
@@ -199,38 +254,38 @@ if (isset ($_POST["Submitasd"])) {
 						</div>
 
 
-							<!-- Role Type -->
-							<div class="form-row">
-								<div class="form-label">
-									<label>Role: <span>*</span> </label>
-								</div>
-								<div class="input-field">
-									<select style="margin-top: 7px;" id="role_input" class="form-select" name="role_type" autocomplete="off"
-										onblur="validaterole()">
-										<?php
-										$options = array(
-											"5" => "Employee",
-											"2" => "Admin",
-											"3" => "Manager",
-											"4" => "Team Lead"
-										);
-										foreach ($options as $value => $label) {
-											$selected = ($role == $value) ? 'selected' : '';
-											echo "<option value='$value' $selected>$label</option>";
-										}
-										?>
-									</select>
-								</div>
+						<!-- Role Type -->
+						<div class="form-row">
+							<div class="form-label">
+								<label>Role: <span>*</span> </label>
 							</div>
+							<div class="input-field">
+								<select style="margin-top: 7px;" id="role_input" class="form-select" name="role_type"
+									autocomplete="off" onblur="validaterole()">
+									<?php
+									$options = array(
+										"5" => "Employee",
+										"2" => "Admin",
+										"3" => "Manager",
+										"4" => "Team Lead"
+									);
+									foreach ($options as $value => $label) {
+										$selected = ($role == $value) ? 'selected' : '';
+										echo "<option value='$value' $selected>$label</option>";
+									}
+									?>
+								</select>
+							</div>
+						</div>
 
-							<div class="form-row">
-								<div class="form-label">
-									<label><span></span> </label>
-								</div>
-								<div class="input-field">
-									<input type="submit" class="submit-btn" name="Submitasd" value="Save">
-								</div>
+						<div class="form-row">
+							<div class="form-label">
+								<label><span></span> </label>
 							</div>
+							<div class="input-field">
+								<input type="submit" class="submit-btn" name="Submitasd" value="Save">
+							</div>
+						</div>
 					</form>
 				</div>
 			</div>

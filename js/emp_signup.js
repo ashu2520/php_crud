@@ -143,6 +143,8 @@ function validatePosition() {
 function validatePassword() {
     var password = document.getElementById('password_input').value;
     var passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^\da-zA-Z\s]).{8,}$/;
+    var confirm_password = document.getElementById('confirm_password_input').value;
+        validateConfirmPassword();
     if (!passwordRegex.test(password)) {
         document.getElementById("passworderr").innerHTML = "Enter the combination of at least 8 numbers, letters, and punctuation marks.";
         password_input.style.borderColor = "black";
@@ -157,8 +159,8 @@ function validatePassword() {
 function validateConfirmPassword() {
     var password = document.getElementById('password_input').value;
     var confirm_password = document.getElementById('confirm_password_input').value;
-
-    if (password !== confirm_password) {
+    // validatePassword();
+    if (confirm_password === "" || password !== confirm_password) {
         document.getElementById("confirm_password_err").innerHTML = "Password missmatched.";
         confirm_password_input.style.borderColor = "black";
         return false;

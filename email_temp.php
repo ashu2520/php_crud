@@ -54,10 +54,16 @@ if ($_SESSION["User_role_id"] != 1) {
                             <th>Template Name</th>
                             <th>Created At</th>
                             <th>Updated At</th>
-                            <th>Actions</th>
+                            <th style="text-align: center;">Actions</th>
                         </tr>
                         <?php
-                        $sql = "Select * from `email_templates`";
+                        $format_date = $_SESSION["date_format"];
+                        if ($format_date == "YYYY-MM-DD") {
+                          $format_date = '%Y-%m-%d';
+                        } else {
+                          $format_date = '%d-%m-%Y';
+                        }
+                        $sql = "Select *, DATE_FORMAT(temp_created_at, '" . $format_date . "') as temp_created_at, DATE_FORMAT(temp_updated_at, '" . $format_date . "') as temp_updated_at   from `email_templates`";
                         $result = mysqli_query($conn, $sql);
                         if ($result) {
                             while ($row = mysqli_fetch_array($result)) {
@@ -69,7 +75,7 @@ if ($_SESSION["User_role_id"] != 1) {
                         <td>" . $template_name . "</td>
                         <td>" . $created_date . "</td>
                         <td>" . $updated_date . "</td>
-                        <td> 
+                        <td style='text-align: center;' > 
                         <a href='edit_templates.php?temp_slug=" . $temp_slug . "' id='update' style='margin-right:10px'><img src='images/edit-icon.png'></a> 
                         </td> 
                         </tr>";

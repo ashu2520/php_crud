@@ -26,11 +26,28 @@ if ($format_date == "YYYY-MM-DD") {
 }
 
 // To find number of rows
+if($user_role_id == 1)
+{
+$sql_2 = "Select COUNT(user_id) as cnt from `users` WHERE user_role_id != 1" ;
+$result_2 = mysqli_query($conn, $sql_2);
+$row = mysqli_fetch_array($result_2);
+
+$total_records = (int) $row['cnt'];
+}elseif($user_role_id == 2){
+  $sql_2 = "Select COUNT(user_id) as cnt from `users` WHERE user_role_id != 1 AND user_role_id != 2" ;
+  $result_2 = mysqli_query($conn, $sql_2);
+  $row = mysqli_fetch_array($result_2);
+  
+  $total_records = (int) $row['cnt'] +1;
+}else{
+  
 $sql_2 = "Select COUNT(user_id) as cnt from `users` WHERE user_role_id != 1 AND user_role_id != 2" ;
 $result_2 = mysqli_query($conn, $sql_2);
 $row = mysqli_fetch_array($result_2);
 
-$total_records = (int) $row['cnt'] +1;
+$total_records = (int) $row['cnt'];
+}
+
 $total_pages = ceil($total_records / $num_per_page);
 
 // To check curr_page
@@ -77,24 +94,24 @@ if (isset($_GET["search_box"]) && $_GET["search_box"] !== "") {
  
 
   $sql = "SELECT *,  DATE_FORMAT(user_created_at, '" . $format_date . "') AS Createdat  FROM users 
-          WHERE user_id LIKE '%$search%' 
-          OR user_name LIKE '%$search%' 
-          OR user_mobile LIKE '%$search%' 
-          OR user_email LIKE '%$search%' 
-          OR user_gender LIKE '%$search%' 
-          OR user_type LIKE '%$search%' 
+          WHERE user_id LIKE '%".trim($search)."%' 
+          OR user_name LIKE '%".trim($search)."%' 
+          OR user_mobile LIKE '%".trim($search)."%' 
+          OR user_email LIKE '%".trim($search)."%' 
+          OR user_gender LIKE '%".trim($search)."%' 
+          OR user_type LIKE '%".trim($search)."%' 
           ORDER BY $column_name $sort_order 
           LIMIT $start_from, $num_per_page";
   $result = mysqli_query($conn, $sql);
 
 // Count the total number of records matching the search criteria
   $count_sql = "SELECT COUNT(*) AS total_count FROM users 
-              WHERE user_id LIKE '%$search%' 
-              OR user_name LIKE '%$search%' 
-              OR user_mobile LIKE '%$search%' 
-              OR user_email LIKE '%$search%' 
-              OR user_gender LIKE '%$search%' 
-              OR user_type LIKE '%$search%'";
+              WHERE user_id LIKE '%".trim($search)."%' 
+              OR user_name LIKE '%".trim($search)."%'
+              OR user_mobile LIKE '%".trim($search)."%' 
+              OR user_email LIKE '%".trim($search)."%' 
+              OR user_gender LIKE '%".trim($search)."%' 
+              OR user_type LIKE '%".trim($search)."%'";
 
 $count_result = mysqli_query($conn, $count_sql);
 $count_row = mysqli_fetch_assoc($count_result);

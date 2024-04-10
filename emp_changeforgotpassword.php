@@ -17,12 +17,14 @@ function cleanpass_input($fields)
 if (isset($_GET["token"])) {
   // echo $_GET["token"];
   $token = $_GET["token"];
+
   $_SESSION['token_value'] = $token;
 
   $sql = "SELECT * FROM `security_token` WHERE token_value = '$token'";
   $result = mysqli_query($conn, $sql);
   $row = mysqli_fetch_array($result);
   $token_expiry_time = $row['token_expiry_time'];
+  $token_id = $row['token_id'];
   // Convert MySQL date string to DateTime object
   $token_expiry_time = new DateTime($token_expiry_time);
 
@@ -61,11 +63,12 @@ if (isset($_POST["submit"])) {
       $token = $_SESSION['token_value'];
       unset($_SESSION['token_value']);
       
-      $sql_1 = "UPDATE `users` SET Password = '$hashed_password' WHERE user_id = ( SELECT token_user_id FROM `security_token` WHERE token_value = '$token');";
+      $sql_1 = "UPDATE `users` SET user_password = '$hashed_password' WHERE user_id = ( SELECT token_user_id FROM `security_token` WHERE `security_token`.`token_value` = '$token');";
       $result_1 = mysqli_query($conn, $sql_1);
-      $sql_2 = "UPDATE `security_token` SET token_value = 'NULL' WHERE token_value = '$token'";
+      // echo $token;
+      $sql_2 = "DELETE FROM `security_token` WHERE `token_value` = '$token'";
       $result_2 = mysqli_query($conn, $sql_2);
-      if ($result_1) {
+      if ($result_1 ) {
 			    $_SESSION['flash_message'] = "Password Changed Successfully.";
           header("location:emp_login.php");
           exit();

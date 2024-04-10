@@ -21,7 +21,7 @@ $result_2 = mysqli_query($conn, $sql_2);
 $total_records = mysqli_num_rows($result_2);
 $total_pages = ceil($total_records / $num_per_page);
 
-if (isset ($_GET["page"])) {
+if (isset($_GET["page"])) {
   $curr_page = clean_search_input($_GET["page"]);
   if (is_int($curr_page) || $curr_page < 1 || $curr_page > $total_pages) {
     $curr_page = 1;
@@ -30,7 +30,7 @@ if (isset ($_GET["page"])) {
   $curr_page = 1;
 }
 
-if (isset ($_GET["column_name"])) {
+if (isset($_GET["column_name"])) {
   $column_name = clean_search_input($_GET["column_name"]);
   if ($column_name !== "contact_id" && $column_name !== "contact_name" && $column_name !== "contact_email" && $column_name !== "contact_number" && $column_name !== "contact_subject") {
     $column_name = "contact_id";
@@ -39,7 +39,7 @@ if (isset ($_GET["column_name"])) {
   $column_name = "contact_id";
 }
 
-if (isset ($_GET["sort_order"])) {
+if (isset($_GET["sort_order"])) {
   $sort_order = clean_search_input($_GET["sort_order"]);
   if ($sort_order !== "ASC" && $sort_order !== "DESC") {
     $sort_order = "ASC";
@@ -52,14 +52,16 @@ $curr_page = max(1, $curr_page);
 $start_from = ($curr_page - 1) * $num_per_page;
 // $start_form --> ye batata hai ki next page kaha se start hoga...  
 $search = "";
-if (isset ($_POST["search_box"])) {
-  $search = clean_search_input($_POST["search_box"]);
+if (isset($_GET["search_box"]) && $_GET["search_box"] !== "") {
+  $search = stripslashes($_GET["search_box"]);
+  $search = str_replace("'", '', $search);
+  $search = htmlspecialchars($search, ENT_QUOTES, 'UTF-8');
   $sql = "SELECT contact_id, contact_name, contact_email, contact_number, contact_subject, contact_message FROM contact_request 
-          WHERE contact_id LIKE '%$search%' 
-          OR contact_name LIKE '%$search%' 
-          OR contact_email LIKE '%$search%' 
-          OR contact_number LIKE '%$search%' 
-          OR contact_subject LIKE '%$search%' 
+          WHERE contact_id LIKE '%".trim($search)."%' 
+          OR contact_name LIKE '%".trim($search)."%' 
+          OR contact_email LIKE '%".trim($search)."%' 
+          OR contact_number LIKE '%".trim($search)."%' 
+          OR contact_subject LIKE '%".trim($search)."%' 
           ORDER BY $column_name $sort_order 
           LIMIT $start_from, $num_per_page";
   $result = mysqli_query($conn, $sql);
@@ -79,6 +81,7 @@ if (isset ($_POST["search_box"])) {
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Request Data</title>
   <link rel="icon" type="image/x-icon" href="images/arcs_logo.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
   <!-- Bootstrap -->
   <link href="css/client_dashboard.css" rel="stylesheet">
@@ -115,9 +118,9 @@ if (isset ($_POST["search_box"])) {
               </div> -->
 
               <!-- Search Box -->
-              <form id="myForm" role="form" action="" method="POST">
+              <form id="myForm" role="form" action="" method="GET">
                 <input id="search_box" type="text" class="search-box search-upper" name="search_box"
-                  placeholder="Search..." value=<?php echo "$search" ?>>
+                  placeholder="Search..." value="<?php echo $search ?>">
                 <input type="submit" class="submit-btn" value="Search" />
                 <!-- <div class="add_more_user_button">
                   <a class="submit-btn add-user" href="client_create.php">Add More Users</a>
@@ -135,14 +138,65 @@ if (isset ($_POST["search_box"])) {
             <tbody>
               <tr>
                 <?php
-                echo '
-                  <th width="10px"><a href="request.php?column_name=contact_id&sort_order=' . ($sort_order == "DESC" ? "ASC" : "DESC") . '&page=' . $curr_page . '">Id</a></th>
-                  <th width="10px"><a href="request.php?column_name=contact_name&sort_order=' . ($sort_order == "DESC" ? "ASC" : "DESC") . '&page=' . $curr_page . '">Name</a></th>
-                  <th width="10px"><a href="request.php?column_name=contact_email&sort_order=' . ($sort_order == "DESC" ? "ASC" : "DESC") . '&page=' . $curr_page . '">Email</a></th>
-                  <th width="10px"><a href="request.php?column_name=contact_number&sort_order=' . ($sort_order == "DESC" ? "ASC" : "DESC") . '&page=' . $curr_page . '">Mobile</a></th>
-                  <th width="10px"><a href="request.php?column_name=contact_subject&sort_order=' . ($sort_order == "DESC" ? "ASC" : "DESC") . '&page=' . $curr_page . '">Subject</a></th> ';
+                echo '<th width="10px"><a href="request.php?column_name=contact_id&sort_order=' . ($sort_order == "DESC" ? "ASC" : "DESC") . '&page=' . $curr_page . '">Id';
+
+                if ($column_name == "contact_id") {
+                  if ($sort_order == 'DESC') {
+                    echo '<i style="position: absolute; margin-top:3px; margin-left:2px;" class="fa fa-arrow-down" aria-hidden="true"></i>';
+                  } else {
+                    echo '<i style="position: absolute; margin-top:3px; margin-left:2px;" class="fa fa-arrow-up" aria-hidden="true"></i>';
+                  }
+                }
+
+                echo '</a></th>';
+                echo '<th width="10px"><a href="request.php?column_name=contact_name&sort_order=' . ($sort_order == "DESC" ? "ASC" : "DESC") . '&page=' . $curr_page . '">Name';
+
+                if ($column_name == "contact_name") {
+                  if ($sort_order == 'DESC') {
+                    echo '<i style="position: absolute; margin-top:3px; margin-left:2px;" class="fa fa-arrow-down" aria-hidden="true"></i>';
+                  } else {
+                    echo '<i style="position: absolute; margin-top:3px; margin-left:2px;" class="fa fa-arrow-up" aria-hidden="true"></i>';
+                  }
+                }
+
+                echo '</a></th>';
+                echo '<th width="10px"><a href="request.php?column_name=contact_email&sort_order=' . ($sort_order == "DESC" ? "ASC" : "DESC") . '&page=' . $curr_page . '">Email';
+
+                if ($column_name == "contact_email") {
+                  if ($sort_order == 'DESC') {
+                    echo '<i style="position: absolute; margin-top:3px; margin-left:2px;" class="fa fa-arrow-down" aria-hidden="true"></i>';
+                  } else {
+                    echo '<i style="position: absolute; margin-top:3px; margin-left:2px;" class="fa fa-arrow-up" aria-hidden="true"></i>';
+                  }
+                }
+
+                echo '</a></th>';
+                echo '<th width="10px"><a href="request.php?column_name=contact_number&sort_order=' . ($sort_order == "DESC" ? "ASC" : "DESC") . '&page=' . $curr_page . '">Mobile';
+
+                if ($column_name == "contact_number") {
+                  if ($sort_order == 'DESC') {
+                    echo '<i style="position: absolute; margin-top:3px; margin-left:2px;" class="fa fa-arrow-down" aria-hidden="true"></i>';
+                  } else {
+                    echo '<i style="position: absolute; margin-top:3px; margin-left:2px;" class="fa fa-arrow-up" aria-hidden="true"></i>';
+                  }
+                }
+
+                echo '</a></th>';
+
+                echo '<th width="10px"><a href="request.php?column_name=contact_subject&sort_order=' . ($sort_order == "DESC" ? "ASC" : "DESC") . '&page=' . $curr_page . '">Subject';
+
+                if ($column_name == "contact_subject") {
+                  if ($sort_order == 'DESC') {
+                    echo '<i style="position: absolute; margin-top:3px; margin-left:2px;" class="fa fa-arrow-down" aria-hidden="true"></i>';
+                  } else {
+                    echo '<i style="position: absolute; margin-top:3px; margin-left:2px;" class="fa fa-arrow-up" aria-hidden="true"></i>';
+                  }
+                }
+
+                echo '</a></th>';
+
                 ?>
-                <th width="50px" class="Message" style="color: #ff651b;">Message</th>
+                <th width="50px" class="Message" style="color: #ff651b; padding-left: 15px;">Message</th>
               </tr>
 
               <?php
@@ -191,11 +245,11 @@ if (isset ($_POST["search_box"])) {
 
             // Display page numbers
             for ($i = $start_page; $i <= $end_page; $i++) {
-              if($curr_page == $i) {
+              if ($curr_page == $i) {
                 echo "<a  style='background-color: #ff651b; color: #fff; cursor: not-allowed; text-decoration: none;'>" . $i . "</a>";
-                }else{
-                  echo "<a class='$class' href='request.php?column_name=" . $column_name . "&sort_order=" . ($sort_order == "DESC" ? "DESC" : "ASC") . "&page=" . $i . "'>" . $i . "</a>";
-                }
+              } else {
+                echo "<a class='$class' href='request.php?column_name=" . $column_name . "&sort_order=" . ($sort_order == "DESC" ? "DESC" : "ASC") . "&page=" . $i . "'>" . $i . "</a>";
+              }
             }
 
             if ($curr_page + 1 <= $total_pages) {

@@ -123,7 +123,7 @@
     
 }
 .sup-form-row input{
-    float: right;
+    /* float: right; */
     height: 40px;
     width: 260px;
     font-size: 16px ;

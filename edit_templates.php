@@ -53,7 +53,10 @@ if (isset($_POST["submit"])) {
 <?php
 // $temp_slug = "";
 if (isset($_GET["temp_slug"])) {
-    $temp_slug = $_GET["temp_slug"];
+    $temp_slug = clean_input($_GET["temp_slug"]);
+    if($temp_slug !== 'sign_up' && $temp_slug !== 'change_password' && $temp_slug !== 'user_added' && $temp_slug !== 'forgot_password'){
+        $temp_slug = 'sign_up';
+    }
     $_SESSION['temp_slug'] = $temp_slug;
     $sql = "Select * from `email_templates` WHERE temp_slug = '$temp_slug'";
     $result = mysqli_query($conn, $sql);
@@ -115,7 +118,7 @@ if (isset($_GET["temp_slug"])) {
 
         .ck.ck-content {
             width: 715px;
-            height: 270px;
+            height: 320px;
         }
 
         #main {
@@ -202,7 +205,7 @@ if (isset($_GET["temp_slug"])) {
                 return false;
             } else {
                 console.log("Editor Data:", editorData.getData());
-                alert("Message Send Successfully");
+                alert("Email Edited Successfully");
                 return true;
             }
         }

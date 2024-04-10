@@ -138,7 +138,7 @@ if(isset($_POST["Submitasd"]))
 								<label>New Password: <span></span></label>
 							</div>
 							<div class="input-field">
-								<input type="password" id="password_input" class="search-box" name="new_pass" placeholder="New Password" autocomplete="off" oninput="validatePassword()" >
+								<input type="password" id="password_input" class="search-box" name="new_pass" placeholder="New Password" autocomplete="off" onblur="validatePassword()" >
 								<span class='text_error' id="passworderr" ></span>
 							</div>
 						</div>
@@ -185,6 +185,7 @@ function validateForm() {
 function validatePassword() {
     var password = document.getElementById('password_input').value;
     var passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^\da-zA-Z\s]).{8,}$/;
+	validateConfirmPassword();
     if (!passwordRegex.test(password)) {
         document.getElementById("passworderr").innerHTML = "Enter the combination of at least 8 numbers, letters, and punctuation marks.";
         password_input.style.borderColor = "black";
@@ -199,7 +200,7 @@ function validateConfirmPassword() {
     var password = document.getElementById('password_input').value;
     var confirm_password = document.getElementById('confirm_password_input').value;
 
-    if (password !== confirm_password) {
+    if (confirm_password === "" || password !== confirm_password) {
         document.getElementById("confirm_password_err").innerHTML = "Password Missmatched.";
         confirm_password_input.style.borderColor = "black";
         return false;
