@@ -16,10 +16,11 @@ function cleansignup_input($fields)
 }
 $name = "";
 $email = "";
+$country_code = "";
 $mobile = "";
 $gender = "";
-// $country = "";
-// $state = "";
+$country = "";
+$state = "";
 $position = "";
 $password = "";
 $confirm_pass = "";
@@ -29,22 +30,26 @@ $nameerr = false;
 $emailerr = false;
 $mobilerr = false;
 $gender_error = false;
+$location_error = false;
+// $role_error = false;
+$position_error = false;
 $passworderr = false;
 $confirm_pass_err = false;
 // print_r($_POST);
 
-if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) && isset($_POST["password"]) && isset($_POST["confirm_pass"]) && isset($_POST["gender"]) && isset($_POST['User_type'])) {
+if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) && isset($_POST["password"]) && isset($_POST["confirm_pass"]) && isset($_POST["gender"]) && isset($_POST['User_type']) && isset($_POST['country']) && isset($_POST['state'])) {
   #Getting data from request
   // print_r($_POST);
 
   $name = cleansignup_input($_POST['name']);
   $email = cleansignup_input($_POST['email']);
+  $country_code = strval($_POST['country_code']);
   $mobile = cleansignup_input($_POST['mobile']);
   $password = cleansignup_input($_POST["password"]);
   $confirm_pass = cleansignup_input($_POST["confirm_pass"]);
   $gender = $_POST["gender"];
-  // $country = $_POST["country"];
-  // $state = $_POST["state"];
+  $country = $_POST["country"];
+  $state = $_POST["state"];
   $position = $_POST["User_type"];
   if (isset($_POST['terms_cond'])) {
     $terms_cond = "yes";
@@ -53,9 +58,29 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
   if (!preg_match("/^[a-zA-Z\s'-]+$/", $name) || $name == "") {
     $nameerr = true;
   }
-  if (!preg_match("/^[0-9]{10}$/", $mobile) || $mobile == "") {
+
+  $mobile = str_replace("(", "", $mobile);
+  $mobile = str_replace(")", "", $mobile);
+  $mobile = str_replace("-", "", $mobile);
+  $mobile = str_replace(" ", "", $mobile);
+  $mobile = "+" . $country_code . " " . $mobile;
+
+  if (!preg_match("/^\+\d{1,4}\s?([1-9]\d{5,11})$/", $mobile) || !(isset($mobile)) || $mobile == "") {
     $mobilerr = true;
   }
+  if ($state == "" || !(isset($state)) || $state == "Select State") {
+    $location_error = true;
+  }
+  if ($country == "" || !(isset($country)) || $country == "Select Country") {
+    $location_error = true;
+  }
+  if ($position == "" || !(isset($position)) || $position == "Select Position") {
+    $position_error = true;
+  }
+  // if ($role == "" || !(isset($role)) || $role == "Select Role") {
+  // 	$role_error = true;
+  // }
+
 
   # Email check
   $sql_em = "SELECT * FROM `users` WHERE user_email = '$email'";
@@ -71,21 +96,35 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
     $confirm_pass_err = true;
   }
   $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-  if (!$nameerr && !$emailerr && !$mobilerr && !$passworderr && !$confirm_pass_err) {
-    $sql = "INSERT INTO `users` (user_name, user_mobile, user_email, user_gender, user_type, user_password, user_terms_cond, user_created_at, user_updated_at) VALUES ('$name', '$mobile', '$email', '$gender', '$position', '$hashed_password', '$terms_cond', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)";
+  if (!$nameerr && !$emailerr && !$location_error && !$position_error && !$passworderr && !$confirm_pass_err) {
+    $sql = "INSERT INTO `users` (user_name, user_mobile, user_email, user_gender, user_country, user_state, user_type, user_password, user_terms_cond, user_created_at, user_updated_at) VALUES ('$name', '$mobile', '$email', '$gender', '$country', '$state', '$position', '$hashed_password', '$terms_cond', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)";
     $result = mysqli_query($conn, $sql);
     // echo "here";
     if ($result) {
-     
-			// mailer($email, $subject, $body, $name);  // present in connect.php      
-      
-      $temp_slug = 'sign_up';
+
+      // Random String Generator
+      $randomString = uniqid(); // Generate a random string
+      $randomHash = md5($randomString); // Generate MD5 hash of the random string
+      $_SESSION['token_value'] = $randomHash;
+
+      // TOKEN Expiry Time...
+      $sql_setting = "SELECT * FROM `settings` WHERE setting_id = 1";
+      $result_setting = mysqli_query($conn, $sql_setting);
+      if ($result_setting) {
+        $row = mysqli_fetch_assoc($result_setting);
+        $link_exp_time = $row['setting_token_expiry_time'];
+      }
+
+      $sql_token = "INSERT INTO `security_token` (`token_user_email`, `token_type`, `token_value`, `token_expiry_time`, `token_created_at`, `token_updated_at`) VALUES ( '$email', 'Account Verificatioin', '$randomHash',  DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 48 HOUR), CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)";
+      $result_token = mysqli_query($conn, $sql_token);
+
+      $temp_slug = 'verification_link';
 
       // $command = "php -r 'require_once(\"connect.php\"); mailer(\"$temp_slug\", \"$email\", \"$name\");'> /dev/null 2>&1 &";
-      $command = "php -r 'require_once(\"connect.php\"); mailer(\"$temp_slug\", \"$email\", \"$name\" , \"\");'> /dev/null 2>&1 &";
+      $command = "php -r 'require_once(\"connect.php\"); mailer(\"$temp_slug\", \"$email\", \"$name\" , \"$randomHash\");'> /dev/null 2>&1 &";
 
-			exec($command);
-			
+      exec($command);
+      $_SESSION['flash_message'] = "Sign Up Successful! Please verify your account";
       echo '<meta http-equiv="refresh" content="0;url=emp_login.php">';
       exit();
       // }
@@ -104,8 +143,13 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Employee SignUp</title>
   <link rel="icon" type="image/x-icon" href="images/arcs_logo.png">
-  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
   <link href="css/client_dashboard.css" rel="stylesheet">
+  <script type='text/javascript' src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <!-- Required for using jQuery input mask plugin -->
+  <script type='text/javascript'
+    src="https://rawgit.com/RobinHerbots/jquery.inputmask/3.x/dist/jquery.inputmask.bundle.js"></script>
 </head>
 
 <body>
@@ -128,10 +172,23 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
           echo '<div class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>UnSucess!</strong> Mobile Error</div>';
         } else if ($emailerr) {
           echo '<div class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>UnSucess!</strong> Email Already Exist</div>';
+        } else if ($location_error) {
+          echo '<div class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>UnSucess!</strong> Loaction Error</div>';
+        } else if ($position_error) {
+          echo '<div class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>UnSucess!</strong> Position Error</div>';
         } else if ($passworderr || $confirm_pass_err) {
           echo '<div class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>UnSucess!</strong> Invalid Password Type</div>';
         }
         ?>
+        <!-- Flash Messages -->
+        <?php
+        if (isset($_SESSION['flash_message'])) {
+          $message = $_SESSION['flash_message'];
+          unset($_SESSION['flash_message']);
+          echo "<span id='flash-message' class='login-flash-message'> $message</span>";
+        }
+        ?>
+
         <form id="main" class="margin_bottom" role="form" onsubmit="validateForm(); return false;"
           action="emp_signup.php" method="POST">
           <div class="form-group">
@@ -143,10 +200,34 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
 
           <div class="form-group">
             <label for="Mobile" class="labels">Mobile Number</label>
-            <input id="mobile_input" type="number" class="form-control" name="mobile" placeholder="Mobile Number"
-              autocomplete="off" oninput="validateMobileNumber()">
+            <div class="input-group">
+              <!-- Country Code Select -->
+              <select style="width: 86px;" id="country_code" class="form-control" name="country_code">
+                <option value="91">+91</option>
+                <?php
+                // Fetching country phonecodes
+                $sql_countries_phonecode = "SELECT * FROM `countries` WHERE country_phonecode != 91";
+                $result_countries_phonecode = mysqli_query($conn, $sql_countries_phonecode);
+
+                while ($row = mysqli_fetch_assoc($result_countries_phonecode)) {
+                  $country_id = $row['country_id'];
+                  // echo $country_id;
+                  $country_phonecode = $row['country_phonecode'];
+                  // echo $country_phonecode;
+                  echo "<option value='$country_phonecode'>" . "+" . $country_phonecode . "</option>";
+                }
+                ?>
+              </select>
+
+              <!-- Mobile Number -->
+              <input style="width: 240px" id="mobile_input" type="text" class="form-control" name="mobile"
+                placeholder="####-###-###" autocomplete="off">
+            </div>
+            <!-- Error Message -->
             <span class='text_error' id="mobile_error"></span>
           </div>
+
+
 
           <div class="form-group">
             <label for="exampleInputEmail1">Email</label>
@@ -159,46 +240,55 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
             <label class="labels">Select Gender</label>
             <input id="gender_male" class="rad_opt" checked type="radio" name="gender" oninput="vaildategender()"
               value="Male">
-            <span class="rad_text"> Male</span>
+            <span class="rad_text" value="Male"> Male</span>
             <input id="gender_female" class="rad_opt" type="radio" name="gender" oninput="vaildategender()"
               value="female">
-            <span class="rad_text"> Female</span>
+            <span class="rad_text" value="Female"> Female</span>
             <span class='text_error' id="gender_error"></span>
           </div>
 
-          <!-- 
+
           <div class="form-group">
             <div class="select_option">
 
               <label class="labels">Country And State</label>
-              <select id="country_select" class="form-select country" aria-label="Default select example" name="country"
-                onchange="loadStates()">
+              <select style="width: 150px; float: left;" id="country_select" class="form-select"
+                aria-label="Default select example" name="country" onchange="loadCountry()">
                 <option>Select Country</option>
+                <?php
+                $sql_countries = "Select * from `countries`";
+                $result_countries = mysqli_query($conn, $sql_countries);
+                while ($row = mysqli_fetch_array($result_countries)) {
+                  $country_name = $row['country_name'];
+                  $country_id = $row['country_id'];
+                  echo "<option value='$country_id'>" . $country_name . "</option>";
+                }
+                ?>
               </select>
 
-              <select id="state_select" class="form-select state" aria-label="Default select example" name="state"
-                onblur="validatelocation()">
+              <select style="width: 150px; float: right;" id="state_select" disabled class="form-select"
+                aria-label="Default select example" name="state" onblur="validatelocation()">
                 <option>Select State</option>
+
               </select>
-              <span class='text_error' id="location_error" ></span>
 
             </div>
-          </div> -->
+            <span class='text_error' id="location_error"></span>
+          </div>
 
           <div class="form-group">
             <label for="Position">Position</label>
             <select id="User_type_input" class="form-select" name="User_type" autocomplete="off"
               onblur="validatePosition()">
-              <option>Select Position</option>              
-									<?php
-									$sql_position = "Select * from `position`";
-									$result_position = mysqli_query($conn, $sql_position);
-									while ($row = mysqli_fetch_array($result_position)) {
-										$position_name = $row['position_name'];
-										echo "<option value='$position_name'>" . $position_name . "</option>";
-
-									}
-									?>
+              <option style="color: lightgray;">Select Position</option>
+              <?php
+              $sql_position = "Select * from `position`";
+              $result_position = mysqli_query($conn, $sql_position);
+              while ($row = mysqli_fetch_array($result_position)) {
+                $position_name = $row['position_name'];
+                echo "<option value='$position_name'>" . $position_name . "</option>";
+              }
+              ?>
             </select>
             <span class='text_error' id="position_err"></span>
           </div>
@@ -207,24 +297,37 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
           <div class="form-group">
             <label for="password" class="labels">Password</label>
             <input type="password" id="password_input" class="form-control" name="password" placeholder="Password"
-              autocomplete="off" onblur="validatePassword()">
-            <span class='text_error' id="passworderr"></span>
-
+              autocomplete="off" oninput="validatePassword()">
+            <!-- <span class='text_error' id="passworderr"></span> -->
+            <div class="tool-tip-signup">
+              <p id="password-check">Password must contain the following: </p>
+              <div class="tool-tip-signup-error">
+                <!-- <i class="fa-solid fa-xmark"></i> -->
+                <p id="password-lowercase"><i class="fa-solid fa-xmark"></i> A lowercase letter.</p>
+                <p id="password-uppercase"><i class="fa-solid fa-xmark"></i> A capital (Uppercase) letter.
+                </p>
+                <p id="password-special"><i class="fa-solid fa-xmark"></i> A special character.</p>
+                <p id="password-number"><i class="fa-solid fa-xmark"></i> A number.</p>
+                <p id="password-length"><i class="fa-solid fa-xmark"></i> Between 8-16 characters.</p>
+              </div>
+              <!-- <i class="fa-solid fa-check"></i> -->
+            </div>
           </div>
 
           <div class="form-group">
             <label for="Password" class="labels">Confirm Password</label>
             <input type="password" class="form-control" id="confirm_password_input" name="confirm_pass"
-              placeholder="Confirm Password" autocomplete="off" oninput="validateConfirmPassword()">
+              placeholder="Confirm Password" autocomplete="off" oninput="validatePassword()">
             <span class='text_error' id="confirm_password_err"></span>
           </div>
 
-          <!-- <div class="form-group">
+
+          <div class="form-group">
             <div class="check_box">
               <input type="checkbox" name="terms_cond" value="yes">
               <label for="terms">I agree on the terms and conditions.</label>
             </div>
-          </div> -->
+          </div>
 
           <button type="submit" class="btn_login" name="submitasd">Sign Up</button>
         </form>
@@ -234,9 +337,9 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
       </div>
     </div>
   </div>
-  <script src="js/countrydata.js"></script>
-  <script src="js/emp_signup.js"></script>
 
+
+  <script src="js/emp_signup.js"></script>
 </body>
 
 </html>

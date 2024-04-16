@@ -34,6 +34,9 @@ $terms_cond = "";
 $nameerr = false;
 $emailerr = false;
 $mobilerr = false;
+$location_error = false;
+$role_error = false;
+$position_error = false;
 $gender_error = false;
 $passworderr = false;
 $confirm_pass_err = false;
@@ -43,24 +46,40 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
 
 	$name = clean_input($_POST['name']);
 	$email = clean_input($_POST['email']);
+	$country_code = strval($_POST['country_code']);
 	$mobile = clean_input($_POST['mobile']);
+
+	$mobile = str_replace("(", "", $mobile);
+	$mobile = str_replace(")", "", $mobile);
+	$mobile = str_replace("-", "", $mobile);
+	$mobile = str_replace(" ", "", $mobile);
+	$mobile = "+" . $country_code . " " . $mobile;
+
 	$password = clean_input($_POST["password"]);
 	$confirm_pass = clean_input($_POST["confirm_pass"]);
 	$gender = $_POST["gender"];
-	// $country = $_POST["country"];
-	// $state = $_POST["state"];
+	$country = $_POST["country"];
+	$state = $_POST["state"];
 	$position = $_POST["User_type"];
 	$role = $_POST["role_type"];
-	print_r($_POST);
-	// die();
-	if (isset($_POST['terms_cond'])) {
-		$terms_cond = "yes";
-	}
+
 	if (!preg_match("/^[a-zA-Z\s'-]+$/", $name) || !(isset($name)) || $name == "") {
 		$nameerr = true;
 	}
-	if (!preg_match("/^[0-9]{10}$/", $mobile) || !(isset($mobile)) || $mobile == "") {
+	if (!preg_match("/^\+\d{1,4}\s?([1-9]\d{5,11})$/", $mobile) || !(isset($mobile)) || $mobile == "") {
 		$mobilerr = true;
+	}
+	if ($state == "" || !(isset($state)) || $state == "Select State") {
+		$location_error = true;
+	}
+	if ($country == "" || !(isset($country)) || $country == "Select Country") {
+		$location_error = true;
+	}
+	if ($position == "" || !(isset($position)) || $position == "Select Position") {
+		$position_error = true;
+	}
+	if ($role == "" || !(isset($role)) || $role == "Select Role") {
+		$role_error = true;
 	}
 
 	# Email check
@@ -76,8 +95,13 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
 		$confirm_pass_err = true;
 	}
 	$hashed_password = password_hash($password, PASSWORD_DEFAULT);
-	if (!$nameerr && !$emailerr && !$mobilerr && !$passworderr && !$confirm_pass_err) {
-		$sql = "INSERT INTO `users` (user_name, user_mobile, user_email, user_gender,  user_type, user_role_id, user_password, user_terms_cond, user_created_at, user_updated_at) VALUES ('$name', '$mobile', '$email', '$gender', '$position', '$role', '$hashed_password', '$terms_cond', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)";
+
+	// print_r($_POST);
+	$status = 'Active';
+	// echo $name ." ". $mobile ." ". $email ." ".$gender ." ". $country ." ". $state ." ". $status ." ". $position ." ". $role ." ". $hashed_password; 
+
+	if (!$nameerr && !$emailerr && !$mobilerr && !$location_error && !$position_error && !$role_error && !$passworderr && !$confirm_pass_err) {
+		$sql = "INSERT INTO `users` (user_name, user_mobile, user_email, user_gender, user_country, user_state, user_status, user_type, user_role_id, user_password, user_created_at, user_updated_at) VALUES ('$name', '$mobile', '$email', '$gender', $country, $state, '$status', '$position', $role, '$hashed_password', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)";
 		$result = mysqli_query($conn, $sql);
 		// echo "here";
 		if ($result) {
@@ -101,7 +125,7 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
 
 			// Execute the command
 			exec($command);
-			
+
 			// header("location:client_dashboard.php");
 			$_SESSION['flash_message'] = "Sucessfully Added";
 			echo '<meta http-equiv="refresh" content="0;url=client_dashboard.php">';
@@ -125,6 +149,10 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
 
 	<!-- Bootstrap -->
 	<link href="css/client_dashboard.css" rel="stylesheet">
+	<script type='text/javascript' src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+	<!-- Required for using jQuery input mask plugin -->
+	<script type='text/javascript'
+		src="https://rawgit.com/RobinHerbots/jquery.inputmask/3.x/dist/jquery.inputmask.bundle.js"></script>
 </head>
 
 <body>
@@ -147,6 +175,12 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
 						echo '<div class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>UnSucess!</strong> Mobile Error</div>';
 					} else if ($emailerr) {
 						echo '<div class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>UnSucess!</strong> Email Already Exist</div>';
+					} else if ($location_error) {
+						echo '<div class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>UnSucess!</strong> Loaction Error</div>';
+					} else if ($position_error) {
+						echo '<div class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>UnSucess!</strong> Position Error</div>';
+					} else if ($role_error) {
+						echo '<div class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>UnSucess!</strong> Role Error</div>';
 					} else if ($passworderr || $confirm_pass_err) {
 						echo '<div class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>UnSucess!</strong> Invalid Password Type</div>';
 					}
@@ -171,8 +205,25 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
 								<label>Mobile Number: <span>*</span></label>
 							</div>
 							<div class="input-field">
-								<input id="mobile_input" type="number" name="mobile" class="search-box"
-									placeholder="Mobile Number" oninput="validateMobileNumber()" />
+								<select style="width: 86px; height: 35px;" id="country_code" class="form-control"
+									name="country_code">
+									<option value="91">+91</option>
+									<?php
+									// Fetching country phonecodes
+									$sql_countries_phonecode = "SELECT * FROM `countries` WHERE country_phonecode != 91";
+									$result_countries_phonecode = mysqli_query($conn, $sql_countries_phonecode);
+
+									while ($row = mysqli_fetch_assoc($result_countries_phonecode)) {
+										$country_id = $row['country_id'];
+										// echo $country_id;
+										$country_phonecode = $row['country_phonecode'];
+										// echo $country_phonecode;
+										echo "<option value='$country_phonecode'>" . "+" . $country_phonecode . "</option>";
+									}
+									?>
+								</select>
+								<input style="width: 207px; height: 35px;" id="mobile_input" type="text" name="mobile"
+									class="search-box" placeholder="####-###-###">
 								<span class='text_error' id="mobile_error"></span>
 							</div>
 						</div>
@@ -204,23 +255,34 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
 						</div>
 
 						<!-- Location -->
-						<!-- <div class="form-row">
+						<div class="form-row">
 							<div class="form-label">
-								<label>Country And State: <span>*</span></label>
+								<label>Location: <span>*</span></label>
 							</div>
 							<div class="input-field">
-								<select style="width: 120px; height: 20px" id="country_select"
-									class="form-select country" aria-label="Default select example" name="country"
-									onchange="loadStates()">
+								<select style=" width:140px; height: 35px; margin-right: 20px;" id="country_select"
+									class="form-select" name="country" autocomplete="off" onchange="loadCountry()">
 									<option>Select Country</option>
+									<?php
+									$sql_countries = "Select * from `countries`";
+									$result_countries = mysqli_query($conn, $sql_countries);
+									while ($row = mysqli_fetch_array($result_countries)) {
+										$country_name = $row['country_name'];
+										$country_id = $row['country_id'];
+										// $selected = ($country == $country_id) ? 'selected' : '';
+										echo "<option $selected value='$country_id'>" . $country_name . "</option>";
+
+									}
+									?>
 								</select>
-								<select style="width: 120px; height: 20px" id="state_select" class="form-select state"
-									aria-label="Default select example" name="state" onblur="validatelocation()">
+								<select style="width: 130px; height: 35px;" id="state_select" disabled
+									class="form-select" aria-label="Default select example" name="state"
+									onblur="validatelocation()">
 									<option>Select State</option>
 								</select>
 								<br><span class='text_error' id="location_error"></span>
 							</div>
-						</div> -->
+						</div>
 
 						<!-- User Type -->
 						<div class="form-row">
@@ -240,13 +302,6 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
 
 									}
 									?>
-									<!-- <option>AIML</option>
-									<option>Backend</option>
-									<option>Cyber Security</option>
-									<option>Data Scientist</option>
-									<option>Devops</option>
-									<option>Frontend</option>
-									<option>Full Stack</option> -->
 								</select>
 								<span class='text_error' id="position_err"></span>
 							</div>
@@ -289,9 +344,20 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
 							</div>
 							<div class="input-field">
 								<input id="password_input" type="Password" name="password" class="search-box"
-									placeholder="Password" onblur="validatePassword()" />
-								<span class='text_error' id="passworderr"></span>
-
+									placeholder="Password" oninput="validatePassword()" />
+								<!-- <span class='text_error' id="passworderr"></span> -->
+								<div class="tool-tip-create">
+									<p id="password-check">Password must contain the following: </p>
+									<div class="tool-tip-create-error">
+										<!-- <i class="fa-solid fa-xmark"></i> -->
+										<p id="password-lowercase"><i class="fa-solid fa-xmark"></i> A lowercase letter.</p>
+										<p id="password-uppercase"><i class="fa-solid fa-xmark"></i> A capital(Uppercase) letter.</p>
+										<p id="password-special"><i class="fa-solid fa-xmark"></i> A special character.</p>
+										<p id="password-number"><i class="fa-solid fa-xmark"></i> A number.</p>
+										<p id="password-length"><i class="fa-solid fa-xmark"></i> Between 8-16 characters.</p>
+									</div>
+									<!-- <i class="fa-solid fa-check"></i> -->
+								</div>
 							</div>
 						</div>
 
@@ -302,7 +368,7 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
 							</div>
 							<div class="input-field">
 								<input id="confirm_password_input" type="Password" name="confirm_pass"
-									class="search-box" placeholder="Password" oninput="validateConfirmPassword()" />
+									class="search-box" placeholder="Password" oninput="validatePassword()" />
 								<span class='text_error' id="confirm_password_err"></span>
 							</div>
 						</div>

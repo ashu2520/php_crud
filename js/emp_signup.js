@@ -3,18 +3,19 @@ async function validateForm() {
     console.log('validateMobileNumber:', validateMobileNumber());
     console.log('validateEmail', await validateEmail());
     console.log('validateGender:', vaildategender());
-    // console.log('validatelocation:', validatelocation());
+    console.log('validatelocation:', validatelocation());
     // console.log('validatePosition:', validateposition());
     console.log('validatePosition:', validatePosition());
     console.log('validatePassword:', validatePassword());
-    console.log('validateConfirmPassword:', validateConfirmPassword());
-    
-    if (!validateName() || !validateMobileNumber() || !(await validateEmail()) || !vaildategender()  || !validatePosition()|| !validatePassword() || !validateConfirmPassword()) {
+    // console.log('validateConfirmPassword:', validateConfirmPassword());
+
+    if (!validateName() || !validateMobileNumber() || !(await validateEmail()) || !vaildategender() || !validatelocation() || !validatePosition() || !validatePassword()) {
         return false;
     }
-    
+
     document.getElementById("main").submit();
 }
+
 function validateName() {
     var name = document.getElementById("name_input").value.trim();
     var nameRegex = /^[a-zA-Z\s'-]+$/;
@@ -36,25 +37,25 @@ function validateName() {
     }
 }
 
-function validateMobileNumber() {
-    var mobileNumber = document.getElementById("mobile_input").value;
-    var mobileRegex = /^[0-9]{10}$/;
+// function validateMobileNumber() {
+//     var mobileNumber = document.getElementById("mobile_input").value;
+//     var mobileRegex = /^[0-9]{10}$/;
 
-    if (mobileNumber === "") {
-        document.getElementById("mobile_error").innerHTML = "Please enter mobile number.";
-        mobile_input.style.borderColor = "black";
-        return false;
-    }
-    else if (!mobileRegex.test(mobileNumber) || isNaN(mobileNumber)) {
-        document.getElementById("mobile_error").innerHTML = "Please enter a valid mobile number of length 10.";
-        mobile_input.style.borderColor = "black";
-        return false;
-    } else {
-        document.getElementById("mobile_error").innerHTML = "";
-        mobile_input.style.borderColor = "green";
-        return true;
-    }
-}
+//     if (mobileNumber === "") {
+//         document.getElementById("mobile_error").innerHTML = "Please enter mobile number.";
+//         mobile_input.style.borderColor = "black";
+//         return false;
+//     }
+//     else if (!mobileRegex.test(mobileNumber) || isNaN(mobileNumber)) {
+//         document.getElementById("mobile_error").innerHTML = "Please enter a valid mobile number of length 10.";
+//         mobile_input.style.borderColor = "black";
+//         return false;
+//     } else {
+//         document.getElementById("mobile_error").innerHTML = "";
+//         mobile_input.style.borderColor = "green";
+//         return true;
+//     }
+// }
 
 URL = "email_validation.php"
 async function isDuplicateEmail(email = '') {
@@ -64,7 +65,7 @@ async function isDuplicateEmail(email = '') {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
-            body: `email=${email}`, 
+            body: `email=${email}`,
         });
 
         const data = await response.json();
@@ -142,40 +143,208 @@ function validatePosition() {
 
 function validatePassword() {
     var password = document.getElementById('password_input').value;
-    var passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^\da-zA-Z\s]).{8,}$/;
     var confirm_password = document.getElementById('confirm_password_input').value;
-        validateConfirmPassword();
-    if (!passwordRegex.test(password)) {
-        document.getElementById("passworderr").innerHTML = "Enter the combination of at least 8 numbers, letters, and punctuation marks.";
-        password_input.style.borderColor = "black";
-        return false;
+    var lower_regex = /[a-z]/;
+    var upper_regex = /[A-Z]/;
+    var num_regex = /\d/;
+    var special_regex = /[^a-zA-Z0-9\s]/;
+    var length_regex = /^.{8,16}$/;
+
+    if (lower_regex.test(password)) {
+        $("#password-lowercase i").removeClass("fa-xmark").addClass("fa-check").css("color", "green");
+        $("#password-lowercase").css("color", "green");
     } else {
-        document.getElementById("passworderr").innerHTML = "";
-        password_input.style.borderColor = "green";
-        return true;
+        $("#password-lowercase i").removeClass("fa-check").addClass("fa-xmark").css("color", "red");
+        $("#password-lowercase").css("color", "red");
+    }
+
+    if (upper_regex.test(password)) {
+        $("#password-uppercase i").removeClass("fa-xmark").addClass("fa-check").css("color", "green");
+        $("#password-uppercase").css("color", "green");
+    } else {
+        $("#password-uppercase i").removeClass("fa-check").addClass("fa-xmark").css("color", "red");
+        $("#password-uppercase").css("color", "red");
+    }
+
+    if (num_regex.test(password)) {
+        $("#password-number i").removeClass("fa-xmark").addClass("fa-check").css("color", "green");
+        $("#password-number").css("color", "green");
+    } else {
+        $("#password-number i").removeClass("fa-check").addClass("fa-xmark").css("color", "red");
+        $("#password-number").css("color", "red");
+    }
+
+    if (special_regex.test(password)) {
+        $("#password-special i").removeClass("fa-xmark").addClass("fa-check").css("color", "green");
+        $("#password-special").css("color", "green");
+    } else {
+        $("#password-special i").removeClass("fa-check").addClass("fa-xmark").css("color", "red");
+        $("#password-special").css("color", "red");
+
+    }
+
+    if (length_regex.test(password)) {
+        $("#password-length i").removeClass("fa-xmark").addClass("fa-check").css("color", "green");
+        $("#password-length").css("color", "green");
+    } else {
+        $("#password-length i").removeClass("fa-check").addClass("fa-xmark").css("color", "red");
+        $("#password-length").css("color", "red");
+    }
+
+    // Confirm Password validation...
+    var confirm_password_flag = false;
+    if (confirm_password === "") {
+        $("#confirm_password_err").html("");
+        $("#confirm_password_input").css("border-color", "black");
+        confirm_password_flag = false;
+
+    } else if (password === confirm_password) {
+        $("#confirm_password_err").html("");
+        $("#confirm_password_input").css("border-color", "green");
+        confirm_password_flag = true;
+    } else {
+        $("#confirm_password_err").html("Password Missmatched.");
+        $("#confirm_password_input").css("border-color", "black");
+        confirm_password_flag = false;
+    }
+
+
+    if (lower_regex.test(password) && upper_regex.test(password) && num_regex.test(password) && special_regex.test(password) && length_regex.test(password)) {
+        $('#password_input').css("border-color", "green");
+        $('.tool-tip-signup').css("border-color", "green");
+        $('#password-check').css('color', 'green');
+        $('.tool-tip-signup').addClass('green-border');
+
+        if (confirm_password_flag)
+            return true;
+        else
+            return false;
+    } else {
+        $('#password_input').css("border-color", "black");
+        $('.tool-tip-signup').css("border-color", "red");
+        $('#password-check').css('color', 'red');
+        $('.tool-tip-signup').removeClass('green-border');
+        return false;
     }
 }
 
-function validateConfirmPassword() {
-    var password = document.getElementById('password_input').value;
-    var confirm_password = document.getElementById('confirm_password_input').value;
-    // validatePassword();
-    if (confirm_password === "" || password !== confirm_password) {
-        document.getElementById("confirm_password_err").innerHTML = "Password missmatched.";
-        confirm_password_input.style.borderColor = "black";
-        return false;
-    } else {
-        document.getElementById("confirm_password_err").innerHTML = "";
+function validatelocation() {
+    let country = document.getElementById('country_select').value;
+    let state = document.getElementById('state_select').value;
+    console.log(state);
+    if (country != "" && country != "Select Country" && state != "" && state != "Select State") {
+        document.getElementById("location_error").innerHTML = "";
         confirm_password_input.style.borderColor = "green";
         return true;
+    } else {
+        document.getElementById("location_error").innerHTML = "Please select your loaction.";
+        confirm_password_input.style.borderColor = "black";
+        return false;
     }
 }
+
+function loadCountry() {
+    var country = document.getElementById('country_select').value;
+    var state = document.getElementById('state_select');
+    state.innerHTML = "";
+    let option = document.createElement('option');
+    option.textContent = "Select State";
+    state.appendChild(option);
+
+    state.disabled = true;
+    console.log(country);
+    if (country != "" && country != "Select Country") {
+        state.disabled = false;
+
+        fetch('state.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `country_code=${country}`,
+        })
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(function (stateData) {
+                    // console.log(stateData);
+                    var option = document.createElement('option');
+                    option.value = stateData.state_id;
+                    // console.log(option.value);
+                    option.textContent = stateData.state_name;
+                    state.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+}
+
 setTimeout(function () {
     const errElements = document.getElementsByClassName("error-message-div")
-    if (errElements.length){
+    if (errElements.length) {
         errElements.forEach(element => {
             element.style.display = 'none';
         });
     }
-  }, 
-3000);
+}, 3000);
+
+
+// Mobile number masking
+window.onload = function () {
+    $(document).ready(function () {
+        // $("#mobile_input").inputmask('####-###-###');
+        function updatePlaceholder() {
+            let country_id = $('#country_code').val();
+            console.log(country_id);
+
+            $.ajax({
+                url: 'countries.php',
+                type: 'POST',
+                contentType: 'application/x-www-form-urlencoded',
+                data: { country_id: country_id },
+                success: function (response) {
+                    // console.log(response); 
+                    response = JSON.parse(response); // decode the JSON into key value-pair
+                    console.log(response);
+
+                    $("#mobile_input").attr('placeholder', response.ph_mask);
+                    $("#mobile_input").inputmask(response.ph_mask);
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseText); // Log any errors
+                }
+            });
+        }
+
+        updatePlaceholder()
+        // Call the updatePlaceholder function when the select element changes
+        $('#country_code').change(updatePlaceholder);
+    });
+};
+
+// Mobile number validation
+$(document).ready(function () {
+    $('#mobile_input').blur(validateMobileNumber);
+});
+function validateMobileNumber() {
+    var mobileNumber = $("#mobile_input").val().trim();
+    var placeholder = $("#mobile_input").attr('placeholder');
+    var mobileRegex = /^(?!0)\((?!0)\d{3}\)|(?!0)\d{3}-\d{3}-\d{4}$/;
+
+console.log(mobileNumber);
+    // Check if the mobile number is empty or does not match the input mask
+    if (!mobileNumber || mobileNumber.length !== placeholder.length) {
+        $("#mobile_input").css("border-color", "black");
+        $("#mobile_error").html("Please enter mobile number."); 
+        return false; 
+    } else if (!mobileRegex.test(mobileNumber)) {
+        $("#mobile_input").css("border-color", "black");
+        $("#mobile_error").html("Number should not start with 0."); 
+        return false;
+    } else {
+        $("#mobile_input").css("border-color", "green");
+        $("#mobile_error").html(""); 
+        return true; 
+    }
+}

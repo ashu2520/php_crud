@@ -1,18 +1,18 @@
-<?php 
-include("connect.php");
+<?php
+include ("connect.php");
 // Session creation
 if (isset($_SESSION["user_name"])) {
   header("location:client_dashboard.php");
 }
 ?>
-<?php 
+<?php
 function cleanpass_input($fields)
 {
-    $fields = trim($fields);
-    $fields = stripslashes($fields);
-    $fields = str_replace("'", "", $fields);
-    $fields = htmlspecialchars($fields);
-    return $fields;
+  $fields = trim($fields);
+  $fields = stripslashes($fields);
+  $fields = str_replace("'", "", $fields);
+  $fields = htmlspecialchars($fields);
+  return $fields;
 }
 if (isset($_GET["token"])) {
   // echo $_GET["token"];
@@ -28,18 +28,18 @@ if (isset($_GET["token"])) {
   // Convert MySQL date string to DateTime object
   $token_expiry_time = new DateTime($token_expiry_time);
 
-// Get current date and time
+  // Get current date and time
   $current_date_time = new DateTime();
-  if($current_date_time > $token_expiry_time){
+  if ($current_date_time > $token_expiry_time) {
     $_SESSION['flash_message'] = "Session Time Expired";
     header("location:emp_login.php");
     exit();
   }
   if (mysqli_num_rows($result) != 1) {
-      // echo"Here I am! hello";
-      // die();
-      header("location:emp_login.php");
-      exit();
+    // echo"Here I am! hello";
+    // die();
+    header("location:emp_login.php");
+    exit();
   }
 }
 // echo"Here I am";
@@ -55,38 +55,44 @@ if (isset($_POST["submit"])) {
 
   if ($password == "" || !preg_match("#^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^\da-zA-Z\s]).{8,}$#", $password) || strcmp($password, $confirm_password) !== 0) {
     $error = true;
-} 
+  }
   $hashed_password = password_hash($password, PASSWORD_DEFAULT);
   if (!$error) {
-      // echo $token;
-      // die();
-      $token = $_SESSION['token_value'];
-      unset($_SESSION['token_value']);
-      
-      $sql_1 = "UPDATE `users` SET user_password = '$hashed_password' WHERE user_id = ( SELECT token_user_id FROM `security_token` WHERE `security_token`.`token_value` = '$token');";
-      $result_1 = mysqli_query($conn, $sql_1);
-      // echo $token;
-      $sql_2 = "DELETE FROM `security_token` WHERE `token_value` = '$token'";
-      $result_2 = mysqli_query($conn, $sql_2);
-      if ($result_1 ) {
-			    $_SESSION['flash_message'] = "Password Changed Successfully.";
-          header("location:emp_login.php");
-          exit();
-      } else {
-          die(mysqli_error($conn));
-      }
+    // echo $token;
+    // die();
+    $token = $_SESSION['token_value'];
+    unset($_SESSION['token_value']);
+
+    $sql_1 = "UPDATE `users` SET user_password = '$hashed_password' WHERE user_id = ( SELECT token_user_id FROM `security_token` WHERE `security_token`.`token_value` = '$token');";
+    $result_1 = mysqli_query($conn, $sql_1);
+    // echo $token;
+    $sql_2 = "DELETE FROM `security_token` WHERE `token_value` = '$token'";
+    $result_2 = mysqli_query($conn, $sql_2);
+    if ($result_1) {
+      $_SESSION['flash_message'] = "Password Changed Successfully.";
+      header("location:emp_login.php");
+      exit();
+    } else {
+      die(mysqli_error($conn));
+    }
   }
 }
 ?>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Employee Login</title>
   <link rel="icon" type="image/x-icon" href="images/arcs_logo.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
   <link href="css/client_dashboard.css" rel="stylesheet">
+  <script type='text/javascript' src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <!-- Required for using jQuery input mask plugin -->
+  <script type='text/javascript'
+    src="https://rawgit.com/RobinHerbots/jquery.inputmask/3.x/dist/jquery.inputmask.bundle.js"></script>
 </head>
 
 <body>
@@ -101,74 +107,150 @@ if (isset($_POST["submit"])) {
 
         <h2>Change <span>Password</span></h2>
         <?php
-            if ($error) {
-              echo '<div class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>Invalid!</strong> Password </div>';
-            }
-            ?>
+        if ($error) {
+          echo '<div class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>Invalid!</strong> Password </div>';
+        }
+        ?>
         <!-- <div class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>Invalid!</strong> username
             or password </div> -->
-        <form class="margin_bottom" onsubmit="return validateForm()" role="form" action="emp_changeforgotpassword.php" method="POST">
+        <form class="margin_bottom" onsubmit="return validateForm()" role="form" action="emp_changeforgotpassword.php"
+          method="POST">
+
           <div class="form-group">
             <label for="exampleInputEmail1">Password</label>
             <input id="password_input" type="password" class="form-control" name="password" autocomplete="off"
-              onblur="validatePassword()" placeholder="Password" />
-            <span class='text_error' id="passworderr"></span>
+            oninput="validatePassword()" placeholder="Password" />
+            <!-- <span class='text_error' id="passworderr"></span> -->
+            <div class="tool-tip-signup">
+              <p id="password-check">Password must contain the following: </p>
+              <div class="tool-tip-signup-error">
+                <!-- <i class="fa-solid fa-xmark"></i> -->
+                <p id="password-lowercase"><i class="fa-solid fa-xmark"></i> A lowercase letter.</p>
+                <p id="password-uppercase"><i class="fa-solid fa-xmark"></i> A capital (Uppercase) letter.
+                </p>
+                <p id="password-special"><i class="fa-solid fa-xmark"></i> A special character.</p>
+                <p id="password-number"><i class="fa-solid fa-xmark"></i> A number.</p>
+                <p id="password-length"><i class="fa-solid fa-xmark"></i> Between 8-16 characters.</p>
+              </div>
+              <!-- <i class="fa-solid fa-check"></i> -->
+            </div>
           </div>
+
           <div class="form-group">
             <label for="exampleInputPassword1">Confirm Password</label>
-            <input id="confirm_password_input" type="password" class="form-control" name="confirm_password" autocomplete="off" onblur="validateConfirmPassword()" placeholder="Confirm Password" />
+            <input id="confirm_password_input" type="password" class="form-control" name="confirm_password"
+              autocomplete="off" oninput="validatePassword()" placeholder="Confirm Password" />
             <span class='text_error' id="confirm_password_err"></span>
-
-           
           </div>
-          <button type="submit" class="btn_login" name="submit">Submit</button>
+
+          <input type="submit" class="btn_login" name="submit" value="Submit">
         </form>
         <div class="login">
-        <p>Back To Login? <a href="emp_login.php">Login</a></p>
+          <p>Back To Login? <a href="emp_login.php">Login</a></p>
         </div>
       </div>
     </div>
   </div>
   <!-- <script src="js/emp_login.js"></script> -->
   <script>
-        function validateForm() {
-      console.log('validatePassword', validatePassword());
-      console.log('validateConfirmPassword', validateConfirmPassword());
-      if (!validateEmail() || !validateConfirmPassword()) {
-        // console.log("here I am")
-        return false;
-      }
-      // alert("asdfghjk");
-      return true;
-    }
 
+    function validateForm() {
+      if (!validatePassword() ) 
+        return false;
+      else 
+        return true;
+    }
     function validatePassword() {
     var password = document.getElementById('password_input').value;
-    var passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^\da-zA-Z\s]).{8,}$/;
-    if (!passwordRegex.test(password)) {
-        document.getElementById("passworderr").innerHTML = "Enter the combination of at least 8 numbers, letters, and punctuation marks.";
-        password_input.style.borderColor = "black";
-        return false;
-    } else {
-        document.getElementById("passworderr").innerHTML = "";
-        password_input.style.borderColor = "green";
-        return true;
-    }
-}
-function validateConfirmPassword() {
-    var password = document.getElementById('password_input').value;
     var confirm_password = document.getElementById('confirm_password_input').value;
+    var lower_regex = /[a-z]/;
+    var upper_regex = /[A-Z]/;
+    var num_regex = /\d/;
+    var special_regex = /[^a-zA-Z0-9\s]/;
+    var length_regex = /^.{8,16}$/;
 
-    if (password !== confirm_password) {
-        document.getElementById("confirm_password_err").innerHTML = "Password Missmatched.";
-        confirm_password_input.style.borderColor = "black";
-        return false;
+    if (lower_regex.test(password)) {
+        $("#password-lowercase i").removeClass("fa-xmark").addClass("fa-check").css("color", "green");
+        $("#password-lowercase").css("color", "green");
     } else {
-        document.getElementById("confirm_password_err").innerHTML = "";
-        confirm_password_input.style.borderColor = "green";
-        return true;
+        $("#password-lowercase i").removeClass("fa-check").addClass("fa-xmark").css("color", "red");
+        $("#password-lowercase").css("color", "red");
+    }
+
+    if (upper_regex.test(password)) {
+        $("#password-uppercase i").removeClass("fa-xmark").addClass("fa-check").css("color", "green");
+        $("#password-uppercase").css("color", "green");
+    } else {
+        $("#password-uppercase i").removeClass("fa-check").addClass("fa-xmark").css("color", "red");
+        $("#password-uppercase").css("color", "red");
+    }
+
+    if (num_regex.test(password)) {
+        $("#password-number i").removeClass("fa-xmark").addClass("fa-check").css("color", "green");
+        $("#password-number").css("color", "green");
+    } else {
+        $("#password-number i").removeClass("fa-check").addClass("fa-xmark").css("color", "red");
+        $("#password-number").css("color", "red");
+    }
+
+    if (special_regex.test(password)) {
+        $("#password-special i").removeClass("fa-xmark").addClass("fa-check").css("color", "green");
+        $("#password-special").css("color", "green");
+    } else {
+        $("#password-special i").removeClass("fa-check").addClass("fa-xmark").css("color", "red");
+        $("#password-special").css("color", "red");
+
+    }
+
+    if (length_regex.test(password)) {
+        $("#password-length i").removeClass("fa-xmark").addClass("fa-check").css("color", "green");
+        $("#password-length").css("color", "green");
+    } else {
+        $("#password-length i").removeClass("fa-check").addClass("fa-xmark").css("color", "red");
+        $("#password-length").css("color", "red");
+    }
+
+    // Confirm Password validation...
+    var confirm_password_flag = false;
+    if (confirm_password === "") {
+        $("#confirm_password_err").html("");
+        $("#confirm_password_input").css("border-color", "black");
+        confirm_password_flag = false;
+
+    } else if (password === confirm_password) {
+        $("#confirm_password_err").html("");
+        $("#confirm_password_input").css("border-color", "green");
+        confirm_password_flag = true;
+    } else {
+        $("#confirm_password_err").html("Password Missmatched.");
+        $("#confirm_password_input").css("border-color", "black");
+        confirm_password_flag = false;
+    }
+
+
+    if (lower_regex.test(password) && upper_regex.test(password) && num_regex.test(password) && special_regex.test(password) && length_regex.test(password)) {
+        $('#password_input').css("border-color", "green");
+        $('.tool-tip-signup').css("border-color", "green");
+        $('#password-check').css('color', 'green');
+        $('.tool-tip-signup').addClass('green-border');
+
+        if (confirm_password_flag)
+            return true;
+        else
+            return false;
+    } else {
+        $('#password_input').css("border-color", "black");
+        $('.tool-tip-signup').css("border-color", "red");
+        $('#password-check').css('color', 'red');
+        $('.tool-tip-signup').removeClass('green-border');
+        return false;
     }
 }
+    <?php
+    if ($error) {
+      echo 'setTimeout(function () { document.getElementsByClassName("error-msg")[0].style.display = \'none\'; }, 3000)';
+    }
+    ?>
   </script>
 </body>
 

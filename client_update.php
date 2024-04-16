@@ -25,8 +25,8 @@ $name = "";
 $email = "";
 $mobile = "";
 $gender = "";
-// $country = "";
-// $state = "";
+$country = "";
+$state = "";
 $position = "";
 $role = "";
 $error = false;
@@ -48,9 +48,24 @@ if (isset($_GET['updateid'])) {
 				$name = $row["user_name"];
 				$email = $row["user_email"];
 				$mobile = $row["user_mobile"];
+
+				$pattern = '/^\+(\d+)\s*/';
+				preg_match($pattern, $mobile, $matches); // $matches will contain the matched groups i.e country code
+				$countrycode = (int) $matches[1];
+				$mobile = preg_replace($pattern, '', $mobile);
+
+				$country = $row['user_country'];
+				$state = $row['user_state'];
 				$gender = $row["user_gender"];
+				$user_status = $row['user_status'];
 				$position = $row['user_type'];
 				$role = $row['user_role_id'];
+				// echo $role;
+				if ($role == 1) {
+					$_SESSION['flash_message'] = "Invalid ID provided";
+					header('location:client_dashboard.php');
+					exit();
+				}
 
 			} else {
 				// No data found for the provided ID
@@ -108,22 +123,36 @@ if (isset($_GET["sort_order"])) {
 
 // When we Update the user.
 if (isset($_POST["Submitasd"])) {
-	#Getting data from request
-	// $User_Name = clean_input($_POST["User_Name"]);
+	// #Getting data from request
 	$name = clean_input($_POST["name"]);
-	// $email = clean_input($_POST["email"]);
+	$country_code = strval($_POST['country_code']);
 	$mobile = clean_input($_POST["mobile"]);
+
+	$mobile = str_replace("(", "", $mobile);
+	$mobile = str_replace(")", "", $mobile);
+	$mobile = str_replace("-", "", $mobile);
+	$mobile = str_replace(" ", "", $mobile);
+
+	$mobile = "+" . $country_code . " " . $mobile;
+
 	if (isset($_POST["gender"])) {
 		$gender = $_POST["gender"];
 	}
+	$country = (int) clean_input($_POST["country"]);
+	$state = (int) clean_input($_POST["state"]);
+
+	$status = clean_input($_POST["status"]);
 	$position = clean_input($_POST["User_type"]);
 	$role = clean_input($_POST['role_type']);
 
-	if ((isset($name) && $name == "") || (isset($mobile) && $mobile == "") || (isset($gender) && $gender == "") || (isset($position) && $position == "") || (isset($role) && $role == "") || !preg_match("/^[a-zA-Z\s'-]+$/", $name) || !preg_match("/^[0-9]{10}$/", $mobile)) {
+	// print_r($_POST);
+	// echo $name ." ". $mobile ." ". $gender ." ". $country ." ". $state ." ". $status ." ". $position ." ". $role; 
+
+	if ((isset($name) && $name == "") || (isset($mobile) && $mobile == "") || (isset($gender) && $gender == "") || (isset($country) && $country == "") || (isset($state) && $state == "") || (isset($status) && $status == "") || (isset($position) && $position == "") || (isset($role) && $role == "") || !preg_match("/^[a-zA-Z\s'-]+$/", $name) || !preg_match("/^\+\d{1,4}\s?([1-9]\d{5,11})$/", $mobile)) {
 		$error = true;
 	}
 	if (!$error) {
-		$sql_1 = "UPDATE `users` set user_id = $id, user_name='$name', user_mobile='$mobile', user_gender= '$gender', user_type ='$position',  user_role_id  =$role, user_updated_at=CURRENT_TIMESTAMP where user_id = $id";
+		$sql_1 = "UPDATE `users` set user_name='$name', user_mobile='$mobile', user_gender= '$gender', user_country = '$country', user_state = '$state', user_status = '$status', user_type ='$position',  user_role_id  =$role, user_updated_at=CURRENT_TIMESTAMP where user_id = $id";
 		$result_1 = mysqli_query($conn, $sql_1);
 		if ($result_1) {
 			$_SESSION['flash_message'] = "Sucessfully Updated";
@@ -147,6 +176,9 @@ if (isset($_POST["Submitasd"])) {
 
 	<!-- Bootstrap -->
 	<link href="css/client_dashboard.css" rel="stylesheet">
+	<script type='text/javascript' src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+	<!-- Required for using jQuery input mask plugin -->
+	<script type='text/javascript' src="https://rawgit.com/RobinHerbots/jquery.inputmask/3.x/dist/jquery.inputmask.bundle.js"></script>
 </head>
 
 <body>
@@ -190,10 +222,33 @@ if (isset($_POST["Submitasd"])) {
 							<div class="form-label">
 								<label>Mobile: <span>*</span></label>
 							</div>
+
 							<div class="input-field">
-								<input id="mobile_input" type="number" name="mobile" class="search-box"
-									placeholder="Mobile Number" oninput="validateMobileNumber()"
-									value="<?php echo $mobile ?>">
+								<!-- Country Code Select -->
+								<select style="width: 86px; height: 35px;" id="country_code" class="form-control"
+									name="country_code">
+									<?php
+									echo "<option value='$countrycode'>" . "+" . $countrycode . "</option>";
+									// Fetching country phonecodes
+									$sql_countries_phonecode = "SELECT * FROM `countries` WHERE country_phonecode";
+									$result_countries_phonecode = mysqli_query($conn, $sql_countries_phonecode);
+
+									while ($row = mysqli_fetch_assoc($result_countries_phonecode)) {
+										$country_id = $row['country_id'];
+										// echo $country_id;
+										$country_phonecode = (int) $row['country_phonecode'];
+										// $selected = ($country_code == $country_phonecode) ? 'selected' : '';
+									
+										echo "<option $selected value='$country_phonecode'>" . "+" . $country_phonecode . "</option>";
+									}
+									?>
+								</select>
+								<?php
+								// ab humare pass counry code hai...
+								
+								?>
+								<input style="width: 207px; height: 35px;" id="mobile_input" type="text" name="mobile"
+									class="search-box" placeholder="####-###-###" value="<?php echo $mobile ?>">
 								<span class='text_error' id="mobile_error"></span>
 							</div>
 							<!-- echo '<p class="error-ms">Please fill this field</p>'; -->
@@ -207,7 +262,7 @@ if (isset($_POST["Submitasd"])) {
 							</div>
 							<div class="input-field">
 								<input id="email_input" type="text" Name="email" class="search-box" placeholder="Email"
-									disabled oninput="validateEmail()" value="<?php echo $email ?>">
+									disabled value="<?php echo $email ?>">
 								<span class='text_error' id="email_err"></span>
 							</div>
 						</div>
@@ -219,16 +274,85 @@ if (isset($_POST["Submitasd"])) {
 							</div>
 							<div class="input-field">
 								<label><input id="gender_male" type="radio" name="gender" value="Male"
-										onblur="validategender()" <?php if ($gender == "Male") {
+										onblur="vaildategender()" <?php if ($gender == "Male") {
 											echo 'checked';
 										} ?>>
-									<span>Male</span></label><label>
+									<span style="margin-right: 21px;">Male</span></label><label>
 									<input id="gender_female" type="radio" name="gender" value="Female"
-										onblur="validategender()" <?php if ($gender == "Female") {
+										onblur="vaildategender()" <?php if ($gender == "Female") {
 											echo 'checked';
 										} ?>>
 									<span>Female</span> </label>
 								<span class='text_error' id="gender_error"></span>
+							</div>
+						</div>
+
+						<!-- Location -->
+						<div class="form-row">
+							<div class="form-label">
+								<label>Location: <span>*</span></label>
+							</div>
+							<div class="input-field">
+								<div class="input-field">
+									<select style=" width:140px; margin-top: 3px; height: 35px; margin-right: 20px;"
+										id="country_select" class="form-select" name="country" autocomplete="off"
+										onchange="loadCountry()">
+										<option>Select Country</option>
+										<?php
+										$sql_countries = "Select * from `countries`";
+										$result_countries = mysqli_query($conn, $sql_countries);
+										while ($row = mysqli_fetch_array($result_countries)) {
+											$country_name = $row['country_name'];
+											$country_id = $row['country_id'];
+											$selected = ($country == $country_id) ? 'selected' : '';
+											echo "<option $selected value='$country_id'>" . $country_name . "</option>";
+
+										}
+										?>
+									</select>
+									<select style=" width:130px; margin-top: 3px; height: 35px;" id="state_select"
+										class="form-select" name="state" autocomplete="off" onblur="validatelocation()">
+										<option>Select State</option>
+
+										<?php
+										$sql_states = "SELECT * FROM `states` WHERE state_country_id = $country";
+										$result_states = mysqli_query($conn, $sql_states);
+										while ($row = mysqli_fetch_array($result_states)) {
+											$state_name = $row['state_name'];
+											$state_id = $row['state_id'];
+											$selected = ($state == $state_id) ? 'selected' : '';
+											echo "<option $selected value='$state_id'>" . $state_name . "</option>";
+
+										}
+										?>
+									</select>
+								</div>
+								<span class='text_error' id="location_error"></span>
+							</div>
+						</div>
+
+						<!-- Status -->
+						<div class="form-row radio-row">
+							<div class="form-label">
+								<label>Status: <span>*</span> </label>
+							</div>
+							<div class="input-field">
+								<label><input id="status_active" type="radio" name="status" value="Active"
+										onblur="validatestatus()" <?php if ($user_status == "Active") {
+											echo 'checked';
+										} ?>>
+									<span style="margin-right: 15px;">Active </span></label><label>
+									<input id="status_inactive" type="radio" name="status" value="Inactive"
+										onblur="validatestatus()" <?php if ($gender == "Inactive") {
+											echo 'checked';
+										} ?>>
+									<span style="margin-right: 15px;">Inactive</span>
+									<input id="status_suspend" type="radio" name="status" value="Suspend"
+										onblur="validatestatus()" <?php if ($gender == "Suspend") {
+											echo 'checked';
+										} ?>>
+									<span>Suspend</span> </label>
+								<span class='text_error' id="status_error"></span>
 							</div>
 						</div>
 
@@ -239,8 +363,8 @@ if (isset($_POST["Submitasd"])) {
 							</div>
 							<div class="input-field">
 								<div class="input-field">
-									<select style="margin-top: 8px;" id="User_type_input" class="form-select"
-										name="User_type" autocomplete="off" onblur="validateposition()">
+									<select style="margin-top: 3px; height: 35px;" id="User_type_input"
+										class="form-select" name="User_type" autocomplete="off">
 										<?php
 										$options = array("AIML", "Backend", "Cyber Security", "Data Scientist", "Devops", "Frontend", "Full Stack");
 										foreach ($options as $option) {
@@ -260,8 +384,8 @@ if (isset($_POST["Submitasd"])) {
 								<label>Role: <span>*</span> </label>
 							</div>
 							<div class="input-field">
-								<select style="margin-top: 7px;" id="role_input" class="form-select" name="role_type"
-									autocomplete="off" onblur="validaterole()">
+								<select style="margin-top: 3px; height: 35px;" id="role_input" class="form-select"
+									name="role_type" autocomplete="off">
 									<?php
 									$options = array(
 										"5" => "Employee",

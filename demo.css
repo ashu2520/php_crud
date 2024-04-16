@@ -1,0 +1,87 @@
+/* .tool-tip-signup {
+    width: fit-content;
+    height: fit-content;
+    background-color: white;
+    border: 2px solid black;
+    color: black;
+    padding: 20px;
+    position: relative;
+    margin: 40px;
+    float: left;
+}
+
+
+
+.tool-tip-signup:after {
+    content: " ";
+    position: absolute;
+    left: -15px;
+    top: 25px;
+    border-top: 15px solid transparent;
+    border-right: 15px solid black;
+    border-left: none;
+    border-bottom: 15px solid transparent;
+} */
+
+
+/* For better visibility of the example
+body {
+    margin: 80px 200px;
+    background-color: #cccccc;
+} */
+
+/* Message box starts here
+.container {
+    clear: both;
+    position: relative;
+} */
+
+.container .arrow {
+    width: 12px;
+    height: 20px;
+    overflow: hidden;
+    position: relative;
+    float: left;
+    top: 6px;
+    right: -1px;
+}
+
+.container .arrow .outer {
+    /* width: 0;
+    height: 0; */
+    border-right: 20px solid #000000;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    position: absolute;
+    /* top: 0;
+    left: 0; */
+}
+
+.container .arrow .inner {
+    /* width: 0;
+    height: 0; */
+    border-right: 20px solid #ffffff;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    position: absolute;
+    /* top: 0; */
+    left: 2px;
+}
+
+.container .tool-tip-signup {
+    float: left;
+    width: 300px;
+    height: auto;
+    border: 1px solid #CCC;
+    background-color: #ffffff;
+    border: 1px solid #000000;
+    padding: 6px 8px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -o-border-radius: 5px;
+    border-radius: 5px;
+}
+
+.container .tool-tip-signup p {
+    margin: 0;
+}

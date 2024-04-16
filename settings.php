@@ -174,7 +174,7 @@ if ($result_setting) {
                     <div class="extra_settings">
                         <div class="extra-settings-form-row">
                             <div class="extra-settings-label">
-                                <label>Number of Users shown per page: </label>
+                                <label>Numbers of rows per page: </label>
                             </div>
                             <div class="extra-settings-field">
                                 <input class="extra-settings-search-box" name="num_per_page" type="number"

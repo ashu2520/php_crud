@@ -84,6 +84,7 @@
 </body>
 
 <!-- User add -->
+
 <body bgcolor="#f9f9f9">
     <table width="600" align="center" bordercolor="#cccccc" cellpadding="40">
         <tr>
@@ -106,68 +107,88 @@
     </table>
     <br>
     <br>
-    </body>
+</body>
 
 
 
-    <!-- Sign Up -->
+<!-- Sign Up -->
 
-    <body bgcolor="#f9f9f9">
-        <table width="600" align="center" bordercolor="#cccccc" cellpadding="40">
+<body bgcolor="#f9f9f9">
+    <table width="600" align="center" bordercolor="#cccccc" cellpadding="40">
         <tr>
             <td align="center">
                 <img src='https://arcsinfotech.com/wp-content/uploads/2024/01/black-logo.png' alt='Company Logo'
                     width="200" height="auto">
             </td>
         </tr>
-            <tr>
-                <td bgcolor="#ffffff">
-                    <h1 align="center">Welcome to ARCS Infotech!</h1>
-                    <p>Dear [User Name],</p>
-                    <p>We are thrilled to welcome you as a new member of our community!</p>
-                    <p>With our platform, you can briefly describe the features or benefits.</p>
-                    <p>We hope you enjoy your experience with us!</p>
-                    <p>Best regards,<br> ARCS Infotech</p>
-                </td>
-            </tr>
-        </table>
-        <br>
-        <br>
-    </body>
-
-
-    <table width="600" align="center" bordercolor="gray" cellspacing="0" cellpadding="0" bgcolor="white"
-        border="1">
         <tr>
-            <td align="center">
-                <table cellspacing="40" cellpadding="0" bgcolor="#ffffff" border="0">
-                    <tr>
-                        <td align="center">
-                            <img src='https://arcsinfotech.com/wp-content/uploads/2024/01/black-logo.png'
-                                alt='Company Logo' width="200" height="auto">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td align="center">
-                            <h1>Password Change Required</h1>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <p>Your password needs to be changed for security reasons. Please click the button below to
-                                change your password:</p>
-                            <p><a href='http://localhost/NewUI/emp_changeforgotpassword.php?token=[token_value]'>Change
-                                    Password</a></p>
-                            <p>If you did not request this change, please ignore this email or contact support.</p>
-                        </td>
-                    </tr>
-                </table>
+            <td bgcolor="#ffffff">
+                <h1 align="center">Welcome to ARCS Infotech!</h1>
+                <p>Dear [User Name],</p>
+                <p>We are thrilled to welcome you as a new member of our community!</p>
+                <p>With our platform, you can briefly describe the features or benefits.</p>
+                <p>We hope you enjoy your experience with us!</p>
+                <p>Best regards,<br> ARCS Infotech</p>
             </td>
         </tr>
     </table>
-                    <tr>
-                        <td >
-                            <img src='https://arcsinfotech.com/wp-content/uploads/2024/01/black-logo.png'
-                                alt='Company Logo'>
-                        </td>
-                    </tr>
+    <br>
+    <br>
+</body>
+
+<!-- Verification Link -->
+
+<table width="600" align="center" bordercolor="gray" cellspacing="0" cellpadding="0" bgcolor="white" border="1">
+    <tr>
+        <td align="center">
+            <table cellspacing="40" cellpadding="0" bgcolor="#ffffff" border="0">
+                <tr>
+                    <td align="center">
+                        <img src='https://arcsinfotech.com/wp-content/uploads/2024/01/black-logo.png' alt='Company Logo'
+                            width="200" height="auto">
+                    </td>
+                </tr>
+                <tr>
+                    <td align="center">
+                        <h1>Verification Link</h1>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <p>Dear [User Name],</p>
+                        <p>Welcome to ARCS Infotech! </p>
+                        <p> Please click the button below to
+                            verify your account:</p>
+                        <p><a href='http://localhost/NewUI/verification.php?token=[token_value]'>Verify
+                                Account</a></p>
+                        <p>If you did not Sign Up then, please ignore this email or contact support.</p>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+
+<!-- 
+"IN": "+91(####)###-###",
+"UK": "+44-##-####-####",
+"US": "+1(###)###-####",
+
+
+SELECT ph_country_shortname, COUNT(*) AS duplicate_count
+FROM phone_masks
+GROUP BY ph_country_shortname
+HAVING COUNT(*) > 1; -->
+<?php 
+$mobile = "6074534698"; // Example mobile number
+if (preg_match("/^\+\d{1,4}\s?([1-9]\d{5,11})$/", $mobile)) {
+    echo "Valid mobile number";
+} else {
+    echo "Invalid mobile number";
+}
+
+
+
+?>

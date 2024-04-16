@@ -54,7 +54,7 @@ if (isset($_POST["submit"])) {
 // $temp_slug = "";
 if (isset($_GET["temp_slug"])) {
     $temp_slug = clean_input($_GET["temp_slug"]);
-    if($temp_slug !== 'sign_up' && $temp_slug !== 'change_password' && $temp_slug !== 'user_added' && $temp_slug !== 'forgot_password'){
+    if($temp_slug !== 'sign_up' && $temp_slug !== 'change_password' && $temp_slug !== 'user_added' && $temp_slug !== 'forgot_password' && $temp_slug !== 'verification_link'){
         $temp_slug = 'sign_up';
     }
     $_SESSION['temp_slug'] = $temp_slug;
