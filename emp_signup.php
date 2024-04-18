@@ -77,10 +77,6 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
   if ($position == "" || !(isset($position)) || $position == "Select Position") {
     $position_error = true;
   }
-  // if ($role == "" || !(isset($role)) || $role == "Select Role") {
-  // 	$role_error = true;
-  // }
-
 
   # Email check
   $sql_em = "SELECT * FROM `users` WHERE user_email = '$email'";
@@ -96,7 +92,7 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
     $confirm_pass_err = true;
   }
   $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-  if (!$nameerr && !$emailerr && !$location_error && !$position_error && !$passworderr && !$confirm_pass_err) {
+  if (!$nameerr && !$emailerr && !$mobilerr && !$location_error && !$position_error && !$passworderr && !$confirm_pass_err) {
     $sql = "INSERT INTO `users` (user_name, user_mobile, user_email, user_gender, user_country, user_state, user_type, user_password, user_terms_cond, user_created_at, user_updated_at) VALUES ('$name', '$mobile', '$email', '$gender', '$country', '$state', '$position', '$hashed_password', '$terms_cond', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)";
     $result = mysqli_query($conn, $sql);
     // echo "here";
@@ -119,10 +115,8 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
       $result_token = mysqli_query($conn, $sql_token);
 
       $temp_slug = 'verification_link';
-
-      // $command = "php -r 'require_once(\"connect.php\"); mailer(\"$temp_slug\", \"$email\", \"$name\");'> /dev/null 2>&1 &";
+      
       $command = "php -r 'require_once(\"connect.php\"); mailer(\"$temp_slug\", \"$email\", \"$name\" , \"$randomHash\");'> /dev/null 2>&1 &";
-
       exec($command);
       $_SESSION['flash_message'] = "Sign Up Successful! Please verify your account";
       echo '<meta http-equiv="refresh" content="0;url=emp_login.php">';
@@ -141,7 +135,7 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Employee SignUp</title>
+  <title>Admin SignUp</title>
   <link rel="icon" type="image/x-icon" href="images/arcs_logo.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
@@ -221,7 +215,7 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
 
               <!-- Mobile Number -->
               <input style="width: 240px" id="mobile_input" type="text" class="form-control" name="mobile"
-                placeholder="####-###-###" autocomplete="off">
+                placeholder="####-###-###" autocomplete="off" onblur="validateMobileNumber()">
             </div>
             <!-- Error Message -->
             <span class='text_error' id="mobile_error"></span>

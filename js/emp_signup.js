@@ -234,11 +234,13 @@ function validatelocation() {
     console.log(state);
     if (country != "" && country != "Select Country" && state != "" && state != "Select State") {
         document.getElementById("location_error").innerHTML = "";
-        confirm_password_input.style.borderColor = "green";
+       document.getElementById('country_select').style.borderColor = "green";
+       document.getElementById('state_select').style.borderColor = "green";
         return true;
     } else {
         document.getElementById("location_error").innerHTML = "Please select your loaction.";
-        confirm_password_input.style.borderColor = "black";
+        document.getElementById('country_select').style.borderColor = "black";
+       document.getElementById('state_select').style.borderColor = "black";
         return false;
     }
 }
@@ -324,25 +326,26 @@ window.onload = function () {
 };
 
 // Mobile number validation
-$(document).ready(function () {
-    $('#mobile_input').blur(validateMobileNumber);
-});
 function validateMobileNumber() {
     var mobileNumber = $("#mobile_input").val().trim();
     var placeholder = $("#mobile_input").attr('placeholder');
-    var mobileRegex = /^(?!0)\((?!0)\d{3}\)|(?!0)\d{3}-\d{3}-\d{4}$/;
-
-console.log(mobileNumber);
-    // Check if the mobile number is empty or does not match the input mask
-    if (!mobileNumber || mobileNumber.length !== placeholder.length) {
+    var mobileRegex = /^[1-9]\d*$/;
+    console.log(mobileNumber);
+   
+    if (mobileNumber == "" || mobileNumber.length !== placeholder.length) {
         $("#mobile_input").css("border-color", "black");
         $("#mobile_error").html("Please enter mobile number."); 
         return false; 
-    } else if (!mobileRegex.test(mobileNumber)) {
+    } 
+    mobileNumber = mobileNumber.replace(/[\(\)\s-]/g, "");
+    console.log(mobileNumber);
+
+    if (!mobileRegex.test(mobileNumber)) {
         $("#mobile_input").css("border-color", "black");
         $("#mobile_error").html("Number should not start with 0."); 
         return false;
-    } else {
+    }
+     else {
         $("#mobile_input").css("border-color", "green");
         $("#mobile_error").html(""); 
         return true; 

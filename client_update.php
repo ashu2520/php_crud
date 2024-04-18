@@ -230,7 +230,7 @@ if (isset($_POST["Submitasd"])) {
 									<?php
 									echo "<option value='$countrycode'>" . "+" . $countrycode . "</option>";
 									// Fetching country phonecodes
-									$sql_countries_phonecode = "SELECT * FROM `countries` WHERE country_phonecode";
+									$sql_countries_phonecode = "SELECT * FROM `countries` WHERE country_phonecode != $countrycode";
 									$result_countries_phonecode = mysqli_query($conn, $sql_countries_phonecode);
 
 									while ($row = mysqli_fetch_assoc($result_countries_phonecode)) {
@@ -343,12 +343,12 @@ if (isset($_POST["Submitasd"])) {
 										} ?>>
 									<span style="margin-right: 15px;">Active </span></label><label>
 									<input id="status_inactive" type="radio" name="status" value="Inactive"
-										onblur="validatestatus()" <?php if ($gender == "Inactive") {
+										onblur="validatestatus()" <?php if ($user_status == "Inactive") {
 											echo 'checked';
 										} ?>>
 									<span style="margin-right: 15px;">Inactive</span>
 									<input id="status_suspend" type="radio" name="status" value="Suspend"
-										onblur="validatestatus()" <?php if ($gender == "Suspend") {
+										onblur="validatestatus()" <?php if ($user_status == "Suspend") {
 											echo 'checked';
 										} ?>>
 									<span>Suspend</span> </label>

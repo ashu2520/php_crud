@@ -24,7 +24,15 @@ function clean_settings_input($fields)
 if (isset($_POST["Submitasd"]) && $_POST["Submitasd"] !== "") {
     $Name = clean_settings_input($_POST['name']);
     $Email = clean_settings_input($_POST['email']);
+    $country_code = strval($_POST['country_code']);
     $Mobile = clean_settings_input($_POST['mobile']);
+    $Mobile = str_replace("(", "", $Mobile);
+    $Mobile = str_replace(")", "", $Mobile);
+    $Mobile = str_replace("-", "", $Mobile);
+    $Mobile = str_replace(" ", "", $Mobile);
+
+    $Mobile = "+" . $country_code . " " . $Mobile;
+
     $Gender = clean_settings_input($_POST['gender']);
     $num_per_page = clean_settings_input($_POST["num_per_page"]);
     $link_exp_time = clean_settings_input($_POST["link_exp_time"]);
@@ -37,7 +45,7 @@ if (isset($_POST["Submitasd"]) && $_POST["Submitasd"] !== "") {
         $error = true;
     } elseif ((!preg_match("/^[a-zA-Z\s'-]+$/", $Name) || $Name == "")) {
         $error = true;
-    } elseif (!preg_match("/^[0-9]{10}$/", $Mobile) || $Mobile == "") {
+    } elseif (!preg_match("/^\+\d{1,4}\s?([1-9]\d{5,11})$/", $Mobile) || $Mobile == "") {
         $error = true;
     } elseif (!preg_match('/^(male|female)$/i', $Gender) || $Gender == "") {
         $error = true;
@@ -61,9 +69,9 @@ if (isset($_POST["Submitasd"]) && $_POST["Submitasd"] !== "") {
             $_SESSION['link_exp_time'] = $link_exp_time;
             $_SESSION["date_format"] = $format_date;
 
-            // $_SESSION["flash_message"] = "Settings Updated Sucessfully";
+            $_SESSION["flash_message"] = "Settings Updated Sucessfully";
             echo '<script> alert("Settings Updated Successfully"); </script>';
-            header("location:settings.php");
+            header("location:client_dashboard.php");
         }
     }
 
@@ -79,6 +87,12 @@ if ($result) {
     $Name = $row['user_name'];
     $Email = $row['user_email'];
     $Mobile = $row['user_mobile'];
+
+    $pattern = '/^\+(\d+)\s*/';
+    preg_match($pattern, $Mobile, $matches); // $matches will contain the matched groups i.e country code
+    $countrycode = (int) $matches[1];
+    $Mobile = preg_replace($pattern, '', $Mobile);
+
     $Gender = $row['user_gender'];
 }
 $sql_setting = "SELECT * FROM `settings` WHERE setting_id = 1";
@@ -102,6 +116,10 @@ if ($result_setting) {
     <!-- Bootstrap -->
     <link href="css/client_dashboard.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
+    <script type='text/javascript' src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <!-- Required for using jQuery input mask plugin -->
+    <script type='text/javascript'
+        src="https://rawgit.com/RobinHerbots/jquery.inputmask/3.x/dist/jquery.inputmask.bundle.js"></script>
 
 </head>
 
@@ -137,8 +155,7 @@ if ($result_setting) {
                                         <label>Name: </label>
                                     </div>
                                     <div class="sup-input-field">
-                                        <input class="sup-search-box" name="name"
-                                            value="<?php echo $Name; ?>">
+                                        <input class="sup-search-box" name="name" value="<?php echo $Name; ?>">
                                     </div>
                                 </div>
                                 <div class="sup-form-row">
@@ -156,16 +173,41 @@ if ($result_setting) {
                                         <label>Mobile Number: </label>
                                     </div>
                                     <div class="sup-input-field">
-                                        <input  class="sup-search-box"  name="mobile"
-                                            value="<?php echo $Mobile; ?>">
+                                        <select style="width: 76px; height: 40px; font-size: 16px;" id="country_code"
+                                            class="sup-search-box" name="country_code">
+                                            <?php
+                                            echo "<option value='$countrycode'>" . "+" . $countrycode . "</option>";
+                                            // Fetching country phonecodes
+                                            $sql_countries_phonecode = "SELECT * FROM `countries` WHERE country_phonecode != $countrycode";
+                                            $result_countries_phonecode = mysqli_query($conn, $sql_countries_phonecode);
+
+                                            while ($row = mysqli_fetch_assoc($result_countries_phonecode)) {
+                                                $country_id = $row['country_id'];
+                                                $country_phonecode = (int) $row['country_phonecode'];
+
+                                                echo "<option $selected value='$country_phonecode'>" . "+" . $country_phonecode . "</option>";
+                                            }
+                                            ?>
+                                        </select>
+                                        <input style="width: 180px;" id="mobile_input" class="sup-search-box"
+                                            name="mobile" placeholder="####-###-###" value="<?php echo $Mobile; ?>">
                                     </div>
                                 </div>
-                                <div class="sup-form-row">
+                                <div class="sup-radio-row">
                                     <label>Gender: </label>
-                                    <div class="sup-form-label">
+                                    <div class="sup-radio-label">
                                     </div>
-                                    <div class="sup-input-field">
-                                        <input class="sup-search-box" name="gender" value="<?php echo $Gender; ?>">
+                                    <div class="sup-radio-input-field">
+                                        <label><input id="gender_male" type="radio" name="gender" value="Male"
+                                                onblur="vaildategender()" <?php if ($Gender == "Male") {
+                                                    echo 'checked';
+                                                } ?>>
+                                            <span style="margin-right: 21px;">Male</span></label><label>
+                                            <input id="gender_female" type="radio" name="gender" value="Female"
+                                                onblur="vaildategender()" <?php if ($Gender == "Female") {
+                                                    echo 'checked';
+                                                } ?>>
+                                            <span>Female</span> </label>
                                     </div>
                                 </div>
 
@@ -226,16 +268,38 @@ if ($result_setting) {
 
     <!-- <script src="js/client_update.js"></script> -->
     <script>
-        // function validateForm() {
-        //     if (!validateEmail()) {
-        //         return false;
-        //     } else {
-        //         // console.log("Editor Data:", editorData.getData());
-        //         alert("Settings Updated Successfully");
-        //         return true;
-        //     }
-        // }
-        // let debounceTimer;
+        window.onload = function () {
+            $(document).ready(function () {
+                // $("#mobile_input").inputmask('####-###-###');
+                // Define a function to fetch and apply the mask
+                function updatePlaceholder() {
+                    let country_id = $('#country_code').val();
+                    console.log(country_id);
+
+                    $.ajax({
+                        url: 'countries.php',
+                        type: 'POST',
+                        contentType: 'application/x-www-form-urlencoded',
+                        data: { country_id: country_id },
+                        success: function (response) {
+                            // console.log(response); 
+                            response = JSON.parse(response); // decode the JSON into key value-pair
+                            console.log(response);
+
+                            $("#mobile_input").attr('placeholder', response.ph_mask);
+                            $("#mobile_input").inputmask(response.ph_mask);
+                        },
+                        error: function (xhr, status, error) {
+                            console.error(xhr.responseText); // Log any errors
+                        }
+                    });
+                }
+
+                updatePlaceholder()
+                // Call the updatePlaceholder function when the select element changes
+                $('#country_code').change(updatePlaceholder);
+            });
+        };
         function validateEmail() {
             // clearTimeout(debounceTimer);
             // debounceTimer = setTimeout(() => {

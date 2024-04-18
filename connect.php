@@ -4,8 +4,8 @@ ini_set('display_startup_errors', '1');
 error_reporting(E_ALL);
 $conn = new mysqli("localhost", "root", "root", "employee_management");
 if (!$conn) {
-    die(mysqli_error($conn));
-} 
+  die(mysqli_error($conn));
+}
 session_start();
 // $user_role_id = "";
 ?>
@@ -17,32 +17,30 @@ use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
 
-function mailer($temp_slug, $email, $name="", $randomHash="")
+function mailer($temp_slug, $email, $name = "", $randomHash = "")
 {
-  echo $temp_slug;
-  print_r($temp_slug, $email);
-  var_dump($temp_slug);
   $conn = new mysqli("localhost", "root", "root", "employee_management");
-  $sql_email = "SELECT temp_subject, temp_content FROM email_templates WHERE temp_slug = '$temp_slug'";
-  $result_email = mysqli_query($conn, $sql_email);
-  $row = mysqli_fetch_array($result_email);
-  
-  $subject = $row["temp_subject"];
-  $body = $row["temp_content"];
-  
-  print_r($subject, $body);
-  // die();
-  // $randomHash = $_SESSION['token_value'];
-  //Load Composer's autoloader
-  // require 'vendor/autoload.php';
-  $body = str_replace("[token_value]", $randomHash , $body);
-  
-  $body = str_replace("[User Name]", $name, $body);
-  
+  if ($temp_slug !== "message") {
+    $sql_email = "SELECT temp_subject, temp_content FROM email_templates WHERE temp_slug = '$temp_slug'";
+    $result_email = mysqli_query($conn, $sql_email);
+    $row = mysqli_fetch_array($result_email);
+
+    $subject = $row["temp_subject"];
+    $body = $row["temp_content"];
+
+    $body = str_replace("[token_value]", $randomHash, $body);
+
+    $body = str_replace("[User Name]", $name, $body);
+  } else {
+    $subject = $name;
+    $body = $randomHash;
+  }
+
+
   // Humlog Manually Load karenge...
-  require __DIR__.'/PHPMailer-master/src/Exception.php';
-  require __DIR__.'/PHPMailer-master/src/PHPMailer.php';
-  require __DIR__.'/PHPMailer-master/src/SMTP.php';
+  require __DIR__ . '/PHPMailer-master/src/Exception.php';
+  require __DIR__ . '/PHPMailer-master/src/PHPMailer.php';
+  require __DIR__ . '/PHPMailer-master/src/SMTP.php';
 
   //Create an instance; passing `true` enables exceptions
   $mail = new PHPMailer(true);
@@ -70,7 +68,7 @@ function mailer($temp_slug, $email, $name="", $randomHash="")
     $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
 
     $mail->send();
-   
+
   } catch (Exception $e) {
     echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
   }

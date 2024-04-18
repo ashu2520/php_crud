@@ -90,7 +90,7 @@ if (isset($_POST["Submitasd"])) {
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Admin Update Data</title>
+	<title>Change Password</title>
 	<link rel="icon" type="image/x-icon" href="images/arcs_logo.png">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 

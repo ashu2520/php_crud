@@ -36,13 +36,12 @@
                     </tr>
                     <tr>
                         <td align="center">
-                            <h1>Password Change Required</h1>
+                            <h1>Password Change Request</h1>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <p>Your password needs to be changed for security reasons. Please click the button below to
-                                change your password:</p>
+                            <p>To reset your ARCS Infotech password. Please click the button below:</p>
                             <p><a href='http://localhost/NewUI/emp_changeforgotpassword.php?token=[token_value]'>Change
                                     Password</a></p>
                             <p>If you did not request this change, please ignore this email or contact support.</p>
@@ -72,9 +71,8 @@
                     <tr>
                         <td>
                             <h2 align="center">Password Changed Successfully</h2>
-                            <p>Your password has been changed Successfully. If it's not you then please click the button
-                                below:</p>
-                            <p><a href='#'>It's Not Me</a></p>
+                            <p>Success! Your password has been changed successfully.</p>
+                            
                         </td>
                     </tr>
                 </table>
@@ -97,7 +95,7 @@
             <td bgcolor="#ffffff">
                 <h2 align="center">Welcome to ARCS Infotech!</h2>
                 <p>Hello [User Name],</p>
-                <p>We are excited to inform you that you have been successfully added to our database.</p>
+                <p>We are excited to inform you that you have been successfully registered.</p>
                 <p>As a registered user, you now have access to exclusive features and updates.</p>
                 <p>Thank you for joining us!</p>
                 <p>If you have any questions or concerns, feel free to contact us.</p>
@@ -157,8 +155,7 @@
                     <td>
                         <p>Dear [User Name],</p>
                         <p>Welcome to ARCS Infotech! </p>
-                        <p> Please click the button below to
-                            verify your account:</p>
+                        <p> Please click the button below to verify your account:</p>
                         <p><a href='http://localhost/NewUI/verification.php?token=[token_value]'>Verify
                                 Account</a></p>
                         <p>If you did not Sign Up then, please ignore this email or contact support.</p>

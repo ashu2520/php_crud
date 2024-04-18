@@ -102,33 +102,25 @@ if (isset($_POST["submit"])) {
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Employee Login</title>
+  <title>Admin Login</title>
   <link rel="icon" type="image/x-icon" href="images/arcs_logo.png">
   <!-- <i class="fa fa-camera-retro fa-lg"></i> fa-lg -->
   <link href="css/client_dashboard.css" rel="stylesheet">
   <style>
-    /* The container */
+    /* Cusom checkbox CSS */
     .container {
       display: block;
       position: relative;
       padding-left: 20px;
       margin-top: -5px;
-      /* border: 1px solid red; */
-      /* padding-bottom: 15px; */
-      /* margin-bottom: 12px; */
       cursor: pointer;
-      /* font-size: 12px; */
-      /* -webkit-user-select: none;  */
       -moz-user-select: none;
       -ms-user-select: none;
       user-select: none;
     }
 
-    /* Hide the browser's default checkbox */
     .container input {
-      /* right: 10px; */
       border: 1px solid green;
-
       position: absolute;
       padding-top: 15px;
       opacity: 0;
@@ -137,44 +129,31 @@ if (isset($_POST["submit"])) {
       width: 0;
     }
 
-    /* Create a custom checkbox */
     .checkmark {
-      /* border: 1px solid black; */
       border-radius: 3px;
       position: absolute;
       top: 3px;
       left: 0.5px;
       height: 13.5px;
       width: 13.5px;
-      /* font-weight: 100; */
-      /* font-weight: lighter; */
       background-color: #eee;
     }
 
-    /* On mouse-over, add a grey background color */
-    /* .container:hover input ~ .checkmark {
-  background-color: #ccc;
-} */
-
-    /* When the checkbox is checked, add a blue background */
     .container input:checked~.checkmark {
       background-color: #FF651B;
     }
 
-    /* Create the checkmark/indicator (hidden when not checked) */
     .checkmark:after {
       content: "";
       position: absolute;
       display: none;
     }
 
-    /* Show the checkmark when checked */
     .container input:checked~.checkmark:after {
       font-weight: 100;
       display: block;
     }
 
-    /* Style the checkmark/indicator */
     .container .checkmark:after {
       left: 3.9px;
       /* top: 1px; */
@@ -196,7 +175,7 @@ if (isset($_POST["submit"])) {
     <div class="heading-top">
       <div class="logo-cebter"><a href="#"><img src="images/at your service_banner.png"></a></div>
     </div>
-    <div class="box_login">
+    <div style="height: fit-content;" class="box_login">
       <div class="outer_div">
 
         <h2>Admin <span>Login</span></h2>
@@ -225,22 +204,25 @@ if (isset($_POST["submit"])) {
         <form class="margin_bottom" role="form" action="emp_login.php" method="POST">
 
           <!-- Email -->
+          <?php
+          $email_1 = isset($_COOKIE['email']) ? $_COOKIE['email'] : (isset($_POST['email']) ? $_POST['email'] : '');
+          ?>
           <div class="form-group">
             <label for="exampleInputEmail1">User Name</label>
             <input id="email_input" type="email" class="form-control" name="email" autocomplete="off"
-              onblur="validateEmail()" value="<?php if (isset($_COOKIE['email'])) {
-                echo $_COOKIE['email'];
-              } ?>" />
+              onblur="validateEmail()" value="<?php echo $email_1 ?>" />
             <span class='text_error' id="email_err"></span>
           </div>
 
           <!-- Password -->
+          <?php
+          $password_1 = isset($_COOKIE['password']) ? $_COOKIE['password'] : (isset($_POST['password']) ? $_POST['password'] : '');
+          ?>
           <div class="form-group">
             <label for="exampleInputPassword1">Password<a href="emp_forgot.php" class="forg_pass">Forgot
                 Password?</a></label>
-            <input id="password_input" type="password" class="form-control" name="password" autocomplete="off" value="<?php if (isset($_COOKIE['password'])) {
-              echo $_COOKIE['password'];
-            } ?>" />
+            <input id="password_input" type="password" class="form-control" name="password" autocomplete="off"
+              value="<?php echo $password_1 ?>" />
             <!-- <p class='text_error'>Invalid Username and Password. </p>  -->
           </div>
 
@@ -264,19 +246,6 @@ if (isset($_POST["submit"])) {
     </div>
   </div>
   <script src="js/emp_login.js"></script>
-  <!-- <script>
-      const li =document.getElementById("li");
-      const bc = new BroadcastChannel("test_channel");
-      bc.addEventListener("message", (event) => {
-          if (event.data == "LOGOUT"){
-              window.location.reload();
-          }
-      })
-      function logoutBC(){
-          bc.postMessage("LOGOUT")
-          window.location.href ="emp_logout.php"
-      }
-    </script> -->
 </body>
 
 </html>

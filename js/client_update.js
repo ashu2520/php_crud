@@ -53,23 +53,26 @@ $(document).ready(function () {
     $('#mobile_input').blur(validateMobileNumber);
 });
 function validateMobileNumber() {
-    var mobileNumber = $("#mobile_input").val().trim(); 
-    var placeholder = $("#mobile_input").attr('placeholder'); 
-    var mobileRegex = /^(?!0)\((?!0)\d{3}\)|(?!0)\d{3}-\d{3}-\d{4}$/;
-
-    // Checking if the mobile number is empty or does not match the input mask
-    if (!mobileNumber || mobileNumber.length !== placeholder.length) {
+    var mobileNumber = $("#mobile_input").val().trim();
+    var placeholder = $("#mobile_input").attr('placeholder');
+    var mobileRegex = /^[1-9]\d*$/;
+    console.log(mobileNumber);
+    if (mobileNumber == "" || mobileNumber.length !== placeholder.length) {
         $("#mobile_input").css("border-color", "black");
         $("#mobile_error").html("Please enter mobile number."); 
         return false; 
-    } else if (!mobileRegex.test(mobileNumber)) {
+    } 
+    mobileNumber = mobileNumber.replace(/[\(\)\s-]/g, "");
+    console.log(mobileNumber);
+    if (!mobileRegex.test(mobileNumber)) {
         $("#mobile_input").css("border-color", "black");
         $("#mobile_error").html("Number should not start with 0."); 
         return false;
-    } else {
+    }
+     else {
         $("#mobile_input").css("border-color", "green");
         $("#mobile_error").html(""); 
-        return true;
+        return true; 
     }
 }
 

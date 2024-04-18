@@ -2,7 +2,6 @@
     <div class="wrapper">
         <div class="logo"><a href="#"><img src="images/logo.png"></a></div>
         <div class="right_side">
-            <!-- <p style="margin-bottom: 10px;">Time: <?php echo time(); ?></p> -->
             <ul>
                 <li>Welcome <strong> <?php echo $_SESSION['role_name']; ?></strong></li>
                 <li><a onclick="logoutBC()">Log Out</a></li>

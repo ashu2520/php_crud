@@ -5,6 +5,7 @@ if (!isset($_SESSION["user_name"])) {
   header("location:emp_login.php");
 }
 $user_role_id = $_SESSION["User_role_id"];
+$user_id = $_SESSION['Id'];
 ?>
 <?php
 function clean_search_input($fields)
@@ -16,6 +17,7 @@ function clean_search_input($fields)
   return $fields;
 }
 $is_delete = false;
+$total_record_flag = false;
 
 $num_per_page = $_SESSION['num_per_page'];
 $format_date = $_SESSION["date_format"];
@@ -25,34 +27,11 @@ if ($format_date == "YYYY-MM-DD") {
   $format_date = '%d-%m-%Y';
 }
 
-// To find number of rows
-if ($user_role_id == 1) {
-  $sql_2 = "Select COUNT(user_id) as cnt from `users` WHERE user_role_id != 1";
-  $result_2 = mysqli_query($conn, $sql_2);
-  $row = mysqli_fetch_array($result_2);
-
-  $total_records = (int) $row['cnt'];
-} elseif ($user_role_id == 2) {
-  $sql_2 = "Select COUNT(user_id) as cnt from `users` WHERE user_role_id != 1 AND user_role_id != 2";
-  $result_2 = mysqli_query($conn, $sql_2);
-  $row = mysqli_fetch_array($result_2);
-
-  $total_records = (int) $row['cnt'] + 1;
-} else {
-
-  $sql_2 = "Select COUNT(user_id) as cnt from `users` WHERE user_role_id != 1 AND user_role_id != 2";
-  $result_2 = mysqli_query($conn, $sql_2);
-  $row = mysqli_fetch_array($result_2);
-
-  $total_records = (int) $row['cnt'];
-}
-
-$total_pages = ceil($total_records / $num_per_page);
-
 // To check curr_page
 if (isset($_GET["page"])) {
   $curr_page = clean_search_input($_GET["page"]);
-  if (is_int($curr_page) || $curr_page < 1 || $curr_page > $total_pages) {
+  if (is_int($curr_page) || $curr_page < 1) {
+    // What about $curr_page > $total_pages???
     $curr_page = 1;
   }
 } else {
@@ -91,59 +70,178 @@ if (isset($_GET["search_box"]) && $_GET["search_box"] !== "") {
   $search = str_replace("'", '', $search);
   $search = htmlspecialchars($search, ENT_QUOTES, 'UTF-8');
 
-
-  $sql = "SELECT *,  DATE_FORMAT(user_created_at, '" . $format_date . "') AS Createdat  FROM users 
-          WHERE user_id LIKE '%" . trim($search) . "%' 
-          OR user_name LIKE '%" . trim($search) . "%' 
-          OR user_mobile LIKE '%" . trim($search) . "%' 
-          OR user_email LIKE '%" . trim($search) . "%' 
-          OR user_gender LIKE '%" . trim($search) . "%' 
-          OR user_type LIKE '%" . trim($search) . "%' 
-          ORDER BY $column_name $sort_order 
-          LIMIT $start_from, $num_per_page";
-  $result = mysqli_query($conn, $sql);
-
-  // Count the total number of records matching the search criteria
-  $count_sql = "SELECT COUNT(*) AS total_count FROM users 
-              WHERE user_id LIKE '%" . trim($search) . "%' 
-              OR user_name LIKE '%" . trim($search) . "%'
-              OR user_mobile LIKE '%" . trim($search) . "%' 
-              OR user_email LIKE '%" . trim($search) . "%' 
-              OR user_gender LIKE '%" . trim($search) . "%' 
-              OR user_type LIKE '%" . trim($search) . "%'";
-
-  $count_result = mysqli_query($conn, $count_sql);
-  $count_row = mysqli_fetch_assoc($count_result);
-  $total_records = $count_row['total_count'];
-
-  $total_pages = ceil($total_records / $num_per_page);
-} else {
   if ($user_role_id == 1) {
-    $sql = "SELECT *, DATE_FORMAT(user_created_at, '" . $format_date . "') AS Createdat FROM `users` 
-    WHERE user_role_id != 1 
-    ORDER BY $column_name $sort_order 
-    LIMIT $start_from, $num_per_page";
-  } elseif ($user_role_id == 2) {
-    $user_id = $_SESSION['Id'];
-    $sql = "SELECT *, DATE_FORMAT(user_created_at, '" . $format_date . "') AS Createdat FROM `users` 
-    WHERE 
-    (user_role_id != 1) AND 
-    (
-        (user_role_id != 2) OR 
-        (user_role_id = 2 AND $user_id = 2)
-    )
+
+    // Count the total number of records matching the search criteria
+    $count_sql = "SELECT COUNT(*) AS total_count FROM users 
+              WHERE (user_id LIKE '%" . trim($search) . "%' 
+                     OR user_name LIKE '%" . trim($search) . "%'
+                     OR user_mobile LIKE '%" . trim($search) . "%' 
+                     OR user_email LIKE '%" . trim($search) . "%' 
+                     OR user_gender LIKE '%" . trim($search) . "%' 
+                     OR user_type LIKE '%" . trim($search) . "%')
+              AND user_role_id != 1";
+
+    $count_result = mysqli_query($conn, $count_sql);
+    $count_row = mysqli_fetch_assoc($count_result);
+    $total_records = (int) $count_row['total_count'];
+    // echo $total_records;
+
+
+    // To handle the case when no record is found.
+    if ($total_records == 0)
+      $total_record_flag = true;
+
+    $total_pages = ceil($total_records / $num_per_page);
+    // To handel the case when user changes 'curr_page' value more than 'total_pages'
+    if ($curr_page > $total_pages)
+      $curr_page = $total_pages;
+    $curr_page = max(1, $curr_page);
+    $start_from = ($curr_page - 1) * $num_per_page;
+
+    $sql = "SELECT *,  DATE_FORMAT(user_created_at, '" . $format_date . "') AS Createdat  FROM users 
+        WHERE (user_id LIKE '%" . trim($search) . "%' 
+        OR user_name LIKE '%" . trim($search) . "%' 
+        OR user_mobile LIKE '%" . trim($search) . "%' 
+        OR user_email LIKE '%" . trim($search) . "%' 
+        OR user_gender LIKE '%" . trim($search) . "%' 
+        OR user_type LIKE '%" . trim($search) . "%')
+        AND user_role_id != 1
+        ORDER BY $column_name $sort_order 
+        LIMIT $start_from, $num_per_page";
+
+  } else if ($user_role_id == 2) {
+    // Count the total number of records matching the search criteria
+    $count_sql = "SELECT COUNT(*) AS total_count FROM users 
+        WHERE (user_id LIKE '%" . trim($search) . "%' 
+        OR user_name LIKE '%" . trim($search) . "%'
+        OR user_mobile LIKE '%" . trim($search) . "%' 
+        OR user_email LIKE '%" . trim($search) . "%' 
+        OR user_gender LIKE '%" . trim($search) . "%' 
+        OR user_type LIKE '%" . trim($search) . "%')
+        AND (user_role_id != 1) AND ((user_role_id != 2 AND user_id != $user_id) OR (user_role_id = 2 AND user_id = $user_id))";
+
+    $count_result = mysqli_query($conn, $count_sql);
+    $count_row = mysqli_fetch_assoc($count_result);
+    $total_records = (int) $count_row['total_count'];
+    // To handle the case when no record is found.
+    if ($total_records == 0)
+      $total_record_flag = true;
+
+    $total_pages = ceil($total_records / $num_per_page);
+    if ($curr_page > $total_pages)
+      $curr_page = $total_pages;
+    $curr_page = max(1, $curr_page);
+    $start_from = ($curr_page - 1) * $num_per_page;
+
+    $sql = "SELECT *,  DATE_FORMAT(user_created_at, '" . $format_date . "') AS Createdat FROM users 
+    WHERE (user_id LIKE '%" . trim($search) . "%' 
+           OR user_name LIKE '%" . trim($search) . "%' 
+           OR user_mobile LIKE '%" . trim($search) . "%' 
+           OR user_email LIKE '%" . trim($search) . "%' 
+           OR user_gender LIKE '%" . trim($search) . "%' 
+           OR user_type LIKE '%" . trim($search) . "%')
+           AND (user_role_id != 1) AND ((user_role_id != 2 AND user_id != $user_id) OR (user_role_id = 2 AND user_id = $user_id))
     ORDER BY $column_name $sort_order 
     LIMIT $start_from, $num_per_page";
 
   } else {
+    // Count the total number of records matching the search criteria
+    $count_sql = "SELECT COUNT(*) AS total_count FROM users 
+        WHERE (user_id LIKE '%" . trim($search) . "%' 
+        OR user_name LIKE '%" . trim($search) . "%'
+        OR user_mobile LIKE '%" . trim($search) . "%' 
+        OR user_email LIKE '%" . trim($search) . "%' 
+        OR user_gender LIKE '%" . trim($search) . "%' 
+        OR user_type LIKE '%" . trim($search) . "%')
+        AND user_role_id != 1 AND user_role_id != 2";
+
+    $count_result = mysqli_query($conn, $count_sql);
+    $count_row = mysqli_fetch_assoc($count_result);
+    $total_records = (int) $count_row['total_count'];
+    // To handle the case when no record is found.
+    if ($total_records == 0)
+      $total_record_flag = true;
+
+    $total_pages = ceil($total_records / $num_per_page);
+    if ($curr_page > $total_pages)
+      $curr_page = $total_pages;
+    $curr_page = max(1, $curr_page);
+    $start_from = ($curr_page - 1) * $num_per_page;
+
+    $sql = "SELECT *,  DATE_FORMAT(user_created_at, '" . $format_date . "') AS Createdat  FROM users 
+        WHERE (user_id LIKE '%" . trim($search) . "%' 
+        OR user_name LIKE '%" . trim($search) . "%' 
+        OR user_mobile LIKE '%" . trim($search) . "%' 
+        OR user_email LIKE '%" . trim($search) . "%' 
+        OR user_gender LIKE '%" . trim($search) . "%' 
+        OR user_type LIKE '%" . trim($search) . "%')
+        AND user_role_id != 1 AND user_role_id != 2 
+        ORDER BY $column_name $sort_order 
+        LIMIT $start_from, $num_per_page";
+
+  }
+  $result = mysqli_query($conn, $sql);
+
+} else {
+  if ($user_role_id == 1) {
+    $sql_2 = "Select COUNT(user_id) as cnt from `users` WHERE user_role_id != 1";
+    $result_2 = mysqli_query($conn, $sql_2);
+    $row = mysqli_fetch_array($result_2);
+
+    $total_records = (int) $row['cnt'];
+    $total_pages = ceil($total_records / $num_per_page);
+    if ($curr_page > $total_pages)
+      $curr_page = $total_pages;
+    $curr_page = max(1, $curr_page);
+    $start_from = ($curr_page - 1) * $num_per_page;
+
+    $sql = "SELECT *, DATE_FORMAT(user_created_at, '" . $format_date . "') AS Createdat FROM `users` 
+    WHERE user_role_id != 1 
+    ORDER BY $column_name $sort_order 
+    LIMIT $start_from, $num_per_page";
+
+  } else if ($user_role_id == 2) {
+    $sql_2 = "Select COUNT(user_id) as cnt from `users` WHERE user_role_id != 1 AND user_role_id != 2";
+    $result_2 = mysqli_query($conn, $sql_2);
+    $row = mysqli_fetch_array($result_2);
+
+    $total_records = (int) $row['cnt'] + 1;
+    $total_pages = ceil($total_records / $num_per_page);
+    if ($curr_page > $total_pages)
+      $curr_page = $total_pages;
+    $curr_page = max(1, $curr_page);
+    $start_from = ($curr_page - 1) * $num_per_page;
+
+    $sql = "SELECT *, DATE_FORMAT(user_created_at, '" . $format_date . "') AS Createdat FROM `users` 
+    WHERE (user_role_id != 1) AND ((user_role_id != 2 AND user_id != $user_id) OR (user_role_id = 2 AND user_id = $user_id))
+    ORDER BY $column_name $sort_order 
+    LIMIT $start_from, $num_per_page";
+
+
+  } else {
+    $sql_2 = "Select COUNT(user_id) as cnt from `users` WHERE user_role_id != 1 AND user_role_id != 2";
+    $result_2 = mysqli_query($conn, $sql_2);
+    $row = mysqli_fetch_array($result_2);
+
+    $total_records = (int) $row['cnt'];
+    $total_pages = ceil($total_records / $num_per_page);
+    if ($curr_page > $total_pages)
+      $curr_page = $total_pages;
+    $curr_page = max(1, $curr_page);
+    $start_from = ($curr_page - 1) * $num_per_page;
+
     $sql = "SELECT *, DATE_FORMAT(user_created_at, '" . $format_date . "') AS Createdat FROM `users` 
     WHERE user_role_id != 1 AND user_role_id !=2
     ORDER BY $column_name $sort_order 
     LIMIT $start_from, $num_per_page";
+
   }
   $result = mysqli_query($conn, $sql);
-
+  // print_r($result);
 }
+
+// var_dump($result);
 ?>
 
 <html lang="en">
@@ -218,13 +316,14 @@ if (isset($_GET["search_box"]) && $_GET["search_box"] !== "") {
           <!-- TABLE -->
           <!-- TABLE -->
 
+          <!-- <span><h3>No Record Found.</h3></span> -->
           <table cellspacing="0">
 
             <tr>
               <?php
 
               // Id
-              echo '<th width="10px"><a href="client_dashboard.php?column_name=user_id&sort_order=' . ($column_name == "user_id" && $sort_order == "ASC" ? "DESC" : "ASC") . '&page=' . $curr_page . '&search_box='.$search.'">S.no';
+              echo '<th width="10px"><a href="client_dashboard.php?column_name=user_id&sort_order=' . ($column_name == "user_id" && $sort_order == "ASC" ? "DESC" : "ASC") . '&page=' . $curr_page . '&search_box=' . $search . '">S.no';
               if ($column_name == "user_id") {
                 if ($sort_order == 'DESC') {
                   echo '<i style="position: absolute; margin-top:3px; margin-left:2px;" class="fa fa-arrow-down" aria-hidden="true"></i>';
@@ -235,7 +334,7 @@ if (isset($_GET["search_box"]) && $_GET["search_box"] !== "") {
               echo '</a></th>';
 
               // Name
-              echo '<th width="98px"><a href="client_dashboard.php?column_name=user_name&sort_order=' . ($column_name == "user_name" && $sort_order == "ASC" ? "DESC" : "ASC") . '&page=' . $curr_page . '&search_box='.$search.'">Name ';
+              echo '<th width="98px"><a href="client_dashboard.php?column_name=user_name&sort_order=' . ($column_name == "user_name" && $sort_order == "ASC" ? "DESC" : "ASC") . '&page=' . $curr_page . '&search_box=' . $search . '">Name ';
               if ($column_name == 'user_name') {
                 if ($sort_order == 'DESC') {
                   echo '<i style="position: absolute; margin-top:3px; margin-left:2px;" class="fa fa-arrow-down" aria-hidden="true"></i>';
@@ -246,7 +345,7 @@ if (isset($_GET["search_box"]) && $_GET["search_box"] !== "") {
               echo '</a></th>';
 
               // Email
-              echo '<th width="140px"><a href="client_dashboard.php?column_name=user_email&sort_order=' . ($column_name == "user_email" && $sort_order == "ASC" ? "DESC" : "ASC") . '&page=' . $curr_page . '&search_box='.$search.'">Email ';
+              echo '<th width="145px"><a href="client_dashboard.php?column_name=user_email&sort_order=' . ($column_name == "user_email" && $sort_order == "ASC" ? "DESC" : "ASC") . '&page=' . $curr_page . '&search_box=' . $search . '">Email ';
               if ($column_name == 'user_email') {
                 if ($sort_order == 'DESC') {
                   echo '<i class="fa fa-arrow-down" aria-hidden="true"></i>';
@@ -257,7 +356,7 @@ if (isset($_GET["search_box"]) && $_GET["search_box"] !== "") {
               echo '</a></th>';
 
               // Mobile
-              echo '<th width="110px;"><a href="client_dashboard.php?column_name=user_mobile&sort_order=' . ($column_name == "user_mobile" && $sort_order == "ASC" ? "DESC" : "ASC") . '&page=' . $curr_page . '&search_box='.$search.'">Mobile ';
+              echo '<th width="130px;"><a href="client_dashboard.php?column_name=user_mobile&sort_order=' . ($column_name == "user_mobile" && $sort_order == "ASC" ? "DESC" : "ASC") . '&page=' . $curr_page . '&search_box=' . $search . '">Mobile ';
               if ($column_name == 'user_mobile') {
                 if ($sort_order == 'DESC') {
                   echo '<i class="fa fa-arrow-down" aria-hidden="true"></i>';
@@ -279,7 +378,7 @@ if (isset($_GET["search_box"]) && $_GET["search_box"] !== "") {
               echo '</a></th>';
 
               // User_type
-              echo '<th width="97px"><a href="client_dashboard.php?column_name=user_type&sort_order=' . ($column_name == "user_type" && $sort_order == "ASC" ? "DESC" : "ASC") . '&page=' . $curr_page . '&search_box='.$search.'">User Type ';
+              echo '<th width="105px"><a href="client_dashboard.php?column_name=user_type&sort_order=' . ($column_name == "user_type" && $sort_order == "ASC" ? "DESC" : "ASC") . '&page=' . $curr_page . '&search_box=' . $search . '">User Type ';
               if ($column_name == 'user_type') {
                 if ($sort_order == 'DESC') {
                   echo '<i style="position: absolute; margin-top:3px; margin-left:2px;" class="fa fa-arrow-down" aria-hidden="true"></i>';
@@ -290,7 +389,7 @@ if (isset($_GET["search_box"]) && $_GET["search_box"] !== "") {
               echo '</a></th>';
 
               // Createdat
-              echo '<th width="90px"><a href="client_dashboard.php?column_name=user_created_at&sort_order=' . ($column_name == "user_created_at" && $sort_order == "ASC" ? "DESC" : "ASC") . '&page=' . $curr_page . '&search_box='.$search.'">Created At ';
+              echo '<th width="90px"><a href="client_dashboard.php?column_name=user_created_at&sort_order=' . ($column_name == "user_created_at" && $sort_order == "ASC" ? "DESC" : "ASC") . '&page=' . $curr_page . '&search_box=' . $search . '">Created At ';
               if ($column_name == 'user_created_at') {
                 if ($sort_order == 'DESC') {
                   echo '<i style="position: absolute; margin-top:3px; margin-left:2px;" class="fa fa-arrow-down" aria-hidden="true"></i>';
@@ -308,15 +407,15 @@ if (isset($_GET["search_box"]) && $_GET["search_box"] !== "") {
             if ($result) {
               while ($row = mysqli_fetch_array($result)) {
                 // Fetch the first row
-                if ($row['user_role_id'] >= 3 || ($row['user_role_id'] == 2 && $row['user_id'] == $_SESSION['Id']) || ($user_role_id == 1 && $row['user_role_id'] != 1)) {
-                  $id = $row['user_id'];
-                  $Name = $row['user_name'];
-                  $Email = $row['user_email'];
-                  $Mobile = $row['user_mobile'];
-                  // $Gender = $row['user_gender'];
-                  $User_type = $row['user_type'];
-                  $Created_at = $row['Createdat'];
-                  echo "<tr>
+                // if ($row['user_role_id'] >= 3 || ($row['user_role_id'] == 2 && $row['user_id'] == $_SESSION['Id']) || ($user_role_id == 1 && $row['user_role_id'] != 1)) {
+                $id = $row['user_id'];
+                $Name = $row['user_name'];
+                $Email = $row['user_email'];
+                $Mobile = $row['user_mobile'];
+                // $Gender = $row['user_gender'];
+                $User_type = $row['user_type'];
+                $Created_at = $row['Createdat'];
+                echo "<tr>
                          <td>" . $id . "</td>
                          <td>" . $Name . "</td>
                          <td>" . $Email . "</td>
@@ -324,64 +423,68 @@ if (isset($_GET["search_box"]) && $_GET["search_box"] !== "") {
                          <td>" . $User_type . "</td>
                          <td>" . $Created_at . "</td>";
 
-                  //  <td>" . $Gender . "</td>
-                  if ($user_role_id == 1 || $user_role_id == 2) {
+                //  <td>" . $Gender . "</td>
+                if ($user_role_id == 1 || $user_role_id == 2) {
 
-                    echo "<td> 
+                  echo "<td> 
                          <a href='client_update.php?updateid=" . $id . "&column_name=" . $column_name . "&sort_order=" . $sort_order . "&page=" . $curr_page . "' id='update' style='margin-right:10px'><img src='images/edit-icon.png' onclick='myfunc()'></a>
                          <a id='delete_a' onclick='openpopup($id, \"$column_name\", \"$sort_order\", $curr_page)'><img src='images/cross.png'></a>
                          </td> 
                          </tr>";
-                  }
                 }
               }
+              // }
             } else
               echo "No rows found.";
+            if ($total_record_flag) {
+              echo '<h2 class="no-record">No Record Found.</h2>';
+            }
             ?>
           </table>
 
           <!-- Pagination -->
           <!-- Pagination -->
           <!-- Pagination -->
-
-          <div class="paginaton-div">
-            <?php
-            // echo $total_records;
-            if ($curr_page > 1) {
-              echo "<a class='act_btn' href='client_dashboard.php?column_name=" . $column_name . "&sort_order=" . ($sort_order == "DESC" ? "DESC" : "ASC") . "&page=1&search_box=" . $search . "'>First</a>";
-            } else {
-              echo "<a style='background-color: #b4b4b4; color: white; text-decoration: none; cursor: not-allowed;' class='disabled-btn'>First</a>";
-            }
-            if ($curr_page - 1 > 0) {
-              echo "<a class='act_btn' href='client_dashboard.php?column_name=" . $column_name . "&sort_order=" . ($sort_order == "DESC" ? "DESC" : "ASC") . "&page=" . ($curr_page - 1) . " &search_box=" . $search . "'>Prev</a>";
-
-            } else {
-              echo "<a style='background-color: #b4b4b4; color: white; text-decoration: none; cursor: not-allowed;'>Prev</a>";
-            }
-            $start_page = max(1, min($curr_page, $total_pages - 2));
-            $end_page = min($total_pages, $start_page + 2);
-
-            // Display page numbers
-            for ($i = $start_page; $i <= $end_page; $i++) {
-              if ($curr_page == $i) {
-                echo "<a  style='background-color: #ff651b; color: #fff; cursor: not-allowed; text-decoration: none;'>" . $i . "</a>";
+          <?php if (!$total_record_flag) { ?>
+            <div class="paginaton-div">
+              <?php
+              // echo $total_records;
+              if ($curr_page > 1) {
+                echo "<a class='act_btn' href='client_dashboard.php?column_name=" . $column_name . "&sort_order=" . ($sort_order == "DESC" ? "DESC" : "ASC") . "&page=1&search_box=" . $search . "'>First</a>";
               } else {
-                echo "<a href = 'client_dashboard.php?column_name=" . $column_name . "&sort_order=" . ($sort_order == "DESC" ? "DESC" : "ASC") . "&page=" . $i . "&search_box=" . $search . "'>" . $i . "</a>";
+                echo "<a style='background-color: #b4b4b4; color: white; text-decoration: none; cursor: not-allowed;' class='disabled-btn'>First</a>";
               }
-              // ? --> query parameters, multiple page bhej sakte hai...
-            }
-            if ($curr_page + 1 <= $total_pages) {
-              echo "<a class='act_btn' href = 'client_dashboard.php?column_name=" . $column_name . "&sort_order=" . ($sort_order == "DESC" ? "DESC" : "ASC") . "&page=" . ($curr_page + 1) . "&search_box=" . $search . "'>Next</a>";
-            } else {
-              echo "<a style='background-color: #b4b4b4; color: white; text-decoration: none; cursor: not-allowed;'>Next</a>";
-            }
-            if ($curr_page < $total_pages) {
-              echo "<a class='act_btn' href='client_dashboard.php?column_name=" . $column_name . "&sort_order=" . ($sort_order == "DESC" ? "DESC" : "ASC") . "&page=" . $total_pages . "&search_box=" . $search . "'>Last</a>";
-            } else {
-              echo "<a style='background-color: #b4b4b4; color: white; text-decoration: none; cursor: not-allowed;' class='disabled-btn'>Last</a>";
-            }
-            ?>
-          </div>
+              if ($curr_page - 1 > 0) {
+                echo "<a class='act_btn' href='client_dashboard.php?column_name=" . $column_name . "&sort_order=" . ($sort_order == "DESC" ? "DESC" : "ASC") . "&page=" . ($curr_page - 1) . " &search_box=" . $search . "'>Prev</a>";
+
+              } else {
+                echo "<a style='background-color: #b4b4b4; color: white; text-decoration: none; cursor: not-allowed;'>Prev</a>";
+              }
+              $start_page = max(1, min($curr_page, $total_pages - 2));
+              $end_page = min($total_pages, $start_page + 2);
+
+              // Display page numbers
+              for ($i = $start_page; $i <= $end_page; $i++) {
+                if ($curr_page == $i) {
+                  echo "<a  style='background-color: #ff651b; color: #fff; cursor: not-allowed; text-decoration: none;'>" . $i . "</a>";
+                } else {
+                  echo "<a href = 'client_dashboard.php?column_name=" . $column_name . "&sort_order=" . ($sort_order == "DESC" ? "DESC" : "ASC") . "&page=" . $i . "&search_box=" . $search . "'>" . $i . "</a>";
+                }
+                // ? --> query parameters, multiple page bhej sakte hai...
+              }
+              if ($curr_page + 1 <= $total_pages) {
+                echo "<a class='act_btn' href = 'client_dashboard.php?column_name=" . $column_name . "&sort_order=" . ($sort_order == "DESC" ? "DESC" : "ASC") . "&page=" . ($curr_page + 1) . "&search_box=" . $search . "'>Next</a>";
+              } else {
+                echo "<a style='background-color: #b4b4b4; color: white; text-decoration: none; cursor: not-allowed;'>Next</a>";
+              }
+              if ($curr_page < $total_pages) {
+                echo "<a class='act_btn' href='client_dashboard.php?column_name=" . $column_name . "&sort_order=" . ($sort_order == "DESC" ? "DESC" : "ASC") . "&page=" . $total_pages . "&search_box=" . $search . "'>Last</a>";
+              } else {
+                echo "<a style='background-color: #b4b4b4; color: white; text-decoration: none; cursor: not-allowed;' class='disabled-btn'>Last</a>";
+              }
+              ?>
+            </div>
+          <?php } ?>
         </div>
       </div>
     </div>
@@ -425,7 +528,7 @@ if (isset($_GET["search_box"]) && $_GET["search_box"] !== "") {
         // form.action --> form id wale element ka bhi jo action attribute hai usmain value set karne ke liye...
         form.submit();
         // form.submit --> form ko submit karwane ke liye...
-      }, 1000);
+      }, 1500);
       // jaise hi event ayega uske harek 1-second ke baad ye function chalega...
     });
 

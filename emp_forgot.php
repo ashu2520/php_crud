@@ -77,7 +77,7 @@ if (isset($_POST["submit"])) {
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Employee Login</title>
+  <title>Admin Forgot</title>
   <link rel="icon" type="image/x-icon" href="images/arcs_logo.png">
 
   <link href="css/client_dashboard.css" rel="stylesheet">
@@ -90,7 +90,7 @@ if (isset($_POST["submit"])) {
     <div class="heading-top">
       <div class="logo-cebter"><a href="#"><img src="images/at your service_banner.png"></a></div>
     </div>
-    <div style="height: 300px;" class="box_login">
+    <div class="box_login">
       <div class="outer_div">
 
         <h2>Forgot <span>Password</span></h2>

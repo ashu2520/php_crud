@@ -13,11 +13,11 @@ if (!isset($_SESSION["user_name"])) {
 // $Message ="";
 function clean_input($fields)
 {
-	$fields = trim($fields);
-	$fields = stripslashes($fields);
-	// $fields = htmlspecialchars($fields);
-	// $fields = str_replace("'", "", $fields);
-	return $fields;
+    $fields = trim($fields);
+    $fields = stripslashes($fields);
+    // $fields = htmlspecialchars($fields);
+    $fields = str_replace("'", "", $fields);
+    return $fields;
 }
 if (isset($_GET['Id'])) {
     $Id = clean_input($_GET['Id']);
@@ -58,11 +58,15 @@ if (isset($_GET['Id'])) {
     }
 }
 $is_data = false;
-if(isset($_POST["submit"])){
+if (isset($_POST["submit"])) {
+    $subject = clean_input($_POST['subject']);
     $data = clean_input($_POST["editor"]);
-    if($data !== ""){
-        $is_data = true;
-    }
+    // echo $Email;
+    $temp_slug = 'message';
+    $command = "php -r 'require_once(\"connect.php\"); mailer(\"$temp_slug\", \"$Email\", \"$subject\" , \"$data\");'> /dev/null 2>&1 &";
+    exec($command);
+    echo '<meta http-equiv="refresh" content="0;url=client_dashboard.php">';
+
 }
 ?>
 <html lang="en">
@@ -130,19 +134,23 @@ if(isset($_POST["submit"])){
                 </div>
                 <div class="message-reply">
                     <p class="head-reply">REPLY</p>
-                    <form id="main" action="message_display.php?Id=<?php echo $Id;?>" onsubmit="return validateForm()" method="POST">
+                    <form id="main" action="message_display.php?Id=<?php echo $Id; ?>" onsubmit="return validateForm()"
+                        method="POST">
+                        <div style="margin: 3px; padding: 0px;" class="info-contact-us">
+                            <div style="width:fit-content; padding: 6px 10px;" class="contact-us-category">Subject: </div>
+                            <div>
+                                <input class="contact-us-reply" type="text" name="subject">
+                            </div>
+                        </div>
                         <textarea name="editor" id="editor"></textarea>
-                        <a href="request.php" style="padding: 8px 30px; font-size: 16px" class="submit-btn" value="Send"> Back </a>
-                        <input name="submit" type="submit" style="padding: 8px 30px; font-size: 16px" class="submit-btn" value="Send">
+                        <a href="request.php" style="padding: 8px 30px; font-size: 16px" class="submit-btn"
+                            value="Send"> Back </a>
+                        <input name="submit" type="submit" style="padding: 8px 30px; font-size: 16px" class="submit-btn"
+                            value="Send">
                         <span style="margin: -10px; padding:0px;" class='text_error1' id="message_error"></span>
                     </form>
 
                     <div class="data">
-                        <?php 
-                            if($is_data){
-                                echo '<br><br>'.$data;
-                            }
-                        ?>
                     </div>
                 </div>
             </div>

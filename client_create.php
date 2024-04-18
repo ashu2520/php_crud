@@ -170,19 +170,19 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
 				<div class="list-contet">
 					<?php
 					if ($nameerr) {
-						echo '<div class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>UnSucess!</strong> Name Error</div>';
+						echo '<div id="error-message" class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>UnSucess!</strong> Name Error</div>';
 					} else if ($mobilerr) {
-						echo '<div class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>UnSucess!</strong> Mobile Error</div>';
+						echo '<div id="error-message" class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>UnSucess!</strong> Mobile Error</div>';
 					} else if ($emailerr) {
-						echo '<div class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>UnSucess!</strong> Email Already Exist</div>';
+						echo '<div id="error-message" class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>UnSucess!</strong> Email Already Exist</div>';
 					} else if ($location_error) {
-						echo '<div class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>UnSucess!</strong> Loaction Error</div>';
+						echo '<div id="error-message" class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>UnSucess!</strong> Loaction Error</div>';
 					} else if ($position_error) {
-						echo '<div class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>UnSucess!</strong> Position Error</div>';
+						echo '<div id="error-message" class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>UnSucess!</strong> Position Error</div>';
 					} else if ($role_error) {
-						echo '<div class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>UnSucess!</strong> Role Error</div>';
+						echo '<div id="error-message" class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>UnSucess!</strong> Role Error</div>';
 					} else if ($passworderr || $confirm_pass_err) {
-						echo '<div class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>UnSucess!</strong> Invalid Password Type</div>';
+						echo '<div id="error-message" class="error-message-div error-msg"><img src="images/unsucess-msg.png"><strong>UnSucess!</strong> Invalid Password Type</div>';
 					}
 					?>
 					<form id="main" class="form-edit" onsubmit="validateForm(); return false;"

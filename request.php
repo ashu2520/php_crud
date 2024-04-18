@@ -1,11 +1,12 @@
 <?php
 include "connect.php";
 // Starting the session
-// if (!isset($_SESSION["user_name"])) {
-//   header("location:emp_login.php");
-// }
+if (!isset($_SESSION["user_name"])) {
+  header("location:emp_login.php");
+}
 ?>
 <?php
+$total_record_flag = false;
 function clean_search_input($fields)
 {
   $fields = trim($fields);
@@ -15,15 +16,11 @@ function clean_search_input($fields)
   return $fields;
 }
 $is_delete = false;
-$num_per_page = 9;
-$sql_2 = "Select * from contact_request";
-$result_2 = mysqli_query($conn, $sql_2);
-$total_records = mysqli_num_rows($result_2);
-$total_pages = ceil($total_records / $num_per_page);
+$num_per_page = $_SESSION['num_per_page'];
 
 if (isset($_GET["page"])) {
   $curr_page = clean_search_input($_GET["page"]);
-  if (is_int($curr_page) || $curr_page < 1 || $curr_page > $total_pages) {
+  if (is_int($curr_page) || $curr_page < 1) {
     $curr_page = 1;
   }
 } else {
@@ -48,29 +45,66 @@ if (isset($_GET["sort_order"])) {
   $sort_order = "ASC";
 }
 
-$curr_page = max(1, $curr_page);
-$start_from = ($curr_page - 1) * $num_per_page;
 // $start_form --> ye batata hai ki next page kaha se start hoga...  
 $search = "";
 if (isset($_GET["search_box"]) && $_GET["search_box"] !== "") {
   $search = stripslashes($_GET["search_box"]);
   $search = str_replace("'", '', $search);
   $search = htmlspecialchars($search, ENT_QUOTES, 'UTF-8');
+
+  $sql_2 = "SELECT COUNT(*) as cnt from contact_request 
+            WHERE contact_id LIKE '%" . trim($search) . "%' 
+            OR contact_name LIKE '%" . trim($search) . "%' 
+            OR contact_email LIKE '%" . trim($search) . "%' 
+            OR contact_number LIKE '%" . trim($search) . "%' 
+            OR contact_subject LIKE '%" . trim($search) . "%'";
+  $result_2 = mysqli_query($conn, $sql_2);
+  $row = mysqli_fetch_array($result_2);
+
+  $total_records = (int) $row['cnt'];
+  // To handle the case when no record is found.
+  if ($total_records == 0)
+    $total_record_flag = true;
+
+  $total_pages = ceil($total_records / $num_per_page);
+  if ($curr_page > $total_pages)
+    $curr_page = $total_pages;
+  $curr_page = max(1, $curr_page);
+  $start_from = ($curr_page - 1) * $num_per_page;
+  // $total_pages = ceil($total_records / $num_per_page);
+
   $sql = "SELECT contact_id, contact_name, contact_email, contact_number, contact_subject, contact_message FROM contact_request 
-          WHERE contact_id LIKE '%".trim($search)."%' 
-          OR contact_name LIKE '%".trim($search)."%' 
-          OR contact_email LIKE '%".trim($search)."%' 
-          OR contact_number LIKE '%".trim($search)."%' 
-          OR contact_subject LIKE '%".trim($search)."%' 
+          WHERE contact_id LIKE '%" . trim($search) . "%' 
+          OR contact_name LIKE '%" . trim($search) . "%' 
+          OR contact_email LIKE '%" . trim($search) . "%' 
+          OR contact_number LIKE '%" . trim($search) . "%' 
+          OR contact_subject LIKE '%" . trim($search) . "%' 
           ORDER BY $column_name $sort_order 
           LIMIT $start_from, $num_per_page";
   $result = mysqli_query($conn, $sql);
 } else {
+  $sql_2 = "Select COUNT(*) as cnt from contact_request";
+  $result_2 = mysqli_query($conn, $sql_2);
+  $row = mysqli_fetch_array($result_2);
+
+  $total_records = (int) $row['cnt'];
+  if ($total_records == 0)
+    $total_record_flag = true;
+
+  $total_pages = ceil($total_records / $num_per_page);
+  if ($curr_page > $total_pages)
+    $curr_page = $total_pages;
+  $curr_page = max(1, $curr_page);
+  $start_from = ($curr_page - 1) * $num_per_page;
+  $total_pages = ceil($total_records / $num_per_page);
+  // $total_pages = ceil($total_records / $num_per_page);
+
   $sql = "SELECT * FROM contact_request 
   ORDER BY $column_name $sort_order 
   LIMIT $start_from, $num_per_page";
-  // die(mysqli_error($conn));
   $result = mysqli_query($conn, $sql);
+
+
 }
 ?>
 <html lang="en">
@@ -133,12 +167,11 @@ if (isset($_GET["search_box"]) && $_GET["search_box"] !== "") {
           <!-- TABLE -->
           <!-- TABLE -->
           <!-- TABLE -->
-
           <table width="100%" cellspacing="0">
             <tbody>
               <tr>
                 <?php
-                echo '<th width="10px"><a href="request.php?column_name=contact_id&sort_order=' . ($sort_order == "DESC" ? "ASC" : "DESC") . '&page=' . $curr_page . '">Id';
+                echo '<th width="10px"><a href="request.php?column_name=contact_id&sort_order=' . ($sort_order == "DESC" ? "ASC" : "DESC") . '&page=' . $curr_page . '&search_box=' . $search . '">Id';
 
                 if ($column_name == "contact_id") {
                   if ($sort_order == 'DESC') {
@@ -149,7 +182,7 @@ if (isset($_GET["search_box"]) && $_GET["search_box"] !== "") {
                 }
 
                 echo '</a></th>';
-                echo '<th width="10px"><a href="request.php?column_name=contact_name&sort_order=' . ($sort_order == "DESC" ? "ASC" : "DESC") . '&page=' . $curr_page . '">Name';
+                echo '<th width="10px"><a href="request.php?column_name=contact_name&sort_order=' . ($sort_order == "DESC" ? "ASC" : "DESC") . '&page=' . $curr_page . '&search_box=' . $search . '">Name';
 
                 if ($column_name == "contact_name") {
                   if ($sort_order == 'DESC') {
@@ -160,7 +193,7 @@ if (isset($_GET["search_box"]) && $_GET["search_box"] !== "") {
                 }
 
                 echo '</a></th>';
-                echo '<th width="10px"><a href="request.php?column_name=contact_email&sort_order=' . ($sort_order == "DESC" ? "ASC" : "DESC") . '&page=' . $curr_page . '">Email';
+                echo '<th width="10px"><a href="request.php?column_name=contact_email&sort_order=' . ($sort_order == "DESC" ? "ASC" : "DESC") . '&page=' . $curr_page . '&search_box=' . $search . '">Email';
 
                 if ($column_name == "contact_email") {
                   if ($sort_order == 'DESC') {
@@ -171,7 +204,7 @@ if (isset($_GET["search_box"]) && $_GET["search_box"] !== "") {
                 }
 
                 echo '</a></th>';
-                echo '<th width="10px"><a href="request.php?column_name=contact_number&sort_order=' . ($sort_order == "DESC" ? "ASC" : "DESC") . '&page=' . $curr_page . '">Mobile';
+                echo '<th width="10px"><a href="request.php?column_name=contact_number&sort_order=' . ($sort_order == "DESC" ? "ASC" : "DESC") . '&page=' . $curr_page . '&search_box=' . $search . '">Mobile';
 
                 if ($column_name == "contact_number") {
                   if ($sort_order == 'DESC') {
@@ -183,7 +216,7 @@ if (isset($_GET["search_box"]) && $_GET["search_box"] !== "") {
 
                 echo '</a></th>';
 
-                echo '<th width="10px"><a href="request.php?column_name=contact_subject&sort_order=' . ($sort_order == "DESC" ? "ASC" : "DESC") . '&page=' . $curr_page . '">Subject';
+                echo '<th width="10px"><a href="request.php?column_name=contact_subject&sort_order=' . ($sort_order == "DESC" ? "ASC" : "DESC") . '&page=' . $curr_page . '&search_box=' . $search . '">Subject';
 
                 if ($column_name == "contact_subject") {
                   if ($sort_order == 'DESC') {
@@ -226,16 +259,26 @@ if (isset($_GET["search_box"]) && $_GET["search_box"] !== "") {
               } else {
                 echo "No rows found.";
               }
+              if ($total_record_flag) {
+                echo '<h2 class="no-record">No Record Found.</h2>';
+              }
               ?>
           </table>
 
           <!-- Pagination -->
           <!-- Pagination -->
           <!-- Pagination -->
+          <?php if (!$total_record_flag) { ?>
           <div class="paginaton-div">
             <?php
+            // echo $total_records;
+            if ($curr_page > 1) {
+              echo "<a class='act_btn' href='request.php?column_name=" . $column_name . "&sort_order=" . ($sort_order == "DESC" ? "DESC" : "ASC") . "&page=1&search_box=" . $search . "'>First</a>";
+            } else {
+              echo "<a style='background-color: #b4b4b4; color: white; text-decoration: none; cursor: not-allowed;' class='disabled-btn'>First</a>";
+            }
             if ($curr_page - 1 > 0) {
-              echo "<a class='act_btn' href='request.php?column_name=" . $column_name . "&sort_order=" . ($sort_order == "DESC" ? "DESC" : "ASC") . "&page=" . ($curr_page - 1) . "'>Prev</a>";
+              echo "<a class='act_btn' href='request.php?column_name=" . $column_name . "&sort_order=" . ($sort_order == "DESC" ? "DESC" : "ASC") . "&page=" . ($curr_page - 1) . " &search_box=" . $search . "'>Prev</a>";
 
             } else {
               echo "<a style='background-color: #b4b4b4; color: white; text-decoration: none; cursor: not-allowed;'>Prev</a>";
@@ -248,17 +291,24 @@ if (isset($_GET["search_box"]) && $_GET["search_box"] !== "") {
               if ($curr_page == $i) {
                 echo "<a  style='background-color: #ff651b; color: #fff; cursor: not-allowed; text-decoration: none;'>" . $i . "</a>";
               } else {
-                echo "<a class='$class' href='request.php?column_name=" . $column_name . "&sort_order=" . ($sort_order == "DESC" ? "DESC" : "ASC") . "&page=" . $i . "'>" . $i . "</a>";
+                echo "<a href = 'request.php?column_name=" . $column_name . "&sort_order=" . ($sort_order == "DESC" ? "DESC" : "ASC") . "&page=" . $i . "&search_box=" . $search . "'>" . $i . "</a>";
               }
+              // ? --> query parameters, multiple page bhej sakte hai...
             }
-
             if ($curr_page + 1 <= $total_pages) {
-              echo "<a class='act_btn' href = 'request.php?column_name=" . $column_name . "&sort_order=" . ($sort_order == "DESC" ? "DESC" : "ASC") . "&page=" . ($curr_page + 1) . "'>Next</a>";
+              echo "<a class='act_btn' href = 'request.php?column_name=" . $column_name . "&sort_order=" . ($sort_order == "DESC" ? "DESC" : "ASC") . "&page=" . ($curr_page + 1) . "&search_box=" . $search . "'>Next</a>";
             } else {
               echo "<a style='background-color: #b4b4b4; color: white; text-decoration: none; cursor: not-allowed;'>Next</a>";
             }
+            if ($curr_page < $total_pages) {
+              echo "<a class='act_btn' href='request.php?column_name=" . $column_name . "&sort_order=" . ($sort_order == "DESC" ? "DESC" : "ASC") . "&page=" . $total_pages . "&search_box=" . $search . "'>Last</a>";
+            } else {
+              echo "<a style='background-color: #b4b4b4; color: white; text-decoration: none; cursor: not-allowed;' class='disabled-btn'>Last</a>";
+            }
             ?>
           </div>
+          <?php } ?>
+
         </div>
       </div>
     </div>
