@@ -2,6 +2,7 @@
     <ul class="submenu">
         <li><a href="graphical_dashboard.php">Dashboard</a></li>
         <li><a href="client_dashboard.php" class="listusers">Manage Users</a></li>
+        <li><a href="emp_dashboard.php" class="listemp">Manage Employees</a></li>
         <li><a href="emp_change_password.php">Change Password</a></li>
         <li><a href="request.php" class="managerequest">Manage Contact Request</a></li>
         <?php 
@@ -33,6 +34,12 @@
     });
     if (lastActiveLink == "http://localhost/NewUI/client_create.php" || lastActiveLink == "http://localhost/NewUI/client_update.php") {
         var elements = document.getElementsByClassName('listusers');
+        for (var i = 0; i < elements.length; i++) {
+            elements[i].classList.add('active');
+        }
+    }
+    if (lastActiveLink == "http://localhost/NewUI/emp_create.php" || lastActiveLink == "http://localhost/NewUI/emp_update.php") {
+        var elements = document.getElementsByClassName('listemp');
         for (var i = 0; i < elements.length; i++) {
             elements[i].classList.add('active');
         }

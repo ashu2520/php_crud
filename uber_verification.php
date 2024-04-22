@@ -1,6 +1,6 @@
 <!-- // To verify the signup -->
 <?php
-include ("connect.php");
+include ("uber_connect.php");
 // Session creation
 // if (isset($_SESSION["user_name"])) {
 //   header("location:client_dashboard.php");
@@ -31,16 +31,16 @@ if (isset($_GET["token"])) {
         // If no data is fetched from the database.
         // Token is defined by the user.
         $_SESSION['flash_message'] = "Unsucess! Invaild Access";
-        header("location:emp_signup.php");
+        header("location:uber_signup.php");
         exit();
     } else if ($current_date_time > $token_expiry_time) {
         // Check If user try to verify the account after 48hrs.
         $_SESSION['flash_message'] = "Unsucess! Verification Time Exceed";
-        header("location:emp_login.php");
+        header("location:uber_login.php");
         exit();
     } else {
         // Right User try to access this page
-        $sql_1 = "UPDATE users SET user_status = 'Active' WHERE user_email = '$token_user_email'";
+        $sql_1 = "UPDATE employees SET emp_status = 'Active' WHERE emp_email = '$token_user_email'";
 
         $result_1 = mysqli_query($conn, $sql_1);
 
@@ -48,16 +48,15 @@ if (isset($_GET["token"])) {
             // Delete token column
             $sql_2 = "DELETE FROM `security_token` WHERE `token_id` = '$token_id'";
             $result_2 = mysqli_query($conn, $sql_2);
-
-            $temp_slug = 'sign_up';
+            $temp_slug = 'uber_signup';
             $command = "php -r 'require_once(\"connect.php\"); mailer(\"$temp_slug\", \"$token_user_email\", \"\" , \"\");'> /dev/null 2>&1 &";
             exec($command);
             $_SESSION['flash_message'] = "Sucess! Account Verified Successfully";
-            echo '<meta http-equiv="refresh" content="0;url=emp_login.php">';
+            echo '<meta http-equiv="refresh" content="0;url=uber_login.php">';
             exit();
         } else {
             $_SESSION['flash_message'] = "Unsucess! Unable To Verify Account";
-            header("location:emp_login.php");
+            header("location:uber_login.php");
             exit();
         }
     }
@@ -65,7 +64,7 @@ if (isset($_GET["token"])) {
 } else {
     // Try to access the page without verifaction token.
     $_SESSION['flash_message'] = "Unsucess! Invaild Access";
-    header("location:emp_login.php");
+    header("location:uber_login.php");
     exit();
 }
 

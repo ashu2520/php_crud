@@ -137,10 +137,12 @@ if (isset($_POST["submit"])) {
       height: 13.5px;
       width: 13.5px;
       background-color: #eee;
+      border: 1px solid gray;
     }
 
     .container input:checked~.checkmark {
       background-color: #FF651B;
+      border: none;
     }
 
     .checkmark:after {

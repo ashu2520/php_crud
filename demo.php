@@ -122,7 +122,7 @@
         <tr>
             <td bgcolor="#ffffff">
                 <h1 align="center">Welcome to ARCS Infotech!</h1>
-                <p>Dear [User Name],</p>
+                <p>Dear User,</p>
                 <p>We are thrilled to welcome you as a new member of our community!</p>
                 <p>With our platform, you can briefly describe the features or benefits.</p>
                 <p>We hope you enjoy your experience with us!</p>

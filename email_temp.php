@@ -25,7 +25,9 @@ if ($_SESSION["User_role_id"] != 1) {
             width: 100%;
         }
 
-        tr,th,td {
+        tr,
+        th,
+        td {
             height: 40px;
         }
 
@@ -40,6 +42,13 @@ if ($_SESSION["User_role_id"] != 1) {
 
     <div class="clear"></div>
     <div class="clear"></div>
+    <?php
+    if (isset($_SESSION['flash_message'])) {
+        $message = $_SESSION['flash_message'];
+        unset($_SESSION['flash_message']);
+        echo "<span id='flash-message' class='flash-message'> $message</span>";
+    }
+    ?>
     <div class="content">
         <div class="wrapper">
             <div class="bedcram">
@@ -59,9 +68,9 @@ if ($_SESSION["User_role_id"] != 1) {
                         <?php
                         $format_date = $_SESSION["date_format"];
                         if ($format_date == "YYYY-MM-DD") {
-                          $format_date = '%Y-%m-%d';
+                            $format_date = '%Y-%m-%d';
                         } else {
-                          $format_date = '%d-%m-%Y';
+                            $format_date = '%d-%m-%Y';
                         }
                         $sql = "Select *, DATE_FORMAT(temp_created_at, '" . $format_date . "') as temp_created_at, DATE_FORMAT(temp_updated_at, '" . $format_date . "') as temp_updated_at   from `email_templates`";
                         $result = mysqli_query($conn, $sql);
@@ -84,13 +93,13 @@ if ($_SESSION["User_role_id"] != 1) {
                         }
                         ?>
                     </table>
-                        <?php
-                        if (isset($_SESSION['flash_message'])) {
-                            $message = $_SESSION['flash_message'];
-                            unset($_SESSION['flash_message']);
-                            echo "<span id='flash-message' class='template-flash-message'> $message</span>";
-                        }
-                        ?>
+                    <?php
+                    if (isset($_SESSION['flash_message'])) {
+                        $message = $_SESSION['flash_message'];
+                        unset($_SESSION['flash_message']);
+                        echo "<span id='flash-message' class='template-flash-message'> $message</span>";
+                    }
+                    ?>
                 </div>
             </div>
         </div>

@@ -11,8 +11,10 @@
             <ul>
                 <li><a href="graphical_dashboard.php" >Dashboard</a></li>
                 <li><a href="client_dashboard.php" class="listusers">Users</a></li>
+                <li><a href="emp_dashboard.php" class="listemp">Employees</a></li>
                 <li><a href="emp_change_password.php">Change Password</a></li>
                 <li><a href="request.php" class="managerequest">Contact Request</a></li>
+
                 <?php
                 if ($_SESSION['User_role_id'] == 1 ) {
                     echo'<li><a href="email_temp.php" class="template">Manage Templates</a></li>';

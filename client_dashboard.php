@@ -250,7 +250,7 @@ if (isset($_GET["search_box"]) && $_GET["search_box"] !== "") {
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Employee Data</title>
+  <title>Users Data</title>
   <link rel="icon" type="image/x-icon" href="images/arcs_logo.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <link href="css/client_dashboard.css" rel="stylesheet" />
@@ -302,7 +302,8 @@ if (isset($_GET["search_box"]) && $_GET["search_box"] !== "") {
               <form id="myForm" role="form" action="" method="GET">
                 <input id="search_box" type="text" class="search-box search-upper" name="search_box"
                   placeholder="Search..." value="<?php echo $search; ?>">
-                <input type="submit" class="submit-btn" value="Search" />
+                  <input style='display: none;' type="submit" class="submit-btn" value="Search" />
+
                 <?php if ($user_role_id == 1 || $user_role_id == 2) { ?>
                   <div class="add_more_user_button">
                     <a class="submit-btn add-user" href="client_create.php">Add More Users</a>
@@ -375,7 +376,7 @@ if (isset($_GET["search_box"]) && $_GET["search_box"] !== "") {
               //     echo '<i style="position: absolute; margin-top:3px; margin-left:2px;" class="fa fa-arrow-up" aria-hidden="true"></i>';
               //   }
               // }
-              echo '</a></th>';
+              // echo '</a></th>';
 
               // User_type
               echo '<th width="105px"><a href="client_dashboard.php?column_name=user_type&sort_order=' . ($column_name == "user_type" && $sort_order == "ASC" ? "DESC" : "ASC") . '&page=' . $curr_page . '&search_box=' . $search . '">User Type ';

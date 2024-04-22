@@ -54,7 +54,7 @@ if (isset($_POST["submit"])) {
 // $temp_slug = "";
 if (isset($_GET["temp_slug"])) {
     $temp_slug = clean_input($_GET["temp_slug"]);
-    if($temp_slug !== 'sign_up' && $temp_slug !== 'change_password' && $temp_slug !== 'user_added' && $temp_slug !== 'forgot_password' && $temp_slug !== 'verification_link'){
+    if($temp_slug !== 'sign_up' && $temp_slug !== 'change_password' && $temp_slug !== 'user_added' && $temp_slug !== 'forgot_password' && $temp_slug !== 'verification_link' && $temp_slug !== 'uber_signup' && $temp_slug !== 'uber_forgot_password' && $temp_slug !== 'uber_verification_link' && $temp_slug !== 'uber_user_added'){
         $temp_slug = 'sign_up';
     }
     $_SESSION['temp_slug'] = $temp_slug;

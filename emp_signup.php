@@ -115,7 +115,7 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
       $result_token = mysqli_query($conn, $sql_token);
 
       $temp_slug = 'verification_link';
-      
+
       $command = "php -r 'require_once(\"connect.php\"); mailer(\"$temp_slug\", \"$email\", \"$name\" , \"$randomHash\");'> /dev/null 2>&1 &";
       exec($command);
       $_SESSION['flash_message'] = "Sign Up Successful! Please verify your account";
@@ -144,6 +144,69 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
   <!-- Required for using jQuery input mask plugin -->
   <script type='text/javascript'
     src="https://rawgit.com/RobinHerbots/jquery.inputmask/3.x/dist/jquery.inputmask.bundle.js"></script>
+  <style>
+    /* Cusom checkbox CSS */
+    .container {
+      display: block;
+      position: relative;
+      padding-left: 20px;
+      margin-top: -5px;
+      cursor: pointer;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    .container input {
+      border: 1px solid green;
+      position: absolute;
+      padding-top: 15px;
+      opacity: 0;
+      cursor: pointer;
+      height: 0;
+      width: 0;
+    }
+
+    .checkmark {
+      border-radius: 3px;
+      position: absolute;
+      top: 3px;
+      left: 0.5px;
+      height: 13.5px;
+      width: 13.5px;
+      background-color: #eee;
+      border: 1px solid gray;
+
+    }
+
+    .container input:checked~.checkmark {
+      background-color: #ff651b;
+      border: none;
+    }
+
+    .checkmark:after {
+      content: "";
+      position: absolute;
+      display: none;
+    }
+
+    .container input:checked~.checkmark:after {
+      font-weight: 100;
+      display: block;
+    }
+
+    .container .checkmark:after {
+      left: 3.9px;
+      /* top: 1px; */
+      width: 4px;
+      height: 8px;
+      border: solid white;
+      border-width: 0 2.5px 2.5px 0;
+      -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+      transform: rotate(45deg);
+    }
+  </style>
 </head>
 
 <body>
@@ -316,11 +379,11 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
           </div>
 
 
-          <div class="form-group">
-            <div class="check_box">
-              <input type="checkbox" name="terms_cond" value="yes">
-              <label for="terms">I agree on the terms and conditions.</label>
-            </div>
+          <div style="display: flex;  margin-top: -5px;" class="form-group">
+            <label class="container"> I agree on the terms and conditions.
+              <input type="checkbox" value="yes" id="remember_me" name="terms_cond">
+              <span class="checkmark"></span>
+            </label>
           </div>
 
           <button type="submit" class="btn_login" name="submitasd">Sign Up</button>
