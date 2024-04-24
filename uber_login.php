@@ -2,7 +2,7 @@
 include ("uber_connect.php");
 // Session creation
 if (isset($_SESSION["uber_emp_name"])) {
-    header("location:uber.php");
+    header("location:emp_profile.php");
 }
 ?>
 <!-- <script>
@@ -50,7 +50,7 @@ if (isset($_POST["submit"])) {
         if (password_verify($password, $hashed_password)) {
             if ($user_status == 'Active') {
                 $_SESSION['uber_emp_name'] = $email;      // session create kar lo...
-                $_SESSION['Id'] = $row["emp_id"];    // user_id stored in session...
+                $_SESSION['uber_id'] = $row["emp_id"];    // user_id stored in session...
                 // $User_role_id = $row["emp_role_id"]; //user_role_id stored in session...
                 // $_SESSION['User_role_id'] = $User_role_id;
 
@@ -80,7 +80,7 @@ if (isset($_POST["submit"])) {
                     setcookie('uber_password', $password, time() + 3600, '/');
                     setcookie('uber_remember_me', $remember_me, time() + 3600, '/');
                 }
-                header("location:uber.php");
+                header("location:emp_profile.php");
                 // echo "<script>bc.postMessage('LOGIN'); window.location.href ='uber.php'; </script>";
                 exit();
             } else {
@@ -232,9 +232,9 @@ if (isset($_POST["submit"])) {
                 ?>
                 <!-- Flash Messages -->
                 <?php
-                if (isset($_SESSION['flash_message'])) {
-                    $message = $_SESSION['flash_message'];
-                    unset($_SESSION['flash_message']);
+                if (isset($_SESSION['uber_flash_message'])) {
+                    $message = $_SESSION['uber_flash_message'];
+                    unset($_SESSION['uber_flash_message']);
                     echo "<span id='flash-message' class='login-flash-message'><i class='fa-solid fa-circle-check fa-xl' style='color: #ababab; margin: 9px 5px 0px -8px;'></i> $message</span>";
                 }
                 // echo "<span id='flash-message' class='login-flash-message'><i class='fa-solid fa-circle-check fa-xl' style='color: #ababab; margin: 9px 5px 0px -8px;'></i> Sign Up Successful! Please verify your account </span>";

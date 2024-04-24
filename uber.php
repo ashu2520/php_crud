@@ -1,8 +1,8 @@
 <?php
-include "uber_connect.php";
-if (!isset($_SESSION["uber_emp_name"])) {
-    header("location:uber_login.php");
-  }
+// include "uber_connect.php";
+// if (!isset($_SESSION["uber_emp_name"])) {
+//     header("location:uber_login.php");
+// }
 function clean_input($fields)
 {
     $fields = trim($fields);
@@ -31,7 +31,7 @@ if (isset($_POST["Name"]) && isset($_POST["Email"]) && isset($_POST["Number"]) &
     if ((isset($Name) && $Name == "") || (isset($Email) && $Email == "") || (isset($Mobile) && $Mobile == "") || (isset($Subject) && $Subject == "") || (isset($Message) && $Message == "")) {
         $error = true;
     }
-    if (!preg_match("/^[a-zA-Z\s'-]+$/", $Name) || !filter_var($Email, FILTER_VALIDATE_EMAIL) || !preg_match("/^[0-9]{10}$/", $Mobile) || !preg_match("/^(?![_\W])[\w\d].{0,254}$/", $Subject) || !preg_match("/^(?!(\S{46,}\s*))(?=(\S+\s*){1,128}$).+$/", $Message)) {
+    if (!preg_match("/^[a-zA-Z\s'-]+$/", $Name) || !filter_var($Email, FILTER_VALIDATE_EMAIL) || !preg_match("/^[0-9]{10}$/", $Mobile) || !preg_match("/^(?![_\W])[\w\d].{0,254}$/", $Subject)) {
         $error = true;
 
     }
@@ -39,7 +39,7 @@ if (isset($_POST["Name"]) && isset($_POST["Email"]) && isset($_POST["Number"]) &
         $sql = "INSERT INTO `contact_request` (contact_name, contact_email, contact_number, contact_subject, contact_message) VALUES ('$Name', '$Email' ,'$Mobile', '$Subject', '$Message')";
         $result = mysqli_query($conn, $sql);
         if ($result) {
-            // header("location:client_dashboard.php");
+            header("location:uber.php");
             // echo "Sucessfully submitted";    
         } else {
             die(mysqli_error($conn));
@@ -67,7 +67,7 @@ if (isset($_POST["Name"]) && isset($_POST["Email"]) && isset($_POST["Number"]) &
         <div class="navbar-container">
             <div class="navbar-left-panel">
                 <div class="heading-container">
-                    <div id="heading"><a id="uber-name" href="#">Uber</a></div>
+                    <div id="heading"><a id="uber-name" href="uber.php">Uber</a></div>
                 </div>
                 <div class="navbar-options">
                     <div>Ride</div>
@@ -81,15 +81,16 @@ if (isset($_POST["Name"]) && isset($_POST["Email"]) && isset($_POST["Number"]) &
                 <div class="navbar-options">
                     <div> EN</div>
                     <div>Help</div>
-                    <a style="color: black; background-color: white;" id="login-btn" href="uber_logout.php">Log out</a>
+                    <a style="color: black; background-color: white;" id="login-btn" href="">Log In</a>
                     <!-- <div id="signup-button"> -->
-                    <!-- <a style="color: black" id="signup-btn" href="signup.php"></a> -->
+                    <a style="color: black" id="signup-btn" href="">Sign Up</a>
                     <!-- </div> -->
                 </div>
 
             </div>
 
         </div>
+
         <div class="page-1">
             <div class="main-container-1">
                 <div class="details">
@@ -132,7 +133,7 @@ if (isset($_POST["Name"]) && isset($_POST["Email"]) && isset($_POST["Number"]) &
             </div>
 
         </div>
-        <!-- okokok -->
+
         <div class="page-2">
             <div class="main-container-2">
 
@@ -154,7 +155,7 @@ if (isset($_POST["Name"]) && isset($_POST["Email"]) && isset($_POST["Number"]) &
 
             </div>
         </div>
-        <!-- okokok -->
+
         <div class="page-2">
             <div class="main-container-2">
                 <div class="image-container-2">
@@ -173,6 +174,7 @@ if (isset($_POST["Name"]) && isset($_POST["Email"]) && isset($_POST["Number"]) &
             </div>
 
         </div>
+
         <div class="page-3">
             <div class="page-3-container">
                 <h1>It’s easier in the apps</h1>
@@ -203,6 +205,7 @@ if (isset($_POST["Name"]) && isset($_POST["Email"]) && isset($_POST["Number"]) &
                 </div>
             </div>
         </div>
+
         <div class="main">
             <div class="map">
                 <iframe
@@ -240,6 +243,35 @@ if (isset($_POST["Name"]) && isset($_POST["Email"]) && isset($_POST["Number"]) &
                 </form>
             </div>
         </div>
+        <!-- <div class="emp-edit">
+            <h2>Update Details</h2>
+            <form action="">
+                <div>
+                    <label for="">Name: </label>
+                    <input type="text">
+                </div>
+            <div>
+                <label for="">Mobile: </label>
+                <input type="text">
+            </div>
+            <div>
+                <label for="">Email: </label>
+                <input type="text">
+            </div>
+            <div>
+                <label for="">Gender: </label>
+                <input type="text">
+            </div>
+            <div>
+                <label for="">Location: </label>
+                <input type="text">
+            </div>
+            <div>
+                <input type="submit" name="submit" id="emp-submit" value=" Submit ">
+            </div>
+        </form>
+        </div> -->
+
     </div>
     <div class="footer">
         <div class="footer-container">

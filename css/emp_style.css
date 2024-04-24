@@ -1,0 +1,42 @@
+body {
+  background-color: #efefef;
+}
+
+.card {
+  background-color: lightgray;
+  width: 260px;
+  height: 280px;
+}
+
+.card a {
+  position: absolute;
+  background-color: white;
+  color: black;
+  border: 1px solid black;
+  box-shadow: 0px 0px 2px 2px gray;
+  margin: 5px 0px 0px 190px;
+  text-decoration: none;
+  border-radius: 5px;
+  padding: 5px 8px;
+
+}
+
+.emp-profile {
+  margin: 20px 30px 20px 30px;
+  width: 200px;
+  max-height: 200px;
+  display: inline-block;
+}
+
+.emp-profile img {
+  max-width: 200px;
+  max-height: 200px;
+  height: auto;
+  border-radius: 100% !important;
+}
+
+.emp-profile-data {
+  width: 100%;
+  text-align: center;
+  margin: 5px 0px 0px 0px;
+}

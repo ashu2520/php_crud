@@ -113,13 +113,14 @@ function validateMessage(){
         message_input.style.color = "red";
         message_input.style.borderColor = "black";
         return false;
-    }else if (!messageRegex.test(message)) {
-            document.getElementById("message_error").innerHTML = "Word limit exceeded";
-            message_input.style.borderColor = "black";
-            message_input.style.color = "red";
+    } // else if (!messageRegex.test(message)) {
+    //         document.getElementById("message_error").innerHTML = "Word limit exceeded";
+    //         message_input.style.borderColor = "black";
+    //         message_input.style.color = "red";
 
-        return false;
-    }else{
+    //     return false;
+    // }
+    else{
         document.getElementById("message_error").innerHTML = "";
         message_input.style.borderColor = "green";
         message_input.style.color = "green";

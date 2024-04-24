@@ -2,7 +2,7 @@
 include ("uber_connect.php");
 // Session creation
 if (isset($_SESSION["uber_emp_name"])) {
-  header("location:uber.php");
+  header("location:emp_profile.php");
 }
 ?>
 <?php
@@ -28,12 +28,12 @@ if (isset($_POST["submit"])) {
         $row = mysqli_fetch_array($result);
         $emp_id = $row['emp_id'];
 
-        $_SESSION['flash_message'] = "Change Password link sent to your mail.";
+        $_SESSION['uber_flash_message'] = "Change Password link sent to your mail.";
 
         // Random String Generator
         $randomString = uniqid(); // Generate a random string
         $randomHash = md5($randomString); // Generate MD5 hash of the random string
-        $_SESSION['token_value'] = $randomHash;
+        $_SESSION['uber_token_value'] = $randomHash;
 
         // TOKEN Expiry Time...
         $sql_setting = "SELECT * FROM `settings` WHERE setting_id = 1";

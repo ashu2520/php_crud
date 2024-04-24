@@ -12,7 +12,7 @@ if (isset($_GET["token"])) {
     // echo $_GET["token"];
     $token = $_GET["token"];
 
-    $_SESSION['token_value'] = $token;
+    $_SESSION['uber_token_value'] = $token;
 
     $sql = "SELECT * FROM `security_token` WHERE token_value = '$token'";
     $result = mysqli_query($conn, $sql);
@@ -30,12 +30,12 @@ if (isset($_GET["token"])) {
     if (mysqli_num_rows($result) <= 0) {
         // If no data is fetched from the database.
         // Token is defined by the user.
-        $_SESSION['flash_message'] = "Unsucess! Invaild Access";
+        $_SESSION['uber_flash_message'] = "Unsucess! Invaild Access";
         header("location:uber_signup.php");
         exit();
     } else if ($current_date_time > $token_expiry_time) {
         // Check If user try to verify the account after 48hrs.
-        $_SESSION['flash_message'] = "Unsucess! Verification Time Exceed";
+        $_SESSION['uber_flash_message'] = "Unsucess! Verification Time Exceed";
         header("location:uber_login.php");
         exit();
     } else {
@@ -51,11 +51,11 @@ if (isset($_GET["token"])) {
             $temp_slug = 'uber_signup';
             $command = "php -r 'require_once(\"connect.php\"); mailer(\"$temp_slug\", \"$token_user_email\", \"\" , \"\");'> /dev/null 2>&1 &";
             exec($command);
-            $_SESSION['flash_message'] = "Sucess! Account Verified Successfully";
+            $_SESSION['uber_flash_message'] = "Sucess! Account Verified Successfully";
             echo '<meta http-equiv="refresh" content="0;url=uber_login.php">';
             exit();
         } else {
-            $_SESSION['flash_message'] = "Unsucess! Unable To Verify Account";
+            $_SESSION['uber_flash_message'] = "Unsucess! Unable To Verify Account";
             header("location:uber_login.php");
             exit();
         }
@@ -63,7 +63,7 @@ if (isset($_GET["token"])) {
 
 } else {
     // Try to access the page without verifaction token.
-    $_SESSION['flash_message'] = "Unsucess! Invaild Access";
+    $_SESSION['uber_flash_message'] = "Unsucess! Invaild Access";
     header("location:uber_login.php");
     exit();
 }

@@ -2,7 +2,7 @@
 include ("uber_connect.php");
 // Session creation
 if (isset($_SESSION["uber_emp_name"])) {
-  header("location:uber.php");
+  header("location:emp_profile.php");
 }
 ?>
 <?php
@@ -21,7 +21,7 @@ if (isset($_GET["token"])) {
   // echo $_GET["token"];
   $token = $_GET["token"];
 
-  $_SESSION['token_value'] = $token;
+  $_SESSION['uber_token_value'] = $token;
 
   $sql = "SELECT * FROM `security_token` WHERE token_value = '$token'";
   $result = mysqli_query($conn, $sql);
@@ -34,7 +34,7 @@ if (isset($_GET["token"])) {
   // Get current date and time
   $current_date_time = new DateTime();
   if ($current_date_time > $token_expiry_time) {
-    $_SESSION['flash_message'] = "Session Time Expired";
+    $_SESSION['uber_flash_message'] = "Session Time Expired";
     header("location:uber_login.php");
     exit();
   }
@@ -55,8 +55,8 @@ if (isset($_GET["token"])) {
   if (!$error) {
     // echo $token;
     // die();
-    $token = $_SESSION['token_value'];
-    unset($_SESSION['token_value']);
+    $token = $_SESSION['uber_token_value'];
+    unset($_SESSION['uber_token_value']);
 
     $sql_1 = "UPDATE `employees` SET emp_password = '$hashed_password' WHERE emp_id = ( SELECT token_user_id FROM `security_token` WHERE `security_token`.`token_value` = '$token');";
     $result_1 = mysqli_query($conn, $sql_1);
@@ -64,7 +64,7 @@ if (isset($_GET["token"])) {
     $sql_2 = "DELETE FROM `security_token` WHERE `token_value` = '$token'";
     $result_2 = mysqli_query($conn, $sql_2);
     if ($result_1) {
-      $_SESSION['flash_message'] = "Password Changed Successfully.";
+      $_SESSION['uber_flash_message'] = "Password Changed Successfully.";
       header("location:uber_login.php");
       exit();
     } else {

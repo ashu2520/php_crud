@@ -1,7 +1,7 @@
 <?php
 include "uber_connect.php";
 if (isset($_SESSION["uber_emp_name"])) {
-    header("location:uber.php");
+    header("location:emp_profile.php");
     exit();
 }
 ?>
@@ -96,7 +96,7 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
             // Random String Generator
             $randomString = uniqid(); // Generate a random string
             $randomHash = md5($randomString); // Generate MD5 hash of the random string
-            $_SESSION['token_value'] = $randomHashstatus;         // // TOKEN Expiry Time...
+            $_SESSION['uber_token_value'] = $randomHashstatus;         // // TOKEN Expiry Time...
 
             $sql_setting = "SELECT * FROM `settings` WHERE setting_id = 1";
             $result_setting = mysqli_query($conn, $sql_setting);
@@ -112,7 +112,7 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
 
             $command = "php -r 'require_once(\"connect.php\"); mailer(\"$temp_slug\", \"$email\", \"$name\" , \"$randomHash\");'> /dev/null 2>&1 &";
             exec($command);
-            $_SESSION['flash_message'] = "Sign Up Successful! Verify Your Account";
+            $_SESSION['uber_flash_message'] = "Sign Up Successful! Verify Your Account";
             echo '<meta http-equiv="refresh" content="0;url=uber_login.php">';
             exit();
             // }
@@ -255,9 +255,9 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
                 ?>
                 <!-- Flash Messages -->
                 <?php
-                if (isset($_SESSION['flash_message'])) {
-                    $message = $_SESSION['flash_message'];
-                    unset($_SESSION['flash_message']);
+                if (isset($_SESSION['uber_flash_message'])) {
+                    $message = $_SESSION['uber_flash_message'];
+                    unset($_SESSION['uber_flash_message']);
                     echo "<span id='flash-message' class='login-flash-message'> $message</span>";
                 }
                 ?>

@@ -2,53 +2,59 @@
     font-family: 'OpenSansRegular';
     src: url('../fonts/opensans-regular.eot');
     src: url('../fonts/opensans-regular.eot') format('embedded-opentype'),
-         url('../fonts/opensans-regular.woff') format('woff'),
-         url('../fonts/opensans-regular.ttf') format('truetype'),
-         url('../fonts/opensans-regular.svg#OpenSansRegular') format('svg');
+        url('../fonts/opensans-regular.woff') format('woff'),
+        url('../fonts/opensans-regular.ttf') format('truetype'),
+        url('../fonts/opensans-regular.svg#OpenSansRegular') format('svg');
 }
+
 @font-face {
     font-family: 'OpenSansSemibold';
     src: url('../fonts/opensans-semibold.eot');
     src: url('../fonts/opensans-semibold.eot') format('embedded-opentype'),
-         url('../fonts/opensans-semibold.woff') format('woff'),
-         url('../fonts/opensans-semibold.ttf') format('truetype'),
-         url('../fonts/opensans-semibold.svg#OpenSansSemibold') format('svg');
+        url('../fonts/opensans-semibold.woff') format('woff'),
+        url('../fonts/opensans-semibold.ttf') format('truetype'),
+        url('../fonts/opensans-semibold.svg#OpenSansSemibold') format('svg');
 }
+
 @font-face {
     font-family: 'oswald_regularregular';
     src: url('../fonts/oswald-regular-webfont.eot');
     src: url('../fonts/oswald-regular-webfont.eot?#iefix') format('embedded-opentype'),
-         url('../fonts/oswald-regular-webfont.woff2') format('woff2'),
-         url('../fonts/oswald-regular-webfont.woff') format('woff'),
-         url('../fonts/oswald-regular-webfont.ttf') format('truetype'),
-         url('../fonts/oswald-regular-webfont.svg#oswald_regularregular') format('svg');
+        url('../fonts/oswald-regular-webfont.woff2') format('woff2'),
+        url('../fonts/oswald-regular-webfont.woff') format('woff'),
+        url('../fonts/oswald-regular-webfont.ttf') format('truetype'),
+        url('../fonts/oswald-regular-webfont.svg#oswald_regularregular') format('svg');
     font-weight: normal;
     font-style: normal;
 
 }
-.text_data{
+
+.text_data {
     /* border: 1px red solid; */
     display: flex;
     justify-content: space-around;
 }
-.text_box{
+
+.text_box {
     position: relative;
     /* border: 1px #ff651b solid; */
     border: 1PX solid black;
-    height:165px;
+    height: 165px;
     /* width: 155px; */
 }
-.text_head{
+
+.text_head {
     /* border: 1px red solid; */
     width: 155px;
     height: 75px;
     background-color: #214139;
-    color: white ;
+    color: white;
     /* display: flex; */
     padding: 16px 12px;
     text-align: center;
 }
-.text_body{
+
+.text_body {
     /* border: 1px red solid; */
     height: 90px;
     padding: 18px 49px;
@@ -103,40 +109,45 @@
 
 
 /* ********************************************* Settings CSS ********************************************* */
-.sup-details{
+.sup-details {
     display: flex;
     justify-content: space-between;
     border: #214139 1px solid;
     /* text-align: center; */
 }
-.sup-details p{
+
+.sup-details p {
     border: #214139 0.5px solid;
     padding: 110px 59.5px;
 }
-.sup-form-row{
+
+.sup-form-row {
     border: #214139 0.5px solid;
     display: flex;
     padding: 10px 20px;
     justify-content: space-between;
     width: 440px;
     /* height: 400px; */
-    
+
 }
-.sup-form-row input{
+
+.sup-form-row input {
     /* float: right; */
     height: 40px;
     width: 260px;
-    font-size: 16px ;
+    font-size: 16px;
     /* color: grey; */
     padding: 5px;
     font-weight: lighter;
     /* left: -10px; */
 }
-.sup-form-row label{
+
+.sup-form-row label {
     float: left;
     padding: 10px 0px;
 }
-.sup-radio-row{
+
+.sup-radio-row {
     border: #214139 0.5px solid;
     display: flex;
     padding: 10px 20px;
@@ -144,16 +155,19 @@
     width: 440px;
     height: 52px;
 }
+
 .sup-radio-input-field {
     width: 260px;
     padding-top: 3px;
     float: right;
 }
-.extra_settings{
+
+.extra_settings {
     margin-top: 5px;
     border: #214139 1px solid;
 }
-.extra-settings-form-row{
+
+.extra-settings-form-row {
     display: flex;
     border: #214139 0.5px solid;
     display: flex;
@@ -161,16 +175,18 @@
     justify-content: space-between;
     width: 100%;
 }
-.extra-settings-form-row label{
+
+.extra-settings-form-row label {
     float: left;
     padding: 10px 0px;
 }
-.extra-settings-form-row input{
+
+.extra-settings-form-row input {
     float: right;
     margin-right: 130px;
     height: 40px;
     width: 260px;
-    font-size: 16px ;
+    font-size: 16px;
     font-weight: lighter;
     padding: 5px;
 
@@ -178,22 +194,23 @@
 
 /* ********************************************* Contact Us Form CSS ********************************************* */
 
-.main{
+.main {
     display: flex;
     margin: 100px 50px;
     /* border: #214139 2px solid; */
     /* background-color: rgba(245, 245, 220, 0.295); */
 }
-.map
-{
+
+.map {
     width: fit-content;
     margin: 0px 0px 0px 50px;
     height: 650px;
     border-radius: 8px;
     border-style: groove;
-    border-width: 2px;  
+    border-width: 2px;
 }
-.contact-us-form{
+
+.contact-us-form {
     /* border: #214139 1px solid; */
     margin: 0px 50px 50px 100px;
     width: 650px;
@@ -202,83 +219,88 @@
     border-radius: 8px;
 
 }
-.contact-us-form h1{
+
+.contact-us-form h1 {
     /* border: #214139 1px solid; */
     width: fit-content;
     margin-left: 195px;
 }
-.input-contact-us{
+
+.input-contact-us {
     /* border: #214139 1px solid; */
     width: 350px;
     height: 30px;
-    display: flex;
+    /* display: flex; */
     flex-direction: column;
     margin: 35px;
     width: fit-content;
     border-radius: 5px;
 }
-.input-contact-us_1{
-    width: 400px;
-    height: 150px;
-    display: flex;
-    flex-direction: column;
-    margin: 35px;
-    width: fit-content;
-    border-radius: 5px;
-}
-.input-contact-us input{
+
+.input-contact-us input {
     width: 350px;
     height: 30px;
     font: 20px;
     border-radius: 5px;
 }
-.input-contact-us_1 textarea{
 
-    border-style: inset ;
+.input-contact-us_1 textarea {
+    margin-left: 35px;
+    border-style: inset;
     width: 400px;
     height: 150px;
     border-radius: 8px;
     border-width: 2px;
 }
-.submit-contact-us{
+
+.submit-contact-us {
     /* border: #214139 1px solid; */
-    width: fit-content;
-    margin: 30px;
-    margin-left: 240px;
+    width: 100%;
+    text-align: center;
+    margin: 30px 30px 30px 0px;
+    /* margin-left: 240px; */
 }
-.submit-contact-us input{
+
+.submit-contact-us input {
     width: 125px;
     height: 45px;
+    background-color: black;
+    color: white;
     border-radius: 5px;
     font-size: 16px;
+    cursor: pointer;
 }
-.text_error1{
+
+.text_error1 {
     color: red;
     font-size: 14px;
     margin-top: 42px;
-    position: absolute; 
+    position: absolute;
 }
-.text_error2{
+
+.text_error2 {
     color: red;
     font-size: 15px;
     font-weight: 500;
     margin-top: 151px;
-    position: absolute; 
+    position: absolute;
 }
 
 /* ********************************************* Message CSS ********************************************* */
 
-.info-contact-us{
+.info-contact-us {
     border: #214139 1px solid;
     margin-bottom: -1px;
     display: flex;
     height: 40px;
     padding: 7px;
 }
-.contact-us-category{
+
+.contact-us-category {
     width: 150px;
 }
-.info-contact-us-message{
+
+.info-contact-us-message {
     border: #214139 1px solid;
     display: flex;
     height: 160px;
@@ -286,15 +308,16 @@
     position: relative;
 
 }
-.contact-us-category-message{
+
+.contact-us-category-message {
     width: 150px;
     /* border: #214139 1px solid; */
-    display: flex; 
+    display: flex;
     align-items: center;
     font-size: large;
 }
 
-.contact-us-reply{
+.contact-us-reply {
     padding-left: 3px;
     /* position: relative; */
     width: 630px;
@@ -304,19 +327,22 @@
     /* top: 66%; */
     /* margin-bottom: ; */
 }
+
 .contact-us-reply:focus {
     border: 1px solid lightblue !important;
     /* box-shadow: 0 0 0 0.5px lightblue !important; */
 }
-.message-data{
-    display: flex; 
+
+.message-data {
+    display: flex;
     width: 541px;
     height: 144px;
     position: absolute;
     overflow-y: auto;
     margin-left: 149px;
 }
-.head-reply{
+
+.head-reply {
     margin-top: 350px;
     margin-bottom: 10px;
     background-color: #214139;
@@ -330,8 +356,183 @@
     font-family: 'OpenSansRegular';
 
 }
-.ck.ck-content{
+
+.ck.ck-content {
     height: 270px;
 }
 
 
+
+/* ********************************************* Uber Update CSS ********************************************* */
+.emp-main {
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
+
+.emp-edit-btn a {
+    position: relative;
+    background-color: black;
+    color: white;
+    border: 1px solid black;
+    box-shadow: 0px 0px 2px 2px gray;
+    float: right;
+    margin: 5px 5px 5px 0px;
+    text-decoration: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+
+}
+
+.emp-edit-form {
+    background-color: lightgray;
+    position: relative;
+    margin: 20px 0px 50px 0px;
+
+    width: 650px;
+    height: 830px;
+    border-style: none;
+    border-radius: 8px;
+}
+
+.emp-edit-form h1 {
+    width: 100%;
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 30px;
+}
+
+.profile-img {
+    /* border: #214139 1px solid; */
+    display: flex;
+    /* justify-content: center; */
+}
+
+.emp-edit-image-data {
+    margin-top: 50px;
+}
+
+.emp-edit-image-data label {
+    display: block;
+    width: 100px;
+    background-color: black;
+    text-align: center;
+    color: white;
+    padding: 12px;
+    border-radius: 5px;
+}
+
+#input-file {
+    /* border: 1px solid red; */
+    display: none;
+}
+
+.emp-edit-image {
+    /* border: #214139 1px solid; */
+    position: relative;
+    margin: -20px 30px 20px 80px;
+    width: 200px;
+    max-height: 200px;
+    display: inline-block;
+}
+
+.emp-edit-image img {
+    max-width: 200px;
+    height: 200px;
+    border-radius: 100% !important;
+}
+
+.emp-edit-form-row {
+    display: flex;
+    justify-content: center;
+    margin: 0px 30px 0px 0px;
+
+}
+
+.emp-edit-label {
+    /* border: #214139 1px solid; */
+    width: 100px;
+    font-size: 18px;
+    margin: 20px 10px 20px 0px;
+}
+
+.emp-edit-label label {
+    padding: 15px;
+}
+
+.emp-edit-input {
+    /* border: #214139 1px solid; */
+
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.emp-edit-input input[disabled] {
+    background-color: white;
+    color: black;
+}
+
+.emp-edit-input select[disabled] {
+    background-color: white;
+    color: black;
+}
+
+.emp-edit-input input[type=radio][disabled] {
+    background-color: white;
+    color: black;
+}
+
+.emp-edit-input input {
+    width: 350px;
+    height: 30px;
+    font: 20px;
+    border-radius: 5px;
+}
+
+.emp-edit-input select {
+    background-color: white;
+    width: 86px;
+    height: 50px;
+    font-size: 16px;
+    border-radius: 5px;
+    border-style: groove;
+
+}
+
+.emp-edit-input label {
+    /* border: #214139 1px solid; */
+    width: fit-content;
+    /* justify-content: space-between; */
+    margin: 0px 15px 0px 15px;
+    padding-bottom: 5px;
+}
+
+.emp-edit-input span {
+    margin-bottom: 5px;
+    font-size: 18px;
+}
+
+.text_error_3 {
+    color: red;
+    /* border: 1px solid red; */
+    width: 370px;
+    float: left;
+    font-size: 14px;
+    margin-top: 65px;
+    margin-left: 115px;
+    position: absolute;
+}   
+.flash-message{
+    position: absolute;
+    /* margin-left: 550px; */
+    z-index: 1;
+    margin-top: 2px;
+    text-align: center;
+    background-color: black;
+    color: #fff;
+    width: 100%;
+    height: 50px;
+    padding: 4px;
+    padding-top: 20px;
+    border-radius: 5px;
+}
