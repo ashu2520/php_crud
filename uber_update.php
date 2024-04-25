@@ -118,7 +118,7 @@ if ($result) {
     <!-- Required for using jQuery input mask plugin -->
     <script type='text/javascript'
         src="https://rawgit.com/RobinHerbots/jquery.inputmask/3.x/dist/jquery.inputmask.bundle.js"></script>
-    <title>Employee Edit</title>
+    <title>Employee Update</title>
 </head>
 
 <body>
