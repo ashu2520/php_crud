@@ -267,7 +267,7 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
                     <div class="form-group">
                         <label for="Name" class="labels">Name</label>
                         <input id="name_input" type="text" class="form-control" name="name" placeholder="Name"
-                            autocomplete="off" onblur="validateName()">
+                            autocomplete="off" oninput="validateName()">
                         <span class='text_error' id="name_err"></span>
                     </div>
 
@@ -315,7 +315,7 @@ if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["mobile"]) &
                             oninput="vaildategender()" value="Male">
                         <span class="rad_text" value="Male"> Male</span>
                         <input id="gender_female" class="rad_opt" type="radio" name="gender" oninput="vaildategender()"
-                            value="female">
+                            value="Female">
                         <span class="rad_text" value="Female"> Female</span>
                         <span class='text_error' id="gender_error"></span>
                     </div>

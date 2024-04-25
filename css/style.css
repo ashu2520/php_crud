@@ -536,3 +536,19 @@
     padding-top: 20px;
     border-radius: 5px;
 }
+.submit-contact-us a{
+    /* display: block; */
+    position: relative;
+    top: 1px;
+    padding: 13px 45px;
+    text-decoration: none;
+    width: 125px;
+    height: 45px;
+    background-color: black;
+    color: white;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    border-top: gray 2px solid ;
+    border-left: 2px solid gray;;
+}

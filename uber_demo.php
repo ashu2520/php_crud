@@ -1,4 +1,4 @@
-<!-- Sign Up -->
+<!-- Sign Up Verification Link -->
 
 <table width="600" align="center" bordercolor="gray" cellspacing="0" cellpadding="0" bgcolor="white" border="1">
     <tr>
@@ -6,8 +6,8 @@
             <table cellspacing="40" cellpadding="0" bgcolor="#ffffff" border="0">
                 <tr>
                     <td align="center">
-                        <img src='https://helios-i.mashable.com/imagery/articles/03y6VwlrZqnsuvnwR8CtGAL/hero-image.fill.size_1200x675.v1623372852.jpg' alt='Company Logo'
-                            width="200" height="auto">
+                        <img src='https://helios-i.mashable.com/imagery/articles/03y6VwlrZqnsuvnwR8CtGAL/hero-image.fill.size_1200x675.v1623372852.jpg'
+                            alt='Company Logo' width="200" height="auto">
                     </td>
                 </tr>
                 <tr>
@@ -61,23 +61,54 @@
     </tr>
 </table>
 
-
+<!-- User created from backend -->
 <table width="600" align="center" bordercolor="#cccccc" cellpadding="40">
-        <tr>
-            <td align="center">
-                <img src='https://helios-i.mashable.com/imagery/articles/03y6VwlrZqnsuvnwR8CtGAL/hero-image.fill.size_1200x675.v1623372852.jpg' alt='Company Logo'
-                    width="200" height="auto">
-            </td>
-        </tr>
-        <tr>
-            <td bgcolor="#ffffff">
-                <h2 align="center">Welcome to Uber!</h2>
-                <p>Hello [User Name],</p>
-                <p>We are excited to inform you that you have been successfully registered.</p>
-                <p>As a registered user, you now have access to exclusive features and updates.</p>
-                <p>Thank you for joining us!</p>
-                <p>If you have any questions or concerns, feel free to contact us.</p>
-                <p><strong>Best regards,</strong><br>Uber</p>
-            </td>
-        </tr>
-    </table>
+    <tr>
+        <td align="center">
+            <img src='https://helios-i.mashable.com/imagery/articles/03y6VwlrZqnsuvnwR8CtGAL/hero-image.fill.size_1200x675.v1623372852.jpg'
+                alt='Company Logo' width="200" height="auto">
+        </td>
+    </tr>
+    <tr>
+        <td bgcolor="#ffffff">
+            <h2 align="center">Welcome to Uber!</h2>
+            <p>Hello [User Name],</p>
+            <p>We are excited to inform you that you have been successfully registered.</p>
+            <p>As a registered user, you now have access to exclusive features and updates.</p>
+            <p>Thank you for joining us!</p>
+            <p>If you have any questions or concerns, feel free to contact us.</p>
+            <p><strong>Best regards,</strong><br>Uber</p>
+        </td>
+    </tr>
+</table>
+
+
+<!-- Successful Sign Up -->
+<table width="600" align="center" bordercolor="#cccccc" cellspacing="0" cellpadding="0" bgcolor="#f9f9f9" border="1">
+    <tr>
+        <td align="center">
+            <table cellspacing="40" cellpadding="0" bgcolor="#ffffff" border="0">
+                <tr>
+                    <td align="center">
+                        <img src='https://helios-i.mashable.com/imagery/articles/03y6VwlrZqnsuvnwR8CtGAL/hero-image.fill.size_1200x675.v1623372852.jpg'
+                            alt='Company Logo' width="200" height="auto">
+                    </td>
+                </tr>
+                <tr>
+                    <td align="center">
+                        <h2>Welcome to Uber!</h2>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+
+                        <p>Dear User,</p>
+                        <p>We are thrilled to welcome you as a new member of our community!</p>
+                        <p>We hope you enjoy your experience with us!</p>
+                        <p>Best regards,<br>Uber</p>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>

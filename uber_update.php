@@ -125,20 +125,13 @@ if ($result) {
     <div class="navbar-container">
         <div class="navbar-left-panel">
             <div class="heading-container">
-                <div id="heading"><a id="uber-name" href="">Uber</a></div>
+                <div id="heading"><a id="uber-name" href="uber.php">Uber</a></div>
             </div>
             <div class="navbar-options">
-                <div>Ride</div>
-                <div>Drive</div>
-                <div>Buisness</div>
-                <div>Uber eats</div>
-                <div>About</div>
             </div>
         </div>
         <div class="navbar-right-panel">
             <div class="navbar-options">
-                <div> EN</div>
-                <div>Help</div>
                 <a style="color: black; background-color: white;" id="login-btn" href="uber_logout.php">Log out</a>
                 <!-- <div id="signup-button"> -->
                 <a style="color: black" id="signup-btn" href="emp_profile.php">Back</a>
@@ -265,9 +258,11 @@ if ($result) {
                     <span class='text_error_3' id="location_error"></span>
                 </div>
                 <div class="submit-contact-us">
+                    <a id="submit-btn" href="emp_profile.php">Back</a>
                     <input type="submit" class="submit-btn" name="Submitasd" value="Update">
                 </div>
             </form>
+
         </div>
     </div>
     <script>
